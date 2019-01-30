@@ -50,26 +50,13 @@
           >
             <!-- <v-subheader>Company Names:</v-subheader> -->
   
-            <v-list-tile>
+            <v-list-tile v-for="value in companyList" :key="value.gdID">
               <v-list-tile-content>
-                <v-list-tile-title>1. Company one</v-list-tile-title>
-                <v-list-tile-sub-title>little description for company one</v-list-tile-sub-title>
-              </v-list-tile-content>
-            </v-list-tile>
-  
-            <v-list-tile>
-              <v-list-tile-content>
-                <v-list-tile-title>2. Company two</v-list-tile-title>
-                <v-list-tile-sub-title>little description for company two</v-list-tile-sub-title>
+                <v-list-tile-title>{{ value.displayOrder }}. {{ value.dbDisplayName }}</v-list-tile-title>
+                <v-list-tile-sub-title>DataBase Name: {{ value.dbName }}</v-list-tile-sub-title>
               </v-list-tile-content>
             </v-list-tile>
 
-            <v-list-tile>
-              <v-list-tile-content>
-                <v-list-tile-title>N. And so on......</v-list-tile-title>
-                <v-list-tile-sub-title>little description</v-list-tile-sub-title>
-              </v-list-tile-content>
-            </v-list-tile>
           </v-list>
   
           <v-divider></v-divider>
@@ -86,11 +73,33 @@
 </div>
 </template>
 <script>
+import httpClient from "../services/httpClient.js";
+
 export default {
   name: 'Login',
   data() {
     return {
-      chnageDataBaseModel: false
+      chnageDataBaseModel: false,
+      companyList: []
+    }
+  },
+  beforeMount: function() {
+    console.log('calling before mount function');
+    this.fetchCompanyList();
+  },
+  methods: {
+    fetchCompanyList: function() {
+      console.log('calling fetch function');
+      console.log('env::base::', process.env.VUE_APP_API_BASE);
+      console.log('env::url::', `${process.env.VUE_APP_API_BASE}CompaniesList`);
+      httpClient({
+        method: 'get',
+        url: `${process.env.VUE_APP_API_BASE}CompaniesList`
+      }).then((response) => {
+        if (response.status === 200) {
+          this.companyList = response.data;
+        }
+      })
     }
   }
 }
