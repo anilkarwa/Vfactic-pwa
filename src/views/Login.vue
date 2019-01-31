@@ -30,7 +30,6 @@
       <v-toolbar-title>VfactIC</v-toolbar-title>
       <v-spacer></v-spacer>
       <!-- <v-toolbar-title>Application</v-toolbar-title> -->
-      <v-btn @click="chnageDataBaseModel = true">Change database</v-btn>
     </v-toolbar>
     <v-content>
       <v-container fluid fill-height>
@@ -58,13 +57,13 @@
               </v-toolbar>
               <v-card-text>
                 <v-form>
-                  <v-text-field prepend-icon="person" name="login" label="Login" type="text"></v-text-field>
-                  <v-text-field prepend-icon="lock" name="password" label="Password" id="password" type="password"></v-text-field>
+                  <v-text-field prepend-icon="person" :model="loginModel.userName" name="login" label="Login" type="text"></v-text-field>
+                  <v-text-field prepend-icon="lock" :model="loginModel.password" name="password" label="Password" id="password" type="password"></v-text-field>
                 </v-form>
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="primary">Login</v-btn>
+                <v-btn color="primary" @click="userLogin()">Login</v-btn>
               </v-card-actions>
             </v-card>
           </v-flex>
@@ -74,68 +73,36 @@
     <v-footer color="indigo" app inset>
       <span class="white--text">NitinAgarwal &copy; 2019</span>
     </v-footer>
-    <!-- START: Code for change database model -->
-    <v-dialog v-model="chnageDataBaseModel" persistent max-width="600px">
-        <v-card>
-          <v-card-title>
-            <span class="headline">User Profile</span>
-          </v-card-title>
-          <v-card-text>
-            <v-container grid-list-md>
-              <v-layout wrap>
-                <v-flex xs12 sm12 md12>
-                  <v-text-field
-                    label="Server *"
-                    hint="example: server ip or domain name"
-                    persistent-hint
-                    required
-                  ></v-text-field>
-                </v-flex>
-                <v-flex xs12 sm12 md12>
-                  <v-text-field
-                    label="DataBase Name *"
-                    hint="example: database which you wanna connect"
-                    persistent-hint
-                    required
-                  ></v-text-field>
-                </v-flex>
-                <v-flex xs12 sm12 md12>
-                  <v-text-field
-                    label="User Name *"
-                    hint="example: username for database connection"
-                    persistent-hint
-                    required
-                  ></v-text-field>
-                </v-flex>
-                <v-flex xs12 sm12 md12>
-                  <v-text-field
-                    label="Password *"
-                    hint="example: password for database connection"
-                    persistent-hint
-                    required
-                  ></v-text-field>
-                </v-flex>
-              </v-layout>
-            </v-container>
-            <small>*indicates required field</small>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" flat @click="chnageDataBaseModel = false">Close</v-btn>
-            <v-btn color="blue darken-1" flat @click="chnageDataBaseModel = false">Save</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-    <!-- END: Code for change database model -->
   </v-app>
 </div>
 </template>
 <script>
+import httpClient from "@/services/httpClient.js";
+
 export default {
   name: 'Login',
   data() {
     return {
-      chnageDataBaseModel: false
+      loginModel: {
+        userName: '',
+        password: ''
+      }
+    }
+  },
+  methods: {
+    userLogin() {
+      const username = this.loginModel.userName;
+      const password = this.loginModel.password;
+        httpClient({
+          method: 'GET',
+          url: `${process.env.VUE_APP_API_BASE}Login?username=${username}&password=${password}`
+        }).then((result) => {
+          console.log('Result', result);
+        }).catch((err) => {
+          console.log('Error Handling', err);
+        });
+
+
     }
   }
 }
