@@ -1,91 +1,191 @@
 <template>
-  <div id="app">
+<div id="app">
   <v-app id="inspire">
-    <v-layout row>
-      <v-flex xs12 sm6 offset-sm3>
-        <v-card>
-          <v-toolbar color="purple" dark>
-            <v-toolbar-side-icon></v-toolbar-side-icon>
-  
-            <v-toolbar-title>Settings</v-toolbar-title>
-  
-            <v-spacer></v-spacer>
-  
-            <v-btn icon>
-              <v-icon>search</v-icon>
-            </v-btn>
-          </v-toolbar>
-  
-          <v-list
-            subheader
-            three-line
+    <v-card>
+      <v-card-title class="indigo white--text headline">
+        VfactIC
+      </v-card-title>
+      <v-layout
+        justify-space-between
+        pa-3
+      >
+
+      <!-- START: Code for left side list -->
+      
+        <v-flex xs3>
+          
+          <!-- Search bar panel -->
+            <v-text-field
+              flat
+              solo-inverted
+              prepend-icon="search"
+              label="Search"
+              class="hidden-sm-and-down"
+            ></v-text-field>
+
+          <!-- Tree style list -->
+          <v-treeview
+            :active.sync="active"
+            :items="items"
+            :load-children="fetchUsers"
+            :open.sync="open"
+            activatable
+            active-class="primary--text"
+            class="grey lighten-5"
+            open-on-click
+            transition
           >
-            <v-subheader>User Controls</v-subheader>
-  
-            <v-list-tile>
-              <v-list-tile-content>
-                <v-list-tile-title>Content filtering</v-list-tile-title>
-                <v-list-tile-sub-title>Set the content filtering level to restrict appts that can be downloaded</v-list-tile-sub-title>
-              </v-list-tile-content>
-            </v-list-tile>
-  
-            <v-list-tile>
-              <v-list-tile-content>
-                <v-list-tile-title>Password</v-list-tile-title>
-                <v-list-tile-sub-title>Require password for purchase or use password to restrict purchase</v-list-tile-sub-title>
-              </v-list-tile-content>
-            </v-list-tile>
-          </v-list>
-  
-          <v-divider></v-divider>
-  
-          <v-list
-            subheader
-            three-line
-          >
-            <v-subheader>General</v-subheader>
-            <v-list-tile @click="">
-              <v-list-tile-action>
-                <v-checkbox
-                  v-model="notifications"
-                ></v-checkbox>
-              </v-list-tile-action>
-  
-              <v-list-tile-content @click.prevent="notifications = !notifications">
-                <v-list-tile-title>Notifications</v-list-tile-title>
-                <v-list-tile-sub-title>Notify me about updates to apps or games that I downloaded</v-list-tile-sub-title>
-              </v-list-tile-content>
-            </v-list-tile>
-  
-            <v-list-tile @click="">
-              <v-list-tile-action>
-                <v-checkbox
-                  v-model="sound"
-                ></v-checkbox>
-              </v-list-tile-action>
-  
-              <v-list-tile-content @click.prevent="sound = !sound">
-                <v-list-tile-title>Sound</v-list-tile-title>
-                <v-list-tile-sub-title>Auto-update apps at any time. Data charges may apply</v-list-tile-sub-title>
-              </v-list-tile-content>
-            </v-list-tile>
-  
-            <v-list-tile @click="">
-              <v-list-tile-action>
-                <v-checkbox
-                  v-model="widgets"
-                ></v-checkbox>
-              </v-list-tile-action>
-  
-              <v-list-tile-content @click.prevent="widgets = !widgets">
-                <v-list-tile-title>Auto-add widgets</v-list-tile-title>
-                <v-list-tile-sub-title>Automatically add home screen widgets</v-list-tile-sub-title>
-              </v-list-tile-content>
-            </v-list-tile>
-          </v-list>
-        </v-card>
-      </v-flex>
-    </v-layout>
+            <v-icon
+              v-if="!item.children"
+              slot="prepend"
+              slot-scope="{ item, active }"
+              :color="active ? 'primary' : ''"
+            >mdi-account</v-icon>
+          </v-treeview>
+        </v-flex>
+        <!-- END: Code for left side list -->
+
+        <!-- START: code for right side view for components -->
+        <v-flex
+          d-flex
+          text-xs-center
+        >
+          <v-scroll-y-transition mode="out-in">
+            <div
+              v-if="!selected"
+              class="title grey--text text--lighten-1 font-weight-light"
+              style="align-self: center;"
+            >
+              Select a User
+            </div>
+            <v-card
+              v-else
+              :key="selected.id"
+              class="pt-4 mx-auto"
+              flat
+              max-width="400"
+            >
+              <v-card-text>
+                <v-avatar
+                  v-if="avatar"
+                  size="88"
+                >
+                  <v-img
+                    :src="`https://avataaars.io/${avatar}`"
+                    class="mb-4"
+                  ></v-img>
+                </v-avatar>
+                <h3 class="headline mb-2">
+                  {{ selected.name }}
+                </h3>
+                <div class="blue--text mb-2">{{ selected.email }}</div>
+                <div class="blue--text subheading font-weight-bold">{{ selected.username }}</div>
+              </v-card-text>
+              <v-divider></v-divider>
+              <v-layout
+                tag="v-card-text"
+                text-xs-left
+                wrap
+              >
+                <v-flex tag="strong" xs5 text-xs-right mr-3 mb-2>Company:</v-flex>
+                <v-flex>{{ selected.company.name }}</v-flex>
+                <v-flex tag="strong" xs5 text-xs-right mr-3 mb-2>Website:</v-flex>
+                <v-flex>
+                  <a :href="`//${selected.website}`" target="_blank">{{ selected.website }}</a>
+                </v-flex>
+                <v-flex tag="strong" xs5 text-xs-right mr-3 mb-2>Phone:</v-flex>
+                <v-flex>{{ selected.phone }}</v-flex>
+              </v-layout>
+            </v-card>
+          </v-scroll-y-transition>
+        </v-flex>
+
+        <!-- END: code for right side view for components -->
+
+
+
+      </v-layout>
+    </v-card>
   </v-app>
 </div>
 </template>
+
+<script>
+const avatars = [
+  '?accessoriesType=Blank&avatarStyle=Circle&clotheColor=PastelGreen&clotheType=ShirtScoopNeck&eyeType=Wink&eyebrowType=UnibrowNatural&facialHairColor=Black&facialHairType=MoustacheMagnum&hairColor=Platinum&mouthType=Concerned&skinColor=Tanned&topType=Turban',
+  '?accessoriesType=Sunglasses&avatarStyle=Circle&clotheColor=Gray02&clotheType=ShirtScoopNeck&eyeType=EyeRoll&eyebrowType=RaisedExcited&facialHairColor=Red&facialHairType=BeardMagestic&hairColor=Red&hatColor=White&mouthType=Twinkle&skinColor=DarkBrown&topType=LongHairBun',
+  '?accessoriesType=Prescription02&avatarStyle=Circle&clotheColor=Black&clotheType=ShirtVNeck&eyeType=Surprised&eyebrowType=Angry&facialHairColor=Blonde&facialHairType=Blank&hairColor=Blonde&hatColor=PastelOrange&mouthType=Smile&skinColor=Black&topType=LongHairNotTooLong',
+  '?accessoriesType=Round&avatarStyle=Circle&clotheColor=PastelOrange&clotheType=Overall&eyeType=Close&eyebrowType=AngryNatural&facialHairColor=Blonde&facialHairType=Blank&graphicType=Pizza&hairColor=Black&hatColor=PastelBlue&mouthType=Serious&skinColor=Light&topType=LongHairBigHair',
+  '?accessoriesType=Kurt&avatarStyle=Circle&clotheColor=Gray01&clotheType=BlazerShirt&eyeType=Surprised&eyebrowType=Default&facialHairColor=Red&facialHairType=Blank&graphicType=Selena&hairColor=Red&hatColor=Blue02&mouthType=Twinkle&skinColor=Pale&topType=LongHairCurly'
+]
+
+const pause = ms => new Promise(resolve => setTimeout(resolve, ms))
+// @ is an alias to /src
+// import HelloWorld from '@/components/HelloWorld.vue'
+import httpClient from "@/services/httpClient.js";
+
+export default {
+  name: 'home',
+  components: {
+    
+  },
+  data: function() {
+    return {
+      active: [],
+      avatar: null,
+      open: [],
+      users: [],
+      MainMenu: ['Test1', 'Test2', 'Test3', 'Test4', 'Test5', 'Test6', 'Test7', 'Test8', 'Test9', 'Test10', 'Test11', 'Test12']
+    }
+  },
+  computed: {
+    items () {
+      return [
+        {
+          name: 'Users',
+          children: this.users
+        }
+      ]
+    },
+    selected () {
+      if (!this.active.length) return undefined
+
+      const id = this.active[0]
+
+      return this.users.find(user => user.id === id)
+    }
+  },
+  watch: {
+    selected: 'randomAvatar'
+  },
+
+  watch: {
+    selected: 'randomAvatar'
+  },
+  methods: {
+    async fetchUsers (item) {
+      // Remove in 6 months and say
+      // you've made optimizations! :)
+      await pause(1500)
+      // httpClient({
+      //   method: 'GET',
+      //   url: `${process.env.VUE_APP_API_BASE}mainMenu?userID=5`
+      // }).then((res) => {
+      //   console.log('res', res.data);
+      //   return res.data;
+      // }).then(json => (item.children.push(...json)))
+      // .catch(err => console.warn(err))
+      return fetch('https://jsonplaceholder.typicode.com/users')
+        .then(res => res.json())
+        .then(json => {
+          console.log('json', json);
+          (item.children.push(...json))
+        })
+        .catch(err => console.warn(err))
+    },
+    randomAvatar () {
+      this.avatar = avatars[Math.floor(Math.random() * avatars.length)]
+    }
+  }
+}
+</script>

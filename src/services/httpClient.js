@@ -33,6 +33,9 @@ axiosInstance.interceptors.response.use(
 );
 
 const fetchRequester = async ({ method, url, data }) => {
+    console.log('method:', method)
+    console.log('url:', url)
+    console.log('data:', data)
     const response = await axiosInstance.request({
         url,
         method,
@@ -40,7 +43,6 @@ const fetchRequester = async ({ method, url, data }) => {
         headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
-            Authorization: localStorage.getItem('Token')
         }
     });
     return response;

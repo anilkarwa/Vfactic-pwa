@@ -1,10 +1,10 @@
 <template>
 <div id="app">
   <v-app id="inspire">
-    <v-toolbar color="indigo" dark fixed app>
+    <v-toolbar color="blue darken-1" dark fixed app>
       <v-toolbar-title>VfactIC</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn @click="chnageDataBaseModel = true" class="indigo">Change database</v-btn>
+      <v-btn @click="chnageDataBaseModel = true" class="blue darken-1">Change database</v-btn>
     </v-toolbar>
     <v-content>
       <v-container fluid fill-height>
@@ -13,7 +13,7 @@
         >
           <v-flex xs8 sm4 mt-5 pt-5>
         <v-card>
-          <v-toolbar color="indigo" dark>
+          <v-toolbar color="blue darken-1" dark>
             <v-toolbar-title>Select Company</v-toolbar-title>
             <v-spacer></v-spacer>
           </v-toolbar>
@@ -34,7 +34,7 @@
         </v-layout>
       </v-container>
     </v-content>
-    <v-footer color="indigo" app inset>
+    <v-footer color="blue darken-1" app inset>
       <span class="white--text">NitinAgarwal &copy; 2019</span>
     </v-footer>
     <!-- START: Code for change database model -->
@@ -89,11 +89,26 @@
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="blue darken-1" flat @click="chnageDataBaseModel = false">Close</v-btn>
-            <v-btn color="blue darken-1" flat @click="chnageDataBaseModel = false">Save</v-btn>
+            <v-btn color="blue darken-1" flat @click="changeDataBase()">Save</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
     <!-- END: Code for change database model -->
+    <!-- START: Code for snackBar -->
+      <v-snackbar
+          v-model="snackbar"
+          :color="snackbarColor"
+        >
+          {{ snackbarText }}
+          <v-btn
+            dark
+            flat
+            @click="snackbar = false"
+          >
+            Close
+          </v-btn>
+      </v-snackbar>
+    <!-- END: Code for snackBar -->
   </v-app>
 </div>
 </template>
@@ -112,7 +127,10 @@ export default {
         userName: 'sa',
         password: 'svt@123$$',
         server: 'SOFTVENTS02'
-      }
+      },
+      snackbar: false,
+      snackbarColor: '',
+      snackbarText: ''
     }
   },
   beforeMount: function() {
@@ -143,11 +161,21 @@ export default {
       }
       console.log('payload', payload);
       httpClient({
-        method: 'PUT',
+        method: 'put',
         url: `${process.env.VUE_APP_API_BASE}ChangeConnectionString`,
-        payload: payload
+        data: payload
       }).then((response) => {
         console.log('Response from server', response);
+        if(response.status === 200) {
+          this.snackbarColor = 'green',
+          this.snackbarText = ' DataBase Connection chnaged successfully!'
+          this.snackbar = true;
+        }
+      },(error) => {
+        console.log('Error::', error);
+        this.snackbarColor = 'red',
+        this.snackbarText = 'Opps! error occured please check the database details again.'
+        this.snackbar = true;
       });
     },
     readCompanyDetials: function(details) {
@@ -158,8 +186,11 @@ export default {
         url: `${process.env.VUE_APP_API_BASE}updateDBInConnectionString?selectedCompanyDB=${DatabaseName}`
       }).then((response) => {
         console.log('Response from server', response);
+        if(response.status === 200) {
+          localStorage.setItem('dataBaseName', DatabaseName);
+          this.$router.push({ path: 'login' })
+        }
       })
-      this.$router.push({ path: 'login' })
     }
   }
 }

@@ -25,10 +25,12 @@
         </v-list-tile>
       </v-list>
     </v-navigation-drawer> -->
-    <v-toolbar color="indigo" dark fixed app>
+    <v-toolbar color="blue darken-1" dark fixed app>
       <!-- <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon> -->
       <v-toolbar-title>VfactIC</v-toolbar-title>
       <v-spacer></v-spacer>
+      <!-- <v-btn class="indigo" dark><v-icon>home</v-icon></v-btn> -->
+      <router-link to = "/"><v-icon>home</v-icon></router-link>
       <!-- <v-toolbar-title>Application</v-toolbar-title> -->
     </v-toolbar>
     <v-content>
@@ -39,8 +41,8 @@
         >
           <v-flex xs12 sm8 md4>
             <v-card class="elevation-12">
-              <v-toolbar dark color="indigo">
-                <v-toolbar-title >NitinAgarwal</v-toolbar-title>
+              <v-toolbar dark color="blue darken-1">
+                <v-toolbar-title >User Login</v-toolbar-title>
                 <!-- <v-spacer></v-spacer> -->
                 <!-- <v-tooltip bottom>
                   <v-btn
@@ -57,8 +59,8 @@
               </v-toolbar>
               <v-card-text>
                 <v-form>
-                  <v-text-field prepend-icon="person" :model="loginModel.userName" name="login" label="Login" type="text"></v-text-field>
-                  <v-text-field prepend-icon="lock" :model="loginModel.password" name="password" label="Password" id="password" type="password"></v-text-field>
+                  <v-text-field prepend-icon="person" v-model="loginModel.userName" name="login" label="Login" type="text" ></v-text-field>
+                  <v-text-field prepend-icon="lock" v-model="loginModel.password" name="password" label="Password" id="password" type="password" ></v-text-field>
                 </v-form>
               </v-card-text>
               <v-card-actions>
@@ -70,9 +72,24 @@
         </v-layout>
       </v-container>
     </v-content>
-    <v-footer color="indigo" app inset>
+    <v-footer color="blue darken-1" app inset>
       <span class="white--text">NitinAgarwal &copy; 2019</span>
     </v-footer>
+    <!-- START: Code for snackBar -->
+      <v-snackbar
+          v-model="snackbar"
+          :color="snackbarColor"
+        >
+          {{ snackbarText }}
+          <v-btn
+            dark
+            flat
+            @click="snackbar = false"
+          >
+            Close
+          </v-btn>
+      </v-snackbar>
+    <!-- END: Code for snackBar -->
   </v-app>
 </div>
 </template>
@@ -86,23 +103,43 @@ export default {
       loginModel: {
         userName: '',
         password: ''
-      }
+      },
+      LoginFormvalid: true,
+      snackbar: false,
+      snackbarColor: '',
+      snackbarText: ''
     }
   },
   methods: {
     userLogin() {
-      const username = this.loginModel.userName;
-      const password = this.loginModel.password;
+      if(this.loginModel.userName && this.loginModel.password) {
+        const username = this.loginModel.userName;
+        const password = this.loginModel.password;
+        console.log('username', username);
+        console.log('password', password);
         httpClient({
           method: 'GET',
           url: `${process.env.VUE_APP_API_BASE}Login?username=${username}&password=${password}`
         }).then((result) => {
-          console.log('Result', result);
+          console.log('Result', result.data);
+          if(result.data.userId !== 0) {
+            this.$router.push({ path: 'home' })
+          } else {
+            this.snackbarColor = 'red',
+            this.snackbarText = 'Invalid Username and password'
+            this.snackbar = true;
+          }
         }).catch((err) => {
           console.log('Error Handling', err);
+          this.snackbarColor = 'red',
+          this.snackbarText = 'Opps! error is occured!'
+          this.snackbar = true;
         });
-
-
+      } else {
+        this.snackbarColor = 'red',
+        this.snackbarText = 'username and password should not be empty'
+        this.snackbar = true;
+      }
     }
   }
 }

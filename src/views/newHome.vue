@@ -1,59 +1,83 @@
 <template>
 <div id="app">
   <v-app id="inspire">
-    <v-card>
-      <v-card-title class="blue darken-1 white--text headline">
-        VfactIC
-      </v-card-title>
-      <v-layout
-        justify-space-between
-        pa-3
-      >
-
-      <!-- START: Code for left side list -->
-      
-        <v-flex xs3 sm3 md3>
-          
-          <!-- Search bar panel -->
+    <v-navigation-drawer
+      clipped
+      fixed
+      v-model="drawer"
+      app
+      color="blue darken-1"
+    >
+      <v-list dense>
+         <!-- START: Search bar panel -->
             <v-text-field
               flat
               solo-inverted
               prepend-icon="search"
               label="Search"
-              class="hidden-sm-and-down"
             ></v-text-field>
-
-          <!-- Tree style list -->
+          <!-- END: Search bar panel -->
+          <!-- START: Tree style list -->
            <v-treeview 
            activatable
-           active-class="primary--text"
-           class="grey lighten-5"
            open-on-click
            transition
            :items="menu">
-
            </v-treeview>
-        </v-flex>
-        <!-- END: Code for left side list -->
-
-        <!-- START: code for right side view for components -->
-        <v-flex
-          d-flex
-          text-xs-center
-          xs9 sm9 md9
-        >
-        <!-- START: Code for dataTables -->
-        <div>
-      <v-toolbar flat color="white">
-        <v-toolbar-title>Supplier Master</v-toolbar-title>
-        <v-divider
-          class="mx-2"
-          inset
-          vertical
-        ></v-divider>
-        <v-spacer></v-spacer>
-        <!-- START: dialog code for company master -->
-        <v-dialog v-model="compantMasterDialog" fullscreen hide-overlay transition="dialog-bottom-transition">
+          <!-- END: Tree style list -->
+      </v-list>
+    </v-navigation-drawer>
+    <v-toolbar app fixed clipped-left color="blue darken-1">
+      <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+      <v-toolbar-title>Application</v-toolbar-title>
+    </v-toolbar>
+    <v-content>
+      <v-container fluid >
+        <v-layout justify-center align-center>
+          <v-flex shrink>
+            <div>
+              <h1>Supplier Master</h1>
+              <v-data-table
+                :headers="headers"
+                :items="comapyMasterList"
+                class="elevation-1"
+              >
+                <template slot="items" slot-scope="props">
+                  <td class="justify-center layout px-0">
+                    <v-icon
+                      small
+                      class="mr-2"
+                      @click="editItem(props.item)"
+                    >
+                      edit
+                    </v-icon>
+                    <v-icon
+                      small
+                      @click="DeleteSupplierRequest(props.item)"
+                    >
+                      delete
+                    </v-icon>
+                  </td>
+                  <td>{{ props.item.supplierName }}</td>
+                  <td>{{ props.item.supplierCode }}</td>
+                  <td>{{ props.item.supplierGroupID }}</td>
+                  <td>{{ props.item.supplierAddrLine1 }}{{props.item.supplierAddrLine2}}{{props.item.supplierAddrLine3}}{{props.item.supplierAddrLine4}}{{props.item.supplierCity}}{{props.item.supplierState}}{{props.item.supplierCountry}}{{props.item.supplierPincode}}</td>
+                  <!-- <td class="text-xs-right">{{ props.item.protein }}</td> -->
+                </template>
+                <template slot="no-data">
+                  <v-btn color="primary" @click="">Reset</v-btn>
+                </template>
+              </v-data-table>
+            </div>
+          </v-flex>
+        </v-layout>
+      </v-container>
+    </v-content>
+    <v-footer app fixed color="blue darken-1">
+      <span>NitinAgarwal &copy; 2019</span>
+    </v-footer>
+    <!-- START: dialog box model code -->
+    <v-dialog v-model="compantMasterDialog" fullscreen hide-overlay transition="dialog-bottom-transition">
         <v-card>
           <v-toolbar dark color="primary">
             <v-btn icon dark @click="compantMasterDialog = false">
@@ -181,45 +205,8 @@
 
         </v-card>
       </v-dialog>
-        <!-- END: dialog code for company master -->
-      </v-toolbar>
-      <v-data-table
-        :headers="headers"
-        :items="comapyMasterList"
-        class="elevation-1"
-      >
-        <template slot="items" slot-scope="props">
-          <td class="justify-center layout px-0">
-            <v-icon
-              small
-              class="mr-2"
-              @click="editItem(props.item)"
-            >
-              edit
-            </v-icon>
-            <v-icon
-              small
-              @click="deleteItem(props.item)"
-            >
-              delete
-            </v-icon>
-          </td>
-          <td>{{ props.item.supplierName }}</td>
-          <td>{{ props.item.supplierCode }}</td>
-          <td>{{ props.item.supplierGroupID }}</td>
-          <td>{{ props.item.supplierAddrLine1 }}{{props.item.supplierAddrLine2}}{{props.item.supplierAddrLine3}}{{props.item.supplierAddrLine4}}{{props.item.supplierCity}}{{props.item.supplierState}}{{props.item.supplierCountry}}{{props.item.supplierPincode}}</td>
-          <!-- <td class="text-xs-right">{{ props.item.protein }}</td> -->
-        </template>
-        <template slot="no-data">
-          <v-btn color="primary" @click="">Reset</v-btn>
-        </template>
-      </v-data-table>
-    </div>
-        <!-- END: Code for dataTables -->
-        </v-flex>
-      </v-layout>
-    </v-card>
-        <!-- START: Code for snackBar -->
+    <!-- END: dialog box model code -->
+    <!-- START: Code for snackBar -->
       <v-snackbar
           v-model="snackbar"
           :color="snackbarColor"
@@ -234,10 +221,45 @@
           </v-btn>
       </v-snackbar>
     <!-- END: Code for snackBar -->
+    <!-- START: warning model dialog box -->
+    <v-dialog
+        v-model="warningDialog"
+        max-width="290"
+        justify-center
+        align-center
+      >
+        <v-card>
+          <v-card-title class="headline">Delete Supplier ?</v-card-title>
+  
+          <v-card-text>
+            Are you sure? you wanna delete this supplier.
+          </v-card-text>
+  
+          <v-card-actions>
+            <v-spacer></v-spacer>
+  
+            <v-btn
+              color="green darken-1"
+              flat="flat"
+              @click="warningDialog = false"
+            >
+              No
+            </v-btn>
+  
+            <v-btn
+              color="green darken-1"
+              flat="flat"
+              @click="DeleteSupplier()"
+            >
+              Yes
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    <!-- END: warning model dialog box -->
   </v-app>
 </div>
 </template>
-
 <script>
 import httpClient from "@/services/httpClient.js";
 
@@ -248,6 +270,8 @@ export default {
   },
   data: function() {
     return {
+      warningDialog: false,
+      drawer: true,
       snackbar: false,
       snackbarColor: '',
       snackbarText: '',
@@ -280,6 +304,9 @@ export default {
         },
         inActive: null,
         tallyAlias: ''
+      },
+      deleteItem: {
+        supplierID: 0
       },
       defaultOpen: [true, false],
       countryList: [],
@@ -442,6 +469,14 @@ export default {
     },
     deleteItem: function(item) {
       console.log(item);
+      // this.deleteItem.supplierID = item.supplierID;
+      // this.warningDialog = true;
+    },
+    DeleteSupplierRequest(item) {
+      console.log(item);
+      this.deleteItem.supplierID = item.supplierID;
+      console.log('Supplier Id', this.deleteItem.supplierID);
+      this.warningDialog = true;
     },
     fetchCountry(searchKey) {
       console.log('Calling....');
@@ -473,13 +508,29 @@ export default {
       this.editedItem.Address.country;
       this.editedItem.Address.pinCode;
 
+    },
+    DeleteSupplier() {
+      const supplierID = this.deleteItem.supplierID;
+      httpClient({
+        method: 'DELETE',
+        url: `${process.env.VUE_APP_API_BASE}supplyMaster?supplierID=${supplierID}`
+      }).then((res) => {
+        console.log('Response from server', res);
+        if(res.status === 200) {
+          this.fetchCompanyMaster();
+          this.snackbarColor = 'green';
+          this.snackbarText = 'Supplier deleted succcessfully!';
+          this.snackbar = true;
+        } else {
+          this.snackbarColor = 'red';
+          this.snackbarText = 'Opps! error occured please try again.';
+          this.snackbar = true;
+        }
+      })
     }
   }
 }
 </script>
 <style>
-.v-treeview-node__label {
-    font-size: 1rem !important;
-    text-align: left;
-}
+
 </style>
