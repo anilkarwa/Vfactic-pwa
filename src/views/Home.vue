@@ -24,7 +24,9 @@
               </div>
               <!-- <SupplierMaster></SupplierMaster> -->
               <!-- <ItemMaster></ItemMaster> -->
-              <UOMMaster></UOMMaster>
+              <!-- <UOMMaster></UOMMaster> -->
+              <!-- <SupplierGroupMaster></SupplierGroupMaster> -->
+              <ItemGroupMaster></ItemGroupMaster>
               <!-- <component v-bind:is="currentView"></component> -->
               <!-- <h1>{{ active }}</h1> -->
               <!-- <h1>{{ open }}</h1> -->
