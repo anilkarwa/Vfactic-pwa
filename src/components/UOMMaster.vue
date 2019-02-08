@@ -23,6 +23,95 @@
         </template>
       </v-data-table>
       <!-- END: Code for UOM master LIST -->
+      <!-- START: dialog box model code -->
+      <v-dialog
+        v-model="UOMMasterDialog"
+        fullscreen
+        hide-overlay
+        transition="dialog-bottom-transition"
+      >
+        <v-card>
+          <v-toolbar dark color="primary">
+            <v-btn icon dark @click="UOMMasterDialog = false">
+              <v-icon>close</v-icon>
+            </v-btn>
+            <v-toolbar-title>Edit UOM Master</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-toolbar-items>
+              <v-btn dark flat @click="UpdateUOMMaster()">Save</v-btn>
+            </v-toolbar-items>
+          </v-toolbar>
+          <v-layout row wrap>
+            <v-flex xs12>
+              <v-expansion-panel popout>
+                <v-expansion-panel-content>
+                  <div slot="header">UOM Master Details</div>
+                  <v-card>
+                    <v-card-text>
+                      <!-- START: UOM master detail -->
+                      <v-container grid-list-md>
+                        <v-layout wrap>
+                          <v-flex xs12 sm6 md4>
+                            <v-text-field
+                              v-model="editedItem.UOMCode"
+                              label="UOM Code:"
+                              required
+                            ></v-text-field>
+                          </v-flex>
+                          <v-flex xs12 sm6 md4>
+                            <v-text-field
+                              v-model="editedItem.UOMName"
+                              label="UOM Name:"
+                              required
+                            ></v-text-field>
+                          </v-flex>
+                          <v-flex xs12 sm6 md4>
+                            <v-text-field
+                              v-model="editedItem.addedBy"
+                              label="Added By:"
+                              required
+                            ></v-text-field>
+                          </v-flex>
+                          <v-flex xs12 sm6 md4>
+                            <v-text-field
+                              v-model="editedItem.addedOn"
+                              label="Added On:"
+                              required
+                            ></v-text-field>
+                          </v-flex>
+                          <v-flex xs12 sm6 md4>
+                            <v-text-field
+                              v-model="editedItem.changeOn"
+                              label="Change On:"
+                              required
+                            ></v-text-field>
+                          </v-flex>
+                          <v-flex xs12 sm6 md4>
+                            <v-text-field
+                              v-model="editedItem.changedBy"
+                              label="Changed By:"
+                              required
+                            ></v-text-field>
+                          </v-flex>
+                          <v-flex xs12 sm6 md4>
+                            <v-checkbox v-model="editedItem.inActive" label="in Active ?"></v-checkbox>
+                          </v-flex>
+                          <v-flex xs12 sm6 md4>
+                            <v-checkbox v-model="editedItem.Authorised" label="is Authorised ?"></v-checkbox>
+                          </v-flex>
+                          <!-- </v-form> -->
+                        </v-layout>
+                      </v-container>
+                      <!-- END: UOM master detail -->
+                    </v-card-text>
+                  </v-card>
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+            </v-flex>
+          </v-layout>
+        </v-card>
+      </v-dialog>
+      <!-- END: dialog box model code -->
     </v-app>
   </div>
 </template>
@@ -45,7 +134,19 @@ export default {
         { text: "changedBy", align: "center", value: "changedBy"},
         { text: "Authorised", align: "center", value: "Authorised"}
       ],
-      UOMMasterList: []
+      UOMMasterList: [],
+      UOMMasterDialog: false,
+      editedItem: {
+        UOMID: '',
+        UOMCode: '',
+        UOMName: '',
+        inActive: null,
+        addedBy: '',
+        addedOn: '',
+        changeOn: '',
+        changedBy: '',
+        Authorised: null
+      }
     }
   },
   beforeMount: function() {
@@ -63,6 +164,27 @@ export default {
     },
     EditUOMMaster: function(UOMData) {
       console.log('UOM Master data', UOMData);
+      const UOMID = UOMData.UOMID;
+      httpClient({
+        method: 'GET',
+        url: `${process.env.VUE_APP_API_BASE}UOMMaster?uomID=${UOMID}`
+      }).then((res) => {
+        console.log('Response ', res);
+        const UOMMasterStaticFielddata = res.data;
+        this.editedItem.UOMID = UOMMasterStaticFielddata.UOMID
+        this.editedItem.UOMCode = UOMMasterStaticFielddata.UOMCode
+        this.editedItem.UOMName = UOMMasterStaticFielddata.UOMName
+        this.editedItem.inActive = UOMMasterStaticFielddata.inActive
+        this.editedItem.addedBy = UOMMasterStaticFielddata.addedBy
+        this.editedItem.addedOn = UOMMasterStaticFielddata.addedOn
+        this.editedItem.changeOn = UOMMasterStaticFielddata.changeOn
+        this.editedItem.changedBy = UOMMasterStaticFielddata.changedBy
+        this.editedItem.Authorised = UOMMasterStaticFielddata.Authorised
+      });
+      this.UOMMasterDialog = true;
+    },
+    UpdateUOMMaster: function() {
+
     },
     DeleteUOMMaster: function(UOMData) {
       console.log('UOM Master data', UOMData);
