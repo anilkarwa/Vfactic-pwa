@@ -6,7 +6,7 @@
         <template slot="items" slot-scope="props">
           <td class="justify-center layout px-0">
             <v-icon small class="mr-2" @click="EditUOMMaster(props.item)">edit</v-icon>
-            <v-icon small @click="DeleteUOMMaster(props.item)">delete</v-icon>
+            <v-icon small @click="DeleteRequest(props.item)">delete</v-icon>
           </td>
           <td>{{ props.item.UOMID }}</td>
           <td>{{ props.item.UOMCode }}</td>
@@ -112,6 +112,30 @@
         </v-card>
       </v-dialog>
       <!-- END: dialog box model code -->
+      <!-- START: Code for snackBar -->
+      <v-snackbar v-model="snackbar" :color="snackbarColor">
+        {{ snackbarText }}
+        <v-btn dark flat @click="snackbar = false">Close</v-btn>
+      </v-snackbar>
+      <!-- END: Code for snackBar -->
+
+      <!-- START: warning model dialog box -->
+      <v-dialog v-model="warningDialog" max-width="290" justify-center align-center>
+        <v-card>
+          <v-card-title class="headline">Delete UOM Master ?</v-card-title>
+
+          <v-card-text>Are you sure? you wanna delete this UOM. <br> UOM Name: <span style="color: red">{{ deleteItem.UOMName }}</span> </v-card-text>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+
+            <v-btn color="green darken-1" flat="flat" @click="warningDialog = false">No</v-btn>
+
+            <v-btn color="green darken-1" flat="flat" @click="DeleteUOMMaster()">Yes</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+      <!-- END: warning model dialog box -->
     </v-app>
   </div>
 </template>
@@ -146,7 +170,15 @@ export default {
         changeOn: '',
         changedBy: '',
         Authorised: null
-      }
+      },
+      snackbar: false,
+      snackbarColor: '',
+      snackbarText: '',
+      deleteItem: {
+        UOMID: 0,
+        UOMName: ''
+      },
+      warningDialog: false
     }
   },
   beforeMount: function() {
@@ -184,10 +216,45 @@ export default {
       this.UOMMasterDialog = true;
     },
     UpdateUOMMaster: function() {
-
+      console.log('this.editedItem', this.editedItem);
+      const updateParam = this.editedItem;
+      httpClient({
+        method: 'PUT',
+        url: `${process.env.VUE_APP_API_BASE}UOMMaster`,
+        data: updateParam
+      }).then((result) => {
+        console.log('update response from server', result);
+        this.snackbarColor = 'green';
+        this.snackbarText =  'UOM updated Successfully';
+        this.snackbar = true;
+      }).catch((err) => {
+        console.error('Error Occured', err);
+        this.snackbarColor = 'red';
+        this.snackbarText =  'Opps! Error occur, please try again after some time';
+        this.snackbar = true;
+      });
     },
-    DeleteUOMMaster: function(UOMData) {
+    DeleteRequest: function(UOMData) {
       console.log('UOM Master data', UOMData);
+      this.deleteItem.UOMID = UOMData.UOMID;
+      this.deleteItem.UOMName = UOMData.UOMName;
+      this.warningDialog = true;
+    },
+    DeleteUOMMaster: function() {
+      const UOMId = this.deleteItem.UOMID;
+      httpClient({
+        method: 'DELETE',
+        url: `${process.env.VUE_APP_API_BASE}UOMMaster?uomID=${UOMId}`
+      }).then((result) => {
+        console.log('Result of delete request');
+        this.snackbarColor = 'green';
+        this.snackbarText =  'UOM deleted Successfully';
+        this.snackbar = true;
+      }).catch((err) => {
+        this.snackbarColor = 'red';
+        this.snackbarText =  'Opps! Error occur, please try again after some time';
+        this.snackbar = true;
+      });
     }
   }
 }

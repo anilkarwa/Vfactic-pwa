@@ -21,16 +21,12 @@
             <v-flex shrink>
               <div v-if="selected">
                 <h1>{{ selected.name }} </h1>
+                <component v-bind:is="currentView"></component>
               </div>
-              <!-- <SupplierMaster></SupplierMaster> -->
-              <!-- <ItemMaster></ItemMaster> -->
-              <!-- <UOMMaster></UOMMaster> -->
-              <!-- <SupplierGroupMaster></SupplierGroupMaster> -->
-              <!-- <ItemGroupMaster></ItemGroupMaster> -->
-              <CustomerMaster></CustomerMaster>
-              <!-- <component v-bind:is="currentView"></component> -->
-              <!-- <h1>{{ active }}</h1> -->
-              <!-- <h1>{{ open }}</h1> -->
+              <div v-else>
+                <h1>Welcome, VfactIC</h1>
+                <h2>Date: {{ new Date() }}</h2>
+              </div>
             </v-flex>
           </v-layout>
         </v-container>
@@ -122,7 +118,7 @@ export default {
       console.log('Reading.....', menuData);
       localStorage.setItem('menuDocId', menuData.docId)
       this.currentView = menuData.view;
-      console.log('Reading.....', this.currentView);
+      console.log('Current View.....', this.currentView);
       // console.log('Doc ID from localstorage', localStorage.getItem('menuDocId'));
     }
   }

@@ -157,6 +157,31 @@
         </v-card>
       </v-dialog>
       <!-- END: dialog box model code -->
+      <!-- START: Code for snackBar -->
+      <v-snackbar v-model="snackbar" :color="snackbarColor">
+        {{ snackbarText }}
+        <v-btn dark flat @click="snackbar = false">Close</v-btn>
+      </v-snackbar>
+      <!-- END: Code for snackBar -->
+      <!-- START: warning model dialog box -->
+      <v-dialog v-model="warningDialog" max-width="290" justify-center align-center>
+        <v-card>
+          <v-card-title class="headline">Delete Item Master ?</v-card-title>
+
+          <v-card-text>Are you sure? you wanna delete this Item Master. <br>
+          <b>Item Group Master: </b> <span style="color: red">{{ deleteItem.itemMasterName }}</span>
+          </v-card-text>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+
+            <v-btn color="green darken-1" flat="flat" @click="warningDialog = false">No</v-btn>
+
+            <v-btn color="green darken-1" flat="flat" @click="DeleteItemMaster()">Yes</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+      <!-- END: warning model dialog box -->
     </v-app>
   </div>
 </template>
@@ -206,7 +231,15 @@ export default {
       dynamicFieldModel: {},
       dynamicFormOption: {},
       itemGroupIdList: [],
-      UOMIDList: []
+      UOMIDList: [],
+      snackbar: false,
+      snackbarColor: '',
+      snackbarText: '',
+      warningDialog: false,
+      deleteItem: {
+        itemMasterId: null,
+        itemMasterName: ''
+      }
     }
   },
   beforeMount: function() {
@@ -258,12 +291,58 @@ export default {
 
         this.itemMasterDialog = true;
     },
+   DeleteItemRequest: function(ItemMasterData) {
+      console.log('Delete request', ItemMasterData);
+      this.deleteItem.itemMasterId = ItemMasterData.itemID;
+      this.deleteItem.itemMasterName = ItemMasterData.itemName;
+      this.warningDialog = true
+    },
+    DeleteItemMaster: function(itemData) {
+      const itemID = this.deleteItem.itemMasterId;
+      httpClient({
+        method: 'DELETE',
+        url: `${process.env.VUE_APP_API_BASE}ItemMaster?itemID=${itemID}`
+      }).then((result) => {
+        this.fetchItemMaster();
+        this.warningDialog = false;
+        this.snackbarColor = 'green';
+        this.snackbarText = 'Item Group Master deleted Successfully!';
+        this.snackbar = true;
+      }).catch((err) => {
+        console.error('Opps! Error Occured', err);
+        this.warningDialog = false;
+        this.snackbarColor = 'red';
+        this.snackbarText = 'Opps! Error Occured, please try again after some time';
+        this.snackbar = true;
+      });
+    },
     UpdateItemMaster: function() {
-
-    },
-    DeleteItemRequest: function(itemData) {
-      console.log('itemData for Deletion');
-    },
+      this.editedItem.UOMID = this.editedItem.UOMID.UOMID
+      this.editedItem.itemGroupID = this.editedItem.itemGroupID.itemGroupID
+      console.log('Update request: static', this.editedItem)
+      console.log('Update request: Dynamic', this.dynamicFieldModel)
+      const updateParam = {
+        fixedFieldModal: this.editedItem,
+        dynamicFieldModal: this.dynamicFieldModel
+      }
+      console.log('Update Params', updateParam);
+      httpClient({
+        method: 'PUT',
+        url: `${process.env.VUE_APP_API_BASE}ItemMaster`,
+        data: updateParam
+      }).then((result) => {
+        console.log('Update response from server', result);
+        this.fetchItemMaster();
+        this.snackbarColor = 'green';
+        this.snackbarText = 'Item Group Master updated Successfully!';
+        this.snackbar = true;
+      }).catch((err) => {
+        console.error('Opps! Error Occured', err);
+        this.snackbarColor = 'red';
+        this.snackbarText = 'Opps! Error Occured, please try again after some time';
+        this.snackbar = true;
+      });
+    }
   }
 }
 </script>

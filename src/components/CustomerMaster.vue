@@ -6,7 +6,7 @@
         <template slot="items" slot-scope="props">
           <td class="justify-center layout px-0">
             <v-icon small class="mr-2" @click="EditCustomerMaster(props.item)">edit</v-icon>
-            <v-icon small @click="DeleteCustomerMaster(props.item)">delete</v-icon>
+            <v-icon small @click="DeleteRequest(props.item)">delete</v-icon>
           </td>
           <td>{{ props.item.customerMasterID }}</td>
           <td>{{ props.item.customerMasterCode }}</td>
@@ -86,11 +86,13 @@
                             ></v-text-field>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <v-text-field
+                            <v-select
                               v-model="editedItem.customerGroupID"
-                              label="customer Group ID"
-                              required
-                            ></v-text-field>
+                              menu-props="auto"
+                              :items="customerGroupIdList"
+                              item-text="customerGroupName"
+                              item-value="customerGroupID"
+                            ></v-select>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <v-text-field
@@ -177,6 +179,29 @@
         </v-card>
       </v-dialog>
       <!-- END: dialog box model code -->
+            <!-- START: warning model dialog box -->
+      <v-dialog v-model="warningDialog" max-width="290" justify-center align-center>
+        <v-card>
+          <v-card-title class="headline">Delete Customer ?</v-card-title>
+
+          <v-card-text>Are you sure? you wanna delete this customer.<br> <b>Customer Name: </b> <span style="color: red">{{ deleteItem.customerName }}</span> </v-card-text>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+
+            <v-btn color="green darken-1" flat="flat" @click="warningDialog = false">No</v-btn>
+
+            <v-btn color="green darken-1" flat="flat" @click="DeleteCustomerMaster()">Yes</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+      <!-- END: warning model dialog box -->
+      <!-- START: Code for snackBar -->
+      <v-snackbar v-model="snackbar" :color="snackbarColor">
+        {{ snackbarText }}
+        <v-btn dark flat @click="snackbar = false">Close</v-btn>
+      </v-snackbar>
+      <!-- END: Code for snackBar -->
     </v-app>
   </div>
 </template>
@@ -221,7 +246,16 @@ export default {
         fields: []
       },
       dynamicFieldModel: {},
-      dynamicFormOption: {}
+      dynamicFormOption: {},
+      deleteItem: {
+        customerID: null,
+        customerName: ''
+      },
+      warningDialog: false,
+      snackbar: false,
+      snackbarColor: '',
+      snackbarText: '',
+      customerGroupIdList: []
     }
   },
   beforeMount: function() {
@@ -250,13 +284,15 @@ export default {
         console.log('Response from server', result);
         const customerData = result.data.customerDetails[0];
         const customerDynamicFields = result.data.dynamiFields;
+        const customergroupDropDown = result.data.customerGroupMaster;
+        this.customerGroupIdList = customergroupDropDown;
         console.log('customerData', customerData);
         this.editedItem.customerMasterID = customerData.customerMasterID
         this.editedItem.customerMasterCode = customerData.customerMasterCode
         this.editedItem.customerMasterName = customerData.customerMasterName
         this.editedItem.tallyAlias = customerData.tallyAlias
         this.editedItem.inActive = customerData.inActive
-        this.editedItem.customerGroupID = customerData.customerGroupID
+        this.editedItem.customerGroupID = customergroupDropDown.find(value => value.customerGroupName == customerData.customerGroupID)
         this.editedItem.addressLine1 = customerData.addressLine1
         this.editedItem.addressLine2 = customerData.addressLine2
         this.editedItem.addressLine3 = customerData.addressLine3
@@ -266,7 +302,6 @@ export default {
         this.editedItem.country = customerData.country
         this.editedItem.pincode = customerData.pincode
         this.editedItem.Authorised = customerData.Authorised
-
         this.dynamicFieldModel = customerDynamicFields.modal[0];
         console.log('this.dynamicFieldModel', this.dynamicFieldModel);
         this.dynamicFieldSchema.fields = customerDynamicFields.fieldProperties;
@@ -281,7 +316,7 @@ export default {
       console.log('Static Field', this.editedItem);
       console.log('Dyanmic Field', this.dynamicFieldModel);
       const updateParam = {
-        dynamicFieldModel: this.dynamicFieldModel,
+        dynamicFieldModal: this.dynamicFieldModel,
         fixedFieldModal: this.editedItem
       }
       httpClient({
@@ -290,21 +325,38 @@ export default {
         data: updateParam
       }).then((result) => {
         console.log('Response of Update Customer data', result);
+        this.fetchCustomerMaster();
+        this.snackbarColor = 'green';
+        this.snackbarText = 'Customer updated successfully!';
+        this.snackbar = true;
       }).catch((err) => {
         console.error('Opps! Error Occured', err);
       });
     },
-    DeleteCustomerMaster: function(customerMasterData) {
-      console.log('Delete Request', customerMasterData);
-      console.log('customerMasterID', customerMasterData.customerMasterID);
-      const customerMasterID = customerMasterData.customerMasterID;
+    DeleteRequest: function(requestData) {
+      this.deleteItem.customerID = requestData.customerMasterID;
+      this.deleteItem.customerName = requestData.customerMasterName;
+      console.log('this.deleteItem.customerID', this.deleteItem.customerID);
+      this.warningDialog = true;
+    },
+    DeleteCustomerMaster: function() {
+      const customerMasterID = this.deleteItem.customerID;
       httpClient({
         method: 'DELETE',
         url: `${process.env.VUE_APP_API_BASE}CustomerMaster?customerMasterID=${customerMasterID}`,
       }).then((result) => {
         console.log('Response of Delete Customer Details', result);
+        this.fetchCustomerMaster();
+        this.warningDialog = false;
+        this.snackbarColor = 'green';
+        this.snackbarText = 'Customer Deleted Successfully!';
+        this.snackbar = true;
       }).catch((err) => {
         console.error('Opps! Error Occured', err);
+        this.warningDialog = false;
+        this.snackbarColor = 'red';
+        this.snackbarText = 'Opps! Error Occured, please try again';
+        this.snackbar = true;
       });
     }
   }

@@ -6,7 +6,7 @@
         <template slot="items" slot-scope="props">
           <td class="justify-center layout px-0">
             <v-icon small class="mr-2" @click="EditItemGroupMaster(props.item)">edit</v-icon>
-            <v-icon small @click="DeleteItemGroupMaster(props.item)">delete</v-icon>
+            <v-icon small @click="DeleteRequest(props.item)">delete</v-icon>
           </td>
           <td>{{ props.item.itemGroupID }}</td>
           <td>{{ props.item.itemGroupCode }}</td>
@@ -53,22 +53,22 @@
                         <v-layout wrap>
                           <v-flex xs12 sm6 md4>
                             <v-text-field
-                              v-model="editedItem.supplierGroupID"
-                              label="Supplier GroupID:"
+                              v-model="editedItem.itemGroupID"
+                              label="Item Group ID:"
                               required
                             ></v-text-field>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <v-text-field
-                              v-model="editedItem.supplierGroupCode"
-                              label="Supplier Group Code:"
+                              v-model="editedItem.itemGroupCode"
+                              label="Item Group Code:"
                               required
                             ></v-text-field>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <v-text-field
-                              v-model="editedItem.supplierGroupName"
-                              label="Supplier Group Name:"
+                              v-model="editedItem.itemGroupName"
+                              label="Item Group Name:"
                               required
                             ></v-text-field>
                           </v-flex>
@@ -119,6 +119,31 @@
         </v-card>
       </v-dialog>
       <!-- END: dialog box model code -->
+      <!-- START: Code for snackBar -->
+      <v-snackbar v-model="snackbar" :color="snackbarColor">
+        {{ snackbarText }}
+        <v-btn dark flat @click="snackbar = false">Close</v-btn>
+      </v-snackbar>
+      <!-- END: Code for snackBar -->
+      <!-- START: warning model dialog box -->
+      <v-dialog v-model="warningDialog" max-width="290" justify-center align-center>
+        <v-card>
+          <v-card-title class="headline">Delete Item Group Master ?</v-card-title>
+
+          <v-card-text>Are you sure? you wanna delete this Item Group Master. <br>
+          <b>Item Group Master:</b> <span style="color: red">{{ deleteItem.itemGroupName }}</span>
+          </v-card-text>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+
+            <v-btn color="green darken-1" flat="flat" @click="warningDialog = false">No</v-btn>
+
+            <v-btn color="green darken-1" flat="flat" @click="DeleteItemGroupMaster()">Yes</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+      <!-- END: warning model dialog box -->
     </v-app>
   </div>
 </template>
@@ -153,6 +178,14 @@ export default {
         changeOn: '',
         changedBy: '',
         Authorised: null
+      },
+      snackbar: false,
+      snackbarColor: '',
+      snackbarText: '',
+      warningDialog: false,
+      deleteItem: {
+        itemGroupId: null,
+        itemGroupName: ''
       }
     }
   },
@@ -173,10 +206,10 @@ export default {
     },
     EditItemGroupMaster: function(itemGroupMasterData) {
       console.log('Edit Requesting...', itemGroupMasterData);
-      const itemGroupID = itemGroupMasterData.itemGroupID;
+      const itemGroupid = itemGroupMasterData.itemGroupID;
       httpClient({
         method: 'GET',
-        url: `${process.env.VUE_APP_API_BASE}ItemGroupMaster?itemGroupID=${itemGroupID}`
+        url: `${process.env.VUE_APP_API_BASE}ItemGroupMaster?itemGroupID=${itemGroupid}`
       }).then((result) => {
         console.log('Response from server', result.data);
         const ItemGroupData = result.data;
@@ -194,8 +227,49 @@ export default {
         console.error('OOPS! Error occured', err);
       });
     },
-    DeleteItemGroupMaster: function(itemGroupMasterData) {
+    UpdateSupplierGroupMaster: function() {
+      const updateParam = this.editedItem;
+      console.log('Update Request', updateParam);
+      httpClient({
+        method: 'PUT',
+        url: `${process.env.VUE_APP_API_BASE}ItemGroupMaster`,
+        data: updateParam
+      }).then((result) => {
+        console.log('Update Response from server', result);
+        this.snackbarColor = 'green';
+        this.snackbarText = 'Item Group Master updated Successfully!';
+        this.snackbar = true;
+      }).catch((err) => {
+        console.error('Opps! Error Occured', err);
+        this.snackbarColor = 'red';
+        this.snackbarText = 'Opps! Error Occured, please try again after some time';
+        this.snackbar = true;
+      });
+    },
+    DeleteRequest: function(itemGroupMasterData) {
       console.log('Delete Requesting...', itemGroupMasterData);
+      this.deleteItem.itemGroupId = itemGroupMasterData.itemGroupID;
+      this.deleteItem.itemGroupName = itemGroupMasterData.itemGroupName;
+      this.warningDialog = true;
+    },
+    DeleteItemGroupMaster: function() {
+      const itemGroupID = this.deleteItem.itemGroupId;
+      httpClient({
+        method: 'DELETE',
+        url: `${process.env.VUE_APP_API_BASE}ItemGroupMaster?itemGroupID=${itemGroupID}`,
+      }).then((result) => {
+        console.log('Response of delete Item', result);
+        this.warningDialog = false;
+        this.snackbarColor = 'green';
+        this.snackbarText = 'Item Group Master deleted Successfully!';
+        this.snackbar = true;
+      }).catch((err) => {
+        console.error('Opps! Error Occured', err);
+        this.warningDialog = false;
+        this.snackbarColor = 'red';
+        this.snackbarText = 'Opps! Error Occured, please try again after some time';
+        this.snackbar = true;
+      });
     }
   }
 }

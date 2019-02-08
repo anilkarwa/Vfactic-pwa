@@ -29,7 +29,7 @@
             <v-btn icon dark @click="compantMasterDialog = false">
               <v-icon>close</v-icon>
             </v-btn>
-            <v-toolbar-title>Settings</v-toolbar-title>
+            <v-toolbar-title>Edit Supplier Master</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-toolbar-items>
               <v-btn dark flat @click="UpdateSupplierRequest()">Save</v-btn>
@@ -39,7 +39,7 @@
             <v-flex xs12>
               <v-expansion-panel popout>
                 <v-expansion-panel-content>
-                  <div slot="header">Supplier Details</div>
+                  <div slot="header">Supplier Master Details</div>
                   <v-card>
                     <v-card-text>
                       <!-- START: Supplier detail form code -->
@@ -182,7 +182,9 @@
         <v-card>
           <v-card-title class="headline">Delete Supplier ?</v-card-title>
 
-          <v-card-text>Are you sure? you wanna delete this supplier.</v-card-text>
+          <v-card-text>Are you sure? you wanna delete this supplier. <br>
+          <b>Supplier Master Name: </b><span style="color: red">{{ deleteItem.supplierName }}</span>
+          </v-card-text>
 
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -194,7 +196,7 @@
         </v-card>
       </v-dialog>
       <!-- END: warning model dialog box -->
-            <!-- START: Code for snackBar -->
+      <!-- START: Code for snackBar -->
       <v-snackbar v-model="snackbar" :color="snackbarColor">
         {{ snackbarText }}
         <v-btn dark flat @click="snackbar = false">Close</v-btn>
@@ -219,7 +221,8 @@ export default {
       ],
       comapyMasterList: [],
       deleteItem: {
-        supplierID: 0
+        supplierID: 0,
+        supplierName: ''
       },
       compantMasterDialog: false,
       editedItem: {
@@ -330,6 +333,7 @@ export default {
     DeleteSupplierRequest(item) {
       // console.log(item);
       this.deleteItem.supplierID = item.supplierID;
+      this.deleteItem.supplierName = item.supplierName;
       // console.log("Supplier Id", this.deleteItem.supplierID);
       this.warningDialog = true;
     },
@@ -373,11 +377,7 @@ export default {
       });
     },
     UpdateSupplierRequest() {
-      // console.log(
-      //   "this.editedItem.supplierGroupID",
-      //   this.editedItem.supplierGroupID
-      // );
-      const updateParam = {
+      const StaticParam = {
         supplierID: this.editedItem.supplierID,
         supplierCode: this.editedItem.supplierCode,
         supplierName: this.editedItem.supplierName,
@@ -393,19 +393,30 @@ export default {
         supplierPincode: this.editedItem.Address.pinCode,
         inActive: this.editedItem.inActive
       };
+      const updateParam = {
+        fixedFieldModal: StaticParam,
+        dynamicFieldModal: this.dynamicFieldModel
+      }
+      console.log('Update Param', updateParam);
       httpClient({
         method: "PUT",
         url: `${process.env.VUE_APP_API_BASE}supplyMaster`,
         data: updateParam
-      }).then(res => {
-        // console.log("res", res);
-        if (res.status == 200) {
+      }).then((result) => {
+        console.log("update response res", result);
+        if (result.status == 200) {
           this.snackbarColor = "green";
           this.snackbarText = "Updated Successfully";
           this.snackbar = true;
           this.compantMasterDialog = false;
           this.fetchCompanyMaster();
         }
+      }).catch((err) => {
+        console.error("Opps! Error occured", err);
+        this.snackbarColor = "red";
+        this.snackbarText = "Opps! Error occured, please try again after some time.";
+        this.snackbar = true;
+        this.compantMasterDialog = false;
       });
     },
   }

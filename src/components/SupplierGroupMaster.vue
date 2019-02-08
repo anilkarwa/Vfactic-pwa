@@ -6,7 +6,7 @@
         <template slot="items" slot-scope="props">
           <td class="justify-center layout px-0">
             <v-icon small class="mr-2" @click="EditSupplierGroupMaster(props.item)">edit</v-icon>
-            <v-icon small @click="DeleteSupplierGroupMaster(props.item)">delete</v-icon>
+            <v-icon small @click="DeleteRequest(props.item)">delete</v-icon>
           </td>
           <td>{{ props.item.supplierGroupID }}</td>
           <td>{{ props.item.supplierGroupCode }}</td>
@@ -119,6 +119,32 @@
         </v-card>
       </v-dialog>
       <!-- END: dialog box model code -->
+      <!-- START: Code for snackBar -->
+      <v-snackbar v-model="snackbar" :color="snackbarColor">
+        {{ snackbarText }}
+        <v-btn dark flat @click="snackbar = false">Close</v-btn>
+      </v-snackbar>
+      <!-- END: Code for snackBar -->
+
+      <!-- START: warning model dialog box -->
+      <v-dialog v-model="warningDialog" max-width="290" justify-center align-center>
+        <v-card>
+          <v-card-title class="headline">Delete Supplier Group Master ?</v-card-title>
+
+          <v-card-text>Are you sure? you wanna delete this supplier group master. <br>
+          Supplier Group Master Name: <span style="color: red">{{ deleteItem.SupplierGroupMasterName }}</span>
+          </v-card-text>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+
+            <v-btn color="green darken-1" flat="flat" @click="warningDialog = false">No</v-btn>
+
+            <v-btn color="green darken-1" flat="flat" @click="DeleteSupplierGroupMaster()">Yes</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+      <!-- END: warning model dialog box -->
     </v-app>
   </div>
 </template>
@@ -153,7 +179,15 @@ export default {
         changeOn: '',
         changedBy: '',
         Authorised: null
-      }
+      },
+      snackbar: false,
+      snackbarColor: '',
+      snackbarText: '',
+      deleteItem: {
+        SupplierGroupMasterId: null,
+        SupplierGroupMasterName: ''
+      },
+      warningDialog: false
     }
   },
   beforeMount: function() {
@@ -196,9 +230,45 @@ export default {
       this.supplierGroupMasterDialog = true;
     },
     UpdateSupplierGroupMaster: function() {
+      console.log('Update Request', this.editedItem);
+      const updateParam = this.editedItem;
+      httpClient({
+        method: 'PUT',
+        url: `${process.env.VUE_APP_API_BASE}SupplierGroupMaster`,
+        data: updateParam
+      }).then((result) => {
+        console.log('update Request response', result);
+        this.snackbarColor = 'green',
+        this.snackbarText = 'Supplier Group Master updated Successfully!'
+        this.snackbar = true;
+      }).catch((err) => {
+        this.snackbarColor = 'red',
+        this.snackbarText = 'Opps! Error occured, please try again after sometime.'
+        this.snackbar = true;
+      });
     },
-    DeleteSupplierGroupMaster: function(SupplierGroupMasterData) {
-      console.log('Delete Request', SupplierGroupMasterData);
+    DeleteRequest: function(SupplierGroupMasterData) {
+      this.deleteItem.SupplierGroupMasterId = SupplierGroupMasterData.supplierGroupID;
+      this.deleteItem.SupplierGroupMasterName = SupplierGroupMasterData.supplierGroupName;
+      this.warningDialog = true;
+    },
+    DeleteSupplierGroupMaster: function() {
+      const supplierGroupID = this.deleteItem.SupplierGroupMasterId;
+      httpClient({
+        method: 'DELETE',
+        url: `${process.env.VUE_APP_API_BASE}SupplierGroupMaster?supplierGroupID=${supplierGroupID}`,
+      }).then((result) => {
+        console.log('Response of delete Request', result);
+        this.warningDialog = true;
+        this.snackbarColor = 'green',
+        this.snackbarText = 'Supplier Group Master Deleted Successfully!'
+        this.snackbar = true;
+      }).catch((err) => {
+        this.warningDialog = true;
+        this.snackbarColor = 'red',
+        this.snackbarText = 'Opps! Error occured, please try again after sometime.'
+        this.snackbar = true;
+      });
     }
   }
 }
