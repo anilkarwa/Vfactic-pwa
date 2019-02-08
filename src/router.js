@@ -22,8 +22,8 @@ export default new Router({
     },
     {
       path: '/home',
-      name: 'newHome',
-      component: newHome
+      name: 'Home',
+      component: Home
     }
   ]
 })
