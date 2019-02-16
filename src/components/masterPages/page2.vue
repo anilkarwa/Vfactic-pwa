@@ -7,11 +7,9 @@
             <v-icon small class="mr-2" @click="EditSupplierRequest(props.item)">edit</v-icon>
             <v-icon small @click="DeleteSupplierRequest(props.item)">delete</v-icon>
           </td>
-          <td>{{ props.item.supplierName }}</td>
-          <td>{{ props.item.supplierCode }}</td>
-          <td>{{ props.item.supplierGroupID }}</td>
-          <td>{{ props.item.supplierAddrLine1 }}{{props.item.supplierAddrLine2}}{{props.item.supplierAddrLine3}}{{props.item.supplierAddrLine4}}{{props.item.supplierCity}}{{props.item.supplierState}}{{props.item.supplierCountry}}{{props.item.supplierPincode}}</td>
-          <!-- <td class="text-xs-right">{{ props.item.protein }}</td> -->
+          <td v-for="value in props.item" :key="value.id">
+            {{ value }}
+          </td>
         </template>
         <template slot="no-data">
           <v-btn color="primary">Reset</v-btn>
@@ -19,14 +17,14 @@
       </v-data-table>
       <!-- START: dialog box model code -->
       <v-dialog
-        v-model="compantMasterDialog"
+        v-model="page1MasterPage"
         fullscreen
         hide-overlay
         transition="dialog-bottom-transition"
       >
         <v-card>
           <v-toolbar dark color="primary">
-            <v-btn icon dark @click="compantMasterDialog = false">
+            <v-btn icon dark @click="page1MasterPage = false">
               <v-icon>close</v-icon>
             </v-btn>
             <v-toolbar-title>Edit Supplier Master</v-toolbar-title>
@@ -48,14 +46,14 @@
                           <v-flex xs12 sm6 md4>
                             <v-text-field
                               v-model="editedItem.supplierName"
-                              label="Supplier Name"
+                              label="PreFix Name"
                               required
                             ></v-text-field>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <v-text-field
                               v-model="editedItem.supplierCode"
-                              label="Supplier Code"
+                              label="PreFix Code"
                               required
                             ></v-text-field>
                           </v-flex>
@@ -188,6 +186,7 @@
 
           <v-card-actions>
             <v-spacer></v-spacer>
+
             <v-btn color="green darken-1" flat="flat" @click="warningDialog = false">No</v-btn>
 
             <v-btn color="green darken-1" flat="flat" @click="DeleteSupplier()">Yes</v-btn>
@@ -212,18 +211,18 @@ export default {
   data: function() {
     return {
       headers: [
-        { text: "Edit", align: "center" },
-        { text: "supplierName", align: "center", value: "supplierName" },
-        { text: "supplierCode", align: "center", value: "supplierCode" },
-        { text: "supplierGroupID", align: "center", value: "supplierGroupID" },
-        { text: "Address", align: "center", value: "Address" }
+        // { text: "Edit", align: "center" },
+        // { text: "supplierName", align: "center", value: "supplierName" },
+        // { text: "supplierCode", align: "center", value: "supplierCode" },
+        // { text: "supplierGroupID", align: "center", value: "supplierGroupID" },
+        // { text: "Address", align: "center", value: "Address" }
       ],
       comapyMasterList: [],
       deleteItem: {
         supplierID: 0,
         supplierName: ''
       },
-      compantMasterDialog: false,
+      page1MasterPage: false,
       editedItem: {
         supplierID: "",
         supplierName: "",
@@ -327,7 +326,7 @@ export default {
       });
       console.log('DynamicField Model', this.dynamicFieldModel);
       console.log('DynamicField Schema', this.dynamicFieldSchema);
-      this.compantMasterDialog = true;
+      this.page1MasterPage = true;
     },
     DeleteSupplierRequest(item) {
       // console.log(item);
@@ -407,7 +406,7 @@ export default {
           this.snackbarColor = "green";
           this.snackbarText = "Updated Successfully";
           this.snackbar = true;
-          this.compantMasterDialog = false;
+          this.page1MasterPage = false;
           this.fetchCompanyMaster();
         }
       }).catch((err) => {
@@ -415,7 +414,7 @@ export default {
         this.snackbarColor = "red";
         this.snackbarText = "Opps! Error occured, please try again after some time.";
         this.snackbar = true;
-        this.compantMasterDialog = false;
+        this.page1MasterPage = false;
       });
     },
   }

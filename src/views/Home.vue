@@ -21,11 +21,13 @@
             <v-flex shrink>
               <div v-if="selected">
                 <h1>{{ selected.name }} </h1>
-                <component v-bind:is="currentView"></component>
+                <!-- <component v-bind:is="currentView"></component> -->
+                <!-- <TestView></TestView> -->
               </div>
               <div v-else>
                 <h1>Welcome, VfactIC</h1>
                 <h2>Date: {{ new Date() }}</h2>
+                <TestView></TestView>
               </div>
             </v-flex>
           </v-layout>
@@ -47,6 +49,8 @@ import CustomerMaster from "@/components/CustomerMaster.vue"
 import ItemMaster from "@/components/ItemMaster.vue"
 import ItemGroupMaster from "@/components/ItemGroupMaster.vue"
 import UOMMaster from "@/components/UOMMaster.vue"
+// import TestView from "@/components/masterPages/PartyMaster.vue"
+import TestView from "@/components/masterPages/GeneralMaster.vue"
 
 export default {
   name: "home",
@@ -56,7 +60,8 @@ export default {
     CustomerMaster,
     ItemMaster,
     ItemGroupMaster,
-    UOMMaster
+    UOMMaster,
+    TestView
   },
   data: function() {
     return {
