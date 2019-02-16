@@ -8,7 +8,6 @@
             <v-icon small class="mr-2" @click="EditSupplierGroupMaster(props.item)">edit</v-icon>
             <v-icon small @click="DeleteRequest(props.item)">delete</v-icon>
           </td>
-          <td>{{ props.item.supplierGroupID }}</td>
           <td>{{ props.item.supplierGroupCode }}</td>
           <td>{{ props.item.supplierGroupName }}</td>
           <td>{{ props.item.inActive }}</td>
@@ -51,13 +50,6 @@
                       <!-- START: UOM master detail -->
                       <v-container grid-list-md>
                         <v-layout wrap>
-                          <v-flex xs12 sm6 md4>
-                            <v-text-field
-                              v-model="editedItem.supplierGroupID"
-                              label="Supplier GroupID:"
-                              required
-                            ></v-text-field>
-                          </v-flex>
                           <v-flex xs12 sm6 md4>
                             <v-text-field
                               v-model="editedItem.supplierGroupCode"

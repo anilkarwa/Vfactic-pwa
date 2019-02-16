@@ -8,7 +8,6 @@
             <v-icon small class="mr-2" @click="EditUOMMaster(props.item)">edit</v-icon>
             <v-icon small @click="DeleteRequest(props.item)">delete</v-icon>
           </td>
-          <td>{{ props.item.UOMID }}</td>
           <td>{{ props.item.UOMCode }}</td>
           <td>{{ props.item.UOMName }}</td>
           <td>{{ props.item.inActive }}</td>
