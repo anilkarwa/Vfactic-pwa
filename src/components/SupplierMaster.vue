@@ -188,7 +188,6 @@
 
           <v-card-actions>
             <v-spacer></v-spacer>
-
             <v-btn color="green darken-1" flat="flat" @click="warningDialog = false">No</v-btn>
 
             <v-btn color="green darken-1" flat="flat" @click="DeleteSupplier()">Yes</v-btn>
