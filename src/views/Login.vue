@@ -81,6 +81,7 @@ export default {
         }).then((result) => {
           console.log('Result', result.data);
           if(result.data.userId !== 0) {
+            localStorage.setItem('userId', result.data.userId);
             this.$router.push({ path: 'home' })
           } else {
             this.snackbarColor = 'red',

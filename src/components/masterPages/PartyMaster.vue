@@ -46,28 +46,28 @@
                         <v-layout wrap>
                           <v-flex xs12 sm6 md4>
                             <v-text-field
-                              v-model="this.editItems.SUPPCode"
+                              v-model="editItems[staticFields[1]]"
                               :label="`${preFix} Code *`"
                               required
                             ></v-text-field>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <v-text-field
-                              v-model="this.editItems.SUPPName"
+                              v-model="editItems[staticFields[2]]"
                               :label="`${preFix} Name *`"
                               required
                             ></v-text-field>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <v-text-field
-                              v-model="this.editItems.SUPPAliasName"
+                              v-model="editItems[staticFields[3]]"
                               :label="`${preFix} Alias Name`"
                               required
                             ></v-text-field>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <v-select
-                              v-model="editItems.supplierGroupID"
+                              v-model="editItems[staticFields[4]]"
                               menu-props="auto"
                               :items="partyMasterGroupList"
                               item-text="groupName"
@@ -77,7 +77,7 @@
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <v-select
-                              v-model="editItems.LedGroupID"
+                              v-model="editItems[staticFields[5]]"
                               menu-props="auto"
                               :items="partyMasterLedGroupID"
                               item-text="ledgerGroupName"
@@ -87,65 +87,65 @@
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <v-text-field
-                              v-model="this.editItems.BAdd1"
+                              v-model="editItems[staticFields[6]]"
                               :label="`Address line 1: *`"
                               required
                             ></v-text-field>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <v-text-field
-                              v-model="this.editItems.BAdd2"
+                              v-model="editItems[staticFields[7]]"
                               :label="`Address line 2: *`"
                               required
                             ></v-text-field>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <v-text-field
-                              v-model="this.editItems.BAdd3"
+                              v-model="editItems[staticFields[8]]"
                               :label="`Address line 3: *`"
                               required
                             ></v-text-field>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <v-text-field
-                              v-model="this.editItems.BAdd4"
+                              v-model="editItems[staticFields[9]]"
                               :label="`Address line 4: *`"
                               required
                             ></v-text-field>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <v-text-field
-                              v-model="this.editItems.City"
+                              v-model="editItems[staticFields[10]]"
                               :label="`City: *`"
                               required
                             ></v-text-field>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <v-text-field
-                              v-model="this.editItems.State"
+                              v-model="editItems[staticFields[12]]"
                               :label="`State: *`"
                               required
                             ></v-text-field>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <v-text-field
-                              v-model="this.editItems.Country"
+                              v-model="editItems[staticFields[13]]"
                               :label="`Country: *`"
                               required
                             ></v-text-field>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <v-text-field
-                              v-model="this.editItems.PinCode"
+                              v-model="editItems[staticFields[11]]"
                               :label="`Pin Code:`"
                               required
                             ></v-text-field>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <v-checkbox v-model="this.editItems.InActive" label="in Active ?"></v-checkbox>
+                            <v-checkbox v-model="editItems[staticFields[14]]" label="in Active ?"></v-checkbox>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <v-checkbox v-model="this.editItems.Authorised" label="is Authorised ?"></v-checkbox>
+                            <v-checkbox v-model="editItems[staticFields[15]]" label="is Authorised ?"></v-checkbox>
                           </v-flex>
                         </v-layout>
                       </v-container>
@@ -173,6 +173,7 @@
 </template>
 <script>
 import httpClient from "@/services/httpClient.js"
+import DynamicFieldSchema from '@/DynamicProperty/generateScheme.js'
 
 export default {
   data: function() {
@@ -183,13 +184,15 @@ export default {
       preFix: null,
       partyMasterModel: false,
       editItems: {},
+      staticFields: [],
       partyMasterGroupList: [],
       partyMasterLedGroupID: [],
       dynamicFieldSchema: {
         fields: []
       },
       dynamicFieldModel: {},
-      dynamicFieldOptions: {}
+      dynamicFieldOptions: {},
+      selectedID: null
     }
   },
   beforeMount: function() {
@@ -226,7 +229,8 @@ export default {
     },
     editPartyMasterData: function(params) {
       console.log('EDit Party Master with Item Data', params.SUPPID);
-      const selectedID = params.SUPPID || 0;
+      this.selectedID = params.SUPPID || 0;
+      console.log('Selected ID', this.selectedID);
       /**
        * Reading MenuDocID from localstorage:: saved in home view while selecting the menu
        */
@@ -235,79 +239,25 @@ export default {
       this.partyMasterModel = true;
       httpClient({
         method: 'GET',
-        url: `${process.env.VUE_APP_API_BASE}PartyMaster?selectedID=${selectedID}&docID=${docID}`
+        url: `${process.env.VUE_APP_API_BASE}PartyMaster?selectedID=${this.selectedID}&docID=${docID}`
       })
         .then((result) => {
-          console.log('Party Master: edit Model:: server response', result);
+          console.log('Party Master: edit Model:: server response', result.data);
+          // console.log('Party Master: edit Model:: server response', JSON.stringify(result.data.staticFieldData[0]));
           const partyMasterFields = result.data;
           this.preFix = partyMasterFields.prefix;
+          console.log('Static Fields', JSON.stringify(partyMasterFields.staticFieldData[0]));
           this.editItems = partyMasterFields.staticFieldData[0];
-
+          this.staticFields = Object.keys(this.editItems);
           this.partyMasterGroupList = partyMasterFields.groupList;
-          this.editItems.supplierGroupID = this.partyMasterGroupList.find(value => value.groupID === partyMasterFields.staticFieldData[0].SUPPGROUPID);
+          // this.editItems.supplierGroupID = this.partyMasterGroupList.find(value => value.groupID === partyMasterFields.staticFieldData[0].SUPPGROUPID);
+          this.editItems[this.staticFields[4]] = this.partyMasterGroupList.find(value => value.groupID === partyMasterFields.staticFieldData[0].SUPPGROUPID);
 
           this.partyMasterLedGroupID = partyMasterFields.ledgerGroupList;
-          this.editItems.LedGroupID = this.partyMasterLedGroupID.find(value => value.ledgerGroupID === partyMasterFields.staticFieldData[0].LedGroupID);
-          // this.dynamicFieldModel = partyMasterFields.dynamicFieldModal.modal[0];
-          this.dynamicFieldModel = {
-        id: 1,
-        name: 'John Doe',
-        password: 'J0hnD03!x4',
-        skills: ['Javascript', 'VueJS'],
-        email: 'john.doe@gmail.com',
-        status: true
-      }
-          // this.dynamicFieldSchema.fields = partyMasterFields.dynamicFieldModal.fieldProperties;
-          this.dynamicFieldSchema.fields = [
-            {
-            type: 'input',
-            inputType: 'text',
-            label: 'ID (disabled text field)',
-            model: 'id',
-            readonly: true,
-            disabled: true
-          },
-          {
-            type: 'input',
-            inputType: 'text',
-            label: 'Name',
-            model: 'name',
-            placeholder: 'Your name',
-            featured: true,
-            required: true
-          },
-          {
-            type: 'input',
-            inputType: 'password',
-            label: 'Password',
-            model: 'password',
-            min: 6,
-            required: true,
-            hint: 'Minimum 6 characters',
-            validator: VueFormGenerator.validators.string
-          },
-          {
-            type: 'select',
-            label: 'Skills',
-            model: 'skills',
-            values: ['Javascript', 'VueJS', 'CSS3', 'HTML5']
-          },
-          {
-            type: 'input',
-            inputType: 'email',
-            label: 'E-mail',
-            model: 'email',
-            placeholder: 'User\'s e-mail address'
-          },
-          {
-            type: 'checkbox',
-            label: 'Status',
-            model: 'status',
-            default: true
-          }
-          ]
-          console.log('Model', this.dynamicFieldModel);
-          console.log('Schema', this.dynamicFieldSchema.fields);
+          this.editItems[this.staticFields[5]] = this.partyMasterLedGroupID.find(value => value.ledgerGroupID === partyMasterFields.staticFieldData[0].LedGroupID);
+
+          this.dynamicFieldModel = partyMasterFields.dynamicFieldModal.modal[0];
+          this.dynamicFieldSchema.fields = DynamicFieldSchema(partyMasterFields.dynamicFieldModal.fieldProperties, partyMasterFields.dynamicFieldModal.modal[0]);
         }).catch((err) => {
           /**
            * When API call failed: check error in browser console::
@@ -316,10 +266,45 @@ export default {
         });
     },
     deletePartyMasterData: function(params) {
-
+      const selectedID = this.selectedID;
+      const docID = localStorage.getItem('menuDocId') || 1121; // Need to remove 1121 value and put 0 apart of this;
+      const userID = localStorage.getItem('userId') || 0;
+      /**
+       * Delete Item in party Master
+       */
+      httpClient({
+        method: 'DELETE',
+        url: `${process.env.VUE_APP_API_BASE}PartyMaster?selectedID=${selectedID}&docID=${docID}&userID=${userID}`
+      })
+        .then((result) => {
+          console.log('Delete Request Response', result);
+        }).catch((err) => {
+          console.error('Error occured: while Delete request', err);
+        });
     },
     updatePartyMasterData: function() {
-
+      this.editItems[this.staticFields[4]] = typeof(this.editItems[this.staticFields[4]]) === 'object' ? this.editItems[this.staticFields[4]].groupID : this.editItems[this.staticFields[4]];
+      this.editItems[this.staticFields[5]] = typeof(this.editItems[this.staticFields[5]]) === 'object' ? this.editItems[this.staticFields[5]].ledgerGroupID : this.editItems[this.staticFields[5]];
+      const updateParams = {
+        docID: localStorage.getItem('menuDocId') || 1121, // Need to remove 1121 value and put 0 apart of this
+        userId: localStorage.getItem('userId') || 0,
+        staticFields: this.editItems,
+        dynamicFields: this.dynamicFieldModel
+      }
+      console.log('Update Params', updateParams);
+      /**
+       * API call for updating the PartyMaster
+       */
+      httpClient({
+        method: 'PUT',
+        url: `${process.env.VUE_APP_API_BASE}PartyMaster`,
+        data: updateParams
+      })
+        .then((result) => {
+          console.log('Update Response from server', result);
+        }).catch((err) => {
+          console.error('OOps! Error occured while updating the request', err);
+        });
     }
   }
 }
