@@ -9,6 +9,8 @@
 </template>
 <script>
 import 'vuetify/dist/vuetify.min.css'
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
 export default {
   
 }
