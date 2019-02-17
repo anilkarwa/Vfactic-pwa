@@ -44,7 +44,54 @@
                     <v-card-text>
                       <v-container grid-list-md>
                         <v-layout wrap>
-
+                          <v-flex xs12 sm6 md4>
+                            <v-text-field
+                              v-model="editItems[staticFields[1]]"
+                              :label="`${preFix} Code: *`"
+                              required
+                            ></v-text-field>
+                          </v-flex>
+                          <v-flex xs12 sm6 md4>
+                            <v-text-field
+                              v-model="editItems[staticFields[2]]"
+                              :label="`${preFix} Name: *`"
+                              required
+                            ></v-text-field>
+                          </v-flex>
+                          <v-flex xs12 sm6 md4>
+                            <v-text-field
+                              v-model="editItems[staticFields[3]]"
+                              :label="`Added On: *`"
+                              required
+                            ></v-text-field>
+                          </v-flex>
+                          <v-flex xs12 sm6 md4>
+                            <v-text-field
+                              v-model="editItems[staticFields[4]]"
+                              :label="`Added By: *`"
+                              required
+                            ></v-text-field>
+                          </v-flex>
+                          <v-flex xs12 sm6 md4>
+                            <v-text-field
+                              v-model="editItems[staticFields[5]]"
+                              :label="`Changed On: *`"
+                              required
+                            ></v-text-field>
+                          </v-flex>
+                          <v-flex xs12 sm6 md4>
+                            <v-text-field
+                              v-model="editItems[staticFields[6]]"
+                              :label="`Changed By: *`"
+                              required
+                            ></v-text-field>
+                          </v-flex>
+                          <v-flex xs12 sm6 md4>
+                            <v-checkbox v-model="editItems[staticFields[7]]" label="in Active ?"></v-checkbox>
+                          </v-flex>
+                          <v-flex xs12 sm6 md4>
+                            <v-checkbox v-model="editItems[staticFields[8]]" label="is Authorised ?"></v-checkbox>
+                          </v-flex>
                         </v-layout>
                       </v-container>
                       <!-- END: UOM master detail -->
@@ -71,7 +118,8 @@ export default {
       generalMasterTableData: [],
       preFix: null,
       generalMasterModel: false,
-      editItems: {}
+      editItems: {},
+      staticFields: []
     }
   },
   beforeMount: function() {
@@ -118,12 +166,32 @@ export default {
           this.preFix = generalMasterEditFields.prefix;
 
           this.editItems = generalMasterEditFields.staticFieldData[0]
-          console.log('EDit Item Master', this.editItems);
+          console.log('EDit Item Master', JSON.stringify(this.editItems));
+          this.staticFields = Object.keys(this.editItems);
         }).catch((err) => {
           /**
            * When API call failed: check error in browser console::
            */
           console.error('Error Occured while fetcing the party master Data', err);
+        });
+    },
+    UpdateGeneralMasterData: function() {
+      console.log('Update params', this.editItems);
+      const updateParam = {
+        docID: localStorage.getItem('menuDocId') || 1121, // Need to remove 1121 value and put 0 apart of this;
+        userID: localStorage.getItem('userId') || 0,
+        staticFields: this.editItems,
+        dynamicFields: ''
+      }
+      httpClient({
+        method: 'PUT',
+        url: `${process.env.VUE_APP_API_BASE}GeneralMaster`,
+        data: this.editItems
+      })
+        .then((result) => {
+          console.log('Result', result);
+        }).catch((err) => {
+          console.error('ERROR OCCURED!', err);
         });
     }
   }

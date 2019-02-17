@@ -50,7 +50,9 @@ import ItemMaster from "@/components/ItemMaster.vue"
 import ItemGroupMaster from "@/components/ItemGroupMaster.vue"
 import UOMMaster from "@/components/UOMMaster.vue"
 
-import TestView from "@/components/masterPages/PartyMaster.vue"
+// import TestView from "@/components/masterPages/PartyMaster.vue"
+// import TestView from "@/components/masterPages/GeneralMaster.vue"
+import TestView from "@/components/masterPages/ItemMaster.vue"
 
 export default {
   name: "home",

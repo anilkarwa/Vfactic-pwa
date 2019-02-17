@@ -250,12 +250,12 @@ export default {
           this.editItems = partyMasterFields.staticFieldData[0];
           this.staticFields = Object.keys(this.editItems);
           this.partyMasterGroupList = partyMasterFields.groupList;
-          // this.editItems.supplierGroupID = this.partyMasterGroupList.find(value => value.groupID === partyMasterFields.staticFieldData[0].SUPPGROUPID);
-          this.editItems[this.staticFields[4]] = this.partyMasterGroupList.find(value => value.groupID === partyMasterFields.staticFieldData[0].SUPPGROUPID);
 
+          // this.editItems[this.staticFields[4]] = this.partyMasterGroupList.find(value => value.groupID === partyMasterFields.staticFieldData[0].SUPPGROUPID);
+          this.editItems[this.staticFields[4]] = partyMasterFields.staticFieldData[0].SUPPGROUPID;
           this.partyMasterLedGroupID = partyMasterFields.ledgerGroupList;
-          this.editItems[this.staticFields[5]] = this.partyMasterLedGroupID.find(value => value.ledgerGroupID === partyMasterFields.staticFieldData[0].LedGroupID);
-
+          // this.editItems[this.staticFields[5]] = this.partyMasterLedGroupID.find(value => value.ledgerGroupID === partyMasterFields.staticFieldData[0].LedGroupID);
+          this.editItems[this.staticFields[5]] = partyMasterFields.staticFieldData[0].LedGroupID;
           this.dynamicFieldModel = partyMasterFields.dynamicFieldModal.modal[0];
           this.dynamicFieldSchema.fields = DynamicFieldSchema(partyMasterFields.dynamicFieldModal.fieldProperties, partyMasterFields.dynamicFieldModal.modal[0]);
         }).catch((err) => {
@@ -287,7 +287,7 @@ export default {
       this.editItems[this.staticFields[5]] = typeof(this.editItems[this.staticFields[5]]) === 'object' ? this.editItems[this.staticFields[5]].ledgerGroupID : this.editItems[this.staticFields[5]];
       const updateParams = {
         docID: localStorage.getItem('menuDocId') || 1121, // Need to remove 1121 value and put 0 apart of this
-        userId: localStorage.getItem('userId') || 0,
+        userID: localStorage.getItem('userId') || 0,
         staticFields: this.editItems,
         dynamicFields: this.dynamicFieldModel
       }
