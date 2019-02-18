@@ -29,7 +29,7 @@
             <v-btn icon dark @click="partyMasterModel = false">
               <v-icon>close</v-icon>
             </v-btn>
-            <v-toolbar-title>Edit Static and Dynamic Field here!</v-toolbar-title>
+            <v-toolbar-title>Edit Information</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-toolbar-items>
               <v-btn dark flat @click="updatePartyMasterData()">Save</v-btn>
@@ -42,8 +42,8 @@
                   <div slot="header">Details</div>
                   <v-card>
                     <v-card-text>
-                      <v-container grid-list-md>
-                        <v-layout wrap>
+                      <v-container fluid grid-list-xl>
+                        <v-layout row justify-space-between>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-text-field
                               v-model="editItems[staticFields[1]]"
@@ -51,7 +51,7 @@
                               required
                             ></v-text-field> -->
                             <label for="code">{{`${preFix} Code *`}}</label>
-                            <b-form-input id="code" v-model="editItems[staticFields[1]]" type="text" :placeholder="`${preFix} Code *`" />
+                            <b-form-input id="code" v-model="editItems[staticFields[1]]" type="text" :placeholder="`${preFix} Code`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-text-field
@@ -60,7 +60,7 @@
                               required
                             ></v-text-field> -->
                             <label for="code">{{`${preFix} Name *`}}</label>
-                            <b-form-input id="code" v-model="editItems[staticFields[2]]" type="text" :placeholder="`${preFix} Name *`" />
+                            <b-form-input id="code" v-model="editItems[staticFields[2]]" type="text" :placeholder="`${preFix} Name`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-text-field
@@ -69,7 +69,7 @@
                               required
                             ></v-text-field> -->
                             <label for="code">{{`${preFix} Alias Name *`}}</label>
-                            <b-form-input id="code" v-model="editItems[staticFields[3]]" type="text" :placeholder="`${preFix} Alias Name *`" />
+                            <b-form-input id="code" v-model="editItems[staticFields[3]]" type="text" :placeholder="`${preFix} Alias Name `" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-select
@@ -81,7 +81,7 @@
                               :label="`${preFix} Group *`"
                             ></v-select> -->
                             <label for="">{{`${preFix} Group *`}}</label>
-                            <b-form-select v-model="editItems[staticFields[4]]" :options="partyMasterGroupList" :placeholder="`${preFix} Group *`" />
+                            <b-form-select v-model="editItems[staticFields[4]]" :options="partyMasterGroupList" :placeholder="`${preFix} Group`" value-field="groupID"  text-field="groupName" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-select
@@ -93,7 +93,7 @@
                               :label="`${preFix} Ledger Group *`"
                             ></v-select> -->
                             <label for="">{{`${preFix} Ledger Group *`}}</label>
-                            <b-form-select v-model="editItems[staticFields[5]]" :options="partyMasterGroupList" :placeholder="`${preFix} Ledger Group *`" />
+                            <b-form-select v-model="editItems[staticFields[5]]" :options="partyMasterLedGroupID" :placeholder="`${preFix} Ledger Group`" value-field="ledgerGroupID" text-field="ledgerGroupName" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-text-field
@@ -102,7 +102,7 @@
                               required
                             ></v-text-field> -->
                             <label for="code">{{`Address line 1: *`}}</label>
-                            <b-form-input id="code" v-model="editItems[staticFields[6]]" type="text" :placeholder="`Address line 1: *`" />
+                            <b-form-input id="code" v-model="editItems[staticFields[6]]" type="text" :placeholder="`Address line 1`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-text-field
@@ -111,7 +111,7 @@
                               required
                             ></v-text-field> -->
                             <label for="code">{{`Address line 2: *`}}</label>
-                            <b-form-input id="code" v-model="editItems[staticFields[7]]" type="text" :placeholder="`Address line 2: *`" />
+                            <b-form-input id="code" v-model="editItems[staticFields[7]]" type="text" :placeholder="`Address line 2`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-text-field
@@ -120,7 +120,7 @@
                               required
                             ></v-text-field> -->
                             <label for="code">{{`Address line 3: *`}}</label>
-                            <b-form-input id="code" v-model="editItems[staticFields[8]]" type="text" :placeholder="`Address line 3: *`" />
+                            <b-form-input id="code" v-model="editItems[staticFields[8]]" type="text" :placeholder="`Address line 3`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-text-field
@@ -129,7 +129,7 @@
                               required
                             ></v-text-field> -->
                             <label for="code">{{`Address line 4: *`}}</label>
-                            <b-form-input id="code" v-model="editItems[staticFields[9]]" type="text" :placeholder="`Address line 4: *`" />
+                            <b-form-input id="code" v-model="editItems[staticFields[9]]" type="text" :placeholder="`Address line 4`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-text-field
@@ -138,7 +138,7 @@
                               required
                             ></v-text-field> -->
                             <label for="code">{{`City: *`}}</label>
-                            <b-form-input id="code" v-model="editItems[staticFields[10]]" type="text" :placeholder="`City: *`" />
+                            <b-form-input id="code" v-model="editItems[staticFields[10]]" type="text" :placeholder="`City`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-text-field
@@ -147,7 +147,7 @@
                               required
                             ></v-text-field> -->
                             <label for="code">{{`State: *`}}</label>
-                            <b-form-input id="code" v-model="editItems[staticFields[12]]" type="text" :placeholder="`State: *`" />
+                            <b-form-input id="code" v-model="editItems[staticFields[12]]" type="text" :placeholder="`State`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-text-field
@@ -156,7 +156,7 @@
                               required
                             ></v-text-field> -->
                             <label for="code">{{`Country: *`}}</label>
-                            <b-form-input id="code" v-model="editItems[staticFields[13]]" type="text" :placeholder="`Country: *`" />
+                            <b-form-input id="code" v-model="editItems[staticFields[13]]" type="text" :placeholder="`Country`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-text-field
@@ -165,7 +165,7 @@
                               required
                             ></v-text-field> -->
                             <label for="code">{{`Pin Code: *`}}</label>
-                            <b-form-input id="code" v-model="editItems[staticFields[11]]" type="text" :placeholder="`Pin Code: *`" />
+                            <b-form-input id="code" v-model="editItems[staticFields[11]]" type="text" :placeholder="`Pin Code`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-checkbox v-model="editItems[staticFields[14]]" label="in Active ?"></v-checkbox> -->
@@ -194,11 +194,17 @@
                   <div slot="header">Other Information</div>
                   <v-card>
                     <v-card-text>
-                      <v-flex xs10 sm10 md10 align-center justify-center row fill-height>
+                     
                         <!-- START: Code for dynamic fields -->
-                        <vue-form-generator :schema="dynamicFieldSchema" :model="dynamicFieldModel" :options="dynamicFieldOptions"></vue-form-generator>
+                       <v-container fluid grid-list-xl>
+                        <v-layout row justify-space-between>
+                          <v-flex xs12 sm4 md4>
+                      <vue-form-generator :schema="dynamicFieldSchema" :model="dynamicFieldModel"></vue-form-generator>
+                          </v-flex>
+                        </v-layout>
+                       </v-container>
                         <!-- END: Code for dynamic fields -->
-                      </v-flex>
+                      
                     </v-card-text>
                   </v-card>
                 </v-expansion-panel-content>
@@ -349,6 +355,8 @@ export default {
   }
 }
 </script>
-<style>
-
+<style scoped>
+.custom-checkbox{
+  top: 40px!important;
+}
 </style>

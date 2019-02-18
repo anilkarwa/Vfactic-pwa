@@ -76,5 +76,4 @@ export default {
   box-shadow: 0 0 0 ;
 } 
 
-
 </style>
