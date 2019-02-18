@@ -42,8 +42,8 @@
                   <div slot="header">supplier Group Master Details</div>
                   <v-card>
                     <v-card-text>
-                      <v-container grid-list-md>
-                        <v-layout wrap>
+                      <v-container fluid grid-list-xl>
+                        <v-layout row justify-space-between>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-text-field
                               v-model="editItems[staticFields[1]]"
@@ -51,7 +51,7 @@
                               required
                             ></v-text-field> -->
                             <label for="code">{{`${preFix} Code: *`}}</label>
-                            <b-form-input id="code" v-model="editItems[staticFields[1]]" type="text" :placeholder="`${preFix} Code: *`" />
+                            <b-form-input id="code" v-model="editItems[staticFields[1]]" type="text" :placeholder="`${preFix} Code`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-text-field
@@ -60,7 +60,7 @@
                               required
                             ></v-text-field> -->
                             <label for="code">{{`${preFix} Name: *`}}</label>
-                            <b-form-input id="code" v-model="editItems[staticFields[2]]" type="text" :placeholder="`${preFix} Name: *`" />
+                            <b-form-input id="code" v-model="editItems[staticFields[2]]" type="text" :placeholder="`${preFix} Name`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-text-field
@@ -69,7 +69,7 @@
                               required
                             ></v-text-field> -->
                             <label for="code">{{`Added On: *`}}</label>
-                            <b-form-input id="code" v-model="editItems[staticFields[3]]" type="text" :placeholder="`Added On: *`" />
+                            <b-form-input id="code" v-model="editItems[staticFields[3]]" type="text" :placeholder="`Added On`" readonly=true />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-text-field
@@ -78,7 +78,7 @@
                               required
                             ></v-text-field> -->
                             <label for="code">{{`Added By: *`}}</label>
-                            <b-form-input id="code" v-model="editItems[staticFields[4]]" type="text" :placeholder="`Added By: *`" />
+                            <b-form-input id="code" v-model="editItems[staticFields[4]]" type="text" :placeholder="`Added By`" readonly=true />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-text-field
@@ -87,7 +87,7 @@
                               required
                             ></v-text-field> -->
                             <label for="code">{{`Changed On: *`}}</label>
-                            <b-form-input id="code" v-model="editItems[staticFields[5]]" type="text" :placeholder="`Changed On: *`" />
+                            <b-form-input id="code" v-model="editItems[staticFields[5]]" type="text" :placeholder="`Changed On`"  readonly=true />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-text-field
@@ -96,7 +96,7 @@
                               required
                             ></v-text-field> -->
                             <label for="code">{{`Changed By: *`}}</label>
-                            <b-form-input id="code" v-model="editItems[staticFields[6]]" type="text" :placeholder="`Changed By: *`" />
+                            <b-form-input id="code" v-model="editItems[staticFields[6]]" type="text" :placeholder="`Changed By`" readonly=true />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-checkbox v-model="editItems[staticFields[7]]" label="in Active ?"></v-checkbox> -->
@@ -119,6 +119,22 @@
                         </v-layout>
                       </v-container>
                       <!-- END: UOM master detail -->
+                    </v-card-text>
+                  </v-card>
+                </v-expansion-panel-content>
+                <v-expansion-panel-content>
+                  <div slot="header">Other Information</div>
+                  <v-card>
+                    <v-card-text>
+                      <!-- START: Code for dynamic fields -->
+                       <v-container fluid grid-list-xl>
+                        <v-layout row justify-space-between>
+                          <v-flex xs12 sm4 md4>
+                      <vue-form-generator :schema="dynamicFieldSchema" :model="dynamicFieldModel"></vue-form-generator>
+                          </v-flex>
+                        </v-layout>
+                       </v-container>
+                      <!-- END: Code for dynamic fields -->
                     </v-card-text>
                   </v-card>
                 </v-expansion-panel-content>
@@ -159,6 +175,7 @@
 </template>
 <script>
 import httpClient from "@/services/httpClient.js"
+import DynamicFieldSchema from '@/DynamicProperty/generateScheme.js'
 
 export default {
   data: function() {
@@ -174,7 +191,12 @@ export default {
       snackbarColor: '',
       snackbarText: '',
       warningDialog: false,
-      deleteItems: ''
+      deleteItems: '',
+       dynamicFieldSchema: {
+        fields: []
+      },
+      dynamicFieldModel: {},
+      dynamicFieldOptions: {},
     }
   },
   beforeMount: function() {
@@ -223,6 +245,8 @@ export default {
           this.editItems = generalMasterEditFields.staticFieldData[0]
           console.log('EDit Item Master', JSON.stringify(this.editItems));
           this.staticFields = Object.keys(this.editItems);
+           this.dynamicFieldModel = generalMasterEditFields.dynamicFieldModal.modal[0];
+          this.dynamicFieldSchema.fields = DynamicFieldSchema(generalMasterEditFields.dynamicFieldModal.fieldProperties, generalMasterEditFields.dynamicFieldModal.modal[0]);
         }).catch((err) => {
           /**
            * When API call failed: check error in browser console::

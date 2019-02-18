@@ -6,7 +6,7 @@ import store from './store'
 import './registerServiceWorker'
 import BootstrapVue from 'bootstrap-vue'
 import VueFormGenerator from 'vue-form-generator'
-import 'vue-form-generator/dist/vfg.css'
+//import 'vue-form-generator/dist/vfg.css'
 
 Vue.config.productionTip = false
 Vue.use(Vuetify)

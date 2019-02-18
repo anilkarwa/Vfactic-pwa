@@ -43,8 +43,8 @@
                   <v-card>
                     <v-card-text>
                       <!-- START: Supplier detail form code -->
-                      <v-container grid-list-md>
-                        <v-layout wrap>
+                      <v-container fluid grid-list-xl>
+                        <v-layout row justify-space-between>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-text-field
                               v-model="editedItems[staticFields[1]]"
@@ -52,7 +52,8 @@
                               required
                             ></v-text-field> -->
                             <label for="code">{{`${preFix} Code: *`}}</label>
-                            <b-form-input id="code" v-model="editedItems[staticFields[1]]" type="text" :placeholder="`${preFix} Code: *`" />
+                            <b-form-input id="code" v-model="editedItems[staticFields[1]]" type="text" :placeholder="`${preFix} Code`" />
+                            <span class="focus-border"></span>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-text-field
@@ -61,7 +62,7 @@
                               required
                             ></v-text-field> -->
                             <label for="code">{{`${preFix} Name: *`}}</label>
-                            <b-form-input id="code" v-model="editedItems[staticFields[2]]" type="text" :placeholder="`${preFix} Name: *`" />
+                            <b-form-input id="code" v-model="editedItems[staticFields[2]]" type="text" :placeholder="`${preFix} Name`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-text-field
@@ -70,7 +71,7 @@
                               required
                             ></v-text-field> -->
                             <label for="code">{{`${preFix} Desc: *`}}</label>
-                            <b-form-input id="code" v-model="editedItems[staticFields[3]]" type="text" :placeholder="`${preFix} Desc: *`" />
+                            <b-form-input id="code" v-model="editedItems[staticFields[3]]" type="text" :placeholder="`${preFix} Desc`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-select
@@ -81,8 +82,8 @@
                               item-value="itemGroupID"
                               :label="`${preFix} Group Id:`"
                             ></v-select> -->
-                            <label for="">{{`${preFix} Group Id:`}}</label>
-                            <b-form-select v-model="editedItems[staticFields[4]]" :options="itemGroupList" />
+                            <label for="">{{`${preFix} Group:`}}</label>
+                            <b-form-select v-model="editedItems[staticFields[4]]" :options="itemGroupList" value-field="itemGroupID" text-field="itemGroupCode" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-text-field
@@ -91,7 +92,7 @@
                               required
                             ></v-text-field> -->
                             <label for="">{{`Tally Alias:`}}</label>
-                            <b-form-input id="code" v-model="editedItems[staticFields[5]]" type="text" :placeholder="`Tally Alias:`" />
+                            <b-form-input id="code" v-model="editedItems[staticFields[5]]" type="text" :placeholder="`Tally Alias`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-text-field
@@ -100,7 +101,7 @@
                               required
                             ></v-text-field> -->
                             <label for="">{{`HSN Code:`}}</label>
-                            <b-form-input id="code" v-model="editedItems[staticFields[6]]" type="text" :placeholder="`HSN Code:`" />
+                            <b-form-input id="code" v-model="editedItems[staticFields[6]]" type="text" :placeholder="`HSN Code`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-select
@@ -112,7 +113,7 @@
                               label="Item Type"
                             ></v-select> -->
                             <label for="">{{`${preFix} Item Type:`}}</label>
-                            <b-form-select v-model="editedItems[staticFields[7]]" :options="itemTypeList" />
+                            <b-form-select v-model="editedItems[staticFields[7]]" :options="itemTypeList" value-field= "itemTypeID" text-field="itemTypeName" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-select
@@ -122,41 +123,41 @@
                               item-text="UOMCode"
                               item-value="UOMID"
                             ></v-select> -->
-                            <label for="">{{`UOM ID`}}</label>
-                            <b-form-select v-model="editedItems[staticFields[7]]" :options="UOMList" />
+                            <label for="">{{`UOM:`}}</label>
+                            <b-form-select v-model="editedItems[staticFields[7]]" :options="UOMList" value-field="UOMID" text-field="UOMCode" />
                           </v-flex>
                           <v-layout wrap>
-                            <v-flex xs12 sm6 md3>
+                            <v-flex xs12 sm4 md4>
                             <!-- <v-checkbox v-model="editedItems[staticFields[9]]" label="BOM Item ?"></v-checkbox> -->
                             <b-form-checkbox
-                              id="checkbox1"
+                              id="BOMItem"
                               v-model="editedItems[staticFields[9]]"
                             >
                               BOM Item ?
                             </b-form-checkbox>
                           </v-flex>
-                          <v-flex xs12 sm6 md3>
+                          <v-flex xs12 sm8 md8>
                             <!-- <v-checkbox v-model="editedItems[staticFields[10]]" label="NonStkable ?"></v-checkbox> -->
                             <b-form-checkbox
-                              id="checkbox1"
+                              id="NonSktable"
                               v-model="editedItems[staticFields[10]]"
                             >
                               NonStkable ?
                             </b-form-checkbox>
                           </v-flex>
-                          <v-flex xs12 sm6 md3>
+                          <v-flex xs12 sm4 md4>
                              <!-- <v-checkbox v-model="editedItems[staticFields[11]]" label="inActive ?"></v-checkbox> -->
                              <b-form-checkbox
-                              id="checkbox1"
+                              id="inActive"
                               v-model="editedItems[staticFields[11]]"
                             >
                               inActive ?
                             </b-form-checkbox>
                           </v-flex>
-                          <v-flex xs12 sm6 md3>
+                          <v-flex xs12 sm8 md8>
                             <!-- <v-checkbox v-model="editedItems[staticFields[12]]" label="is Authorized ?"></v-checkbox> -->
                             <b-form-checkbox
-                              id="checkbox1"
+                              id="Authorised"
                               v-model="editedItems[staticFields[12]]"
                             >
                               is Authorized ?
@@ -175,7 +176,13 @@
                   <v-card>
                     <v-card-text>
                       <!-- START: Code for dynamic fields -->
+                       <v-container fluid grid-list-xl>
+                        <v-layout row justify-space-between>
+                          <v-flex xs12 sm4 md4>
                       <vue-form-generator :schema="dynamicFieldSchema" :model="dynamicFieldModel"></vue-form-generator>
+                          </v-flex>
+                        </v-layout>
+                       </v-container>
                       <!-- END: Code for dynamic fields -->
                     </v-card-text>
                   </v-card>
