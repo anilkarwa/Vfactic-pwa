@@ -6,7 +6,7 @@
         <template slot="items" slot-scope="props">
           <td class="justify-center layout px-0">
             <v-icon small class="mr-2" @click="editGeneralMasterData(props.item)">edit</v-icon>
-            <v-icon small @click="deleteGeneralMasterData(props.item)">delete</v-icon>
+            <v-icon small @click="deleteGeneralMasterRequest(props.item)">delete</v-icon>
           </td>
           <td v-for="values in props.item" :key="values.id">
             {{ values }}
@@ -32,7 +32,7 @@
             <v-toolbar-title>Edit Group Master</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-toolbar-items>
-              <v-btn dark flat @click="UpdateGeneralMasterData()">Save</v-btn>
+              <v-btn dark flat @click="updateGeneralMasterData()">Save</v-btn>
             </v-toolbar-items>
           </v-toolbar>
           <v-layout row wrap>
@@ -45,52 +45,76 @@
                       <v-container grid-list-md>
                         <v-layout wrap>
                           <v-flex xs12 sm6 md4>
-                            <v-text-field
+                            <!-- <v-text-field
                               v-model="editItems[staticFields[1]]"
                               :label="`${preFix} Code: *`"
                               required
-                            ></v-text-field>
+                            ></v-text-field> -->
+                            <label for="code">{{`${preFix} Code: *`}}</label>
+                            <b-form-input id="code" v-model="editItems[staticFields[1]]" type="text" :placeholder="`${preFix} Code: *`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <v-text-field
+                            <!-- <v-text-field
                               v-model="editItems[staticFields[2]]"
                               :label="`${preFix} Name: *`"
                               required
-                            ></v-text-field>
+                            ></v-text-field> -->
+                            <label for="code">{{`${preFix} Name: *`}}</label>
+                            <b-form-input id="code" v-model="editItems[staticFields[2]]" type="text" :placeholder="`${preFix} Name: *`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <v-text-field
+                            <!-- <v-text-field
                               v-model="editItems[staticFields[3]]"
                               :label="`Added On: *`"
                               required
-                            ></v-text-field>
+                            ></v-text-field> -->
+                            <label for="code">{{`Added On: *`}}</label>
+                            <b-form-input id="code" v-model="editItems[staticFields[3]]" type="text" :placeholder="`Added On: *`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <v-text-field
+                            <!-- <v-text-field
                               v-model="editItems[staticFields[4]]"
                               :label="`Added By: *`"
                               required
-                            ></v-text-field>
+                            ></v-text-field> -->
+                            <label for="code">{{`Added By: *`}}</label>
+                            <b-form-input id="code" v-model="editItems[staticFields[4]]" type="text" :placeholder="`Added By: *`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <v-text-field
+                            <!-- <v-text-field
                               v-model="editItems[staticFields[5]]"
                               :label="`Changed On: *`"
                               required
-                            ></v-text-field>
+                            ></v-text-field> -->
+                            <label for="code">{{`Changed On: *`}}</label>
+                            <b-form-input id="code" v-model="editItems[staticFields[5]]" type="text" :placeholder="`Changed On: *`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <v-text-field
+                            <!-- <v-text-field
                               v-model="editItems[staticFields[6]]"
                               :label="`Changed By: *`"
                               required
-                            ></v-text-field>
+                            ></v-text-field> -->
+                            <label for="code">{{`Changed By: *`}}</label>
+                            <b-form-input id="code" v-model="editItems[staticFields[6]]" type="text" :placeholder="`Changed By: *`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <v-checkbox v-model="editItems[staticFields[7]]" label="in Active ?"></v-checkbox>
+                            <!-- <v-checkbox v-model="editItems[staticFields[7]]" label="in Active ?"></v-checkbox> -->
+                            <b-form-checkbox
+                              id="checkbox1"
+                              v-model="editItems[staticFields[7]]"
+                            >
+                              in Active ?
+                            </b-form-checkbox>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <v-checkbox v-model="editItems[staticFields[8]]" label="is Authorised ?"></v-checkbox>
+                            <!-- <v-checkbox v-model="editItems[staticFields[8]]" label="is Authorised ?"></v-checkbox> -->
+                            <b-form-checkbox
+                              id="checkbox1"
+                              v-model="editItems[staticFields[8]]"
+                            >
+                              is Authorised ?
+                            </b-form-checkbox>
                           </v-flex>
                         </v-layout>
                       </v-container>
@@ -104,6 +128,32 @@
         </v-card>
       </v-dialog>
       <!-- END: dialog box model code -->
+      <!-- START: Code for snackBar -->
+      <v-snackbar v-model="snackbar" :color="snackbarColor">
+        {{ snackbarText }}
+        <v-btn dark flat @click="snackbar = false">Close</v-btn>
+      </v-snackbar>
+      <!-- END: Code for snackBar -->
+
+      <!-- START: warning model dialog box -->
+      <v-dialog v-model="warningDialog" max-width="290" justify-center align-center>
+        <v-card>
+          <v-card-title class="headline">Delete Request ?</v-card-title>
+
+          <v-card-text>Are you sure ? you wanna delete this. <br>
+          <!-- Supplier Group Master Name: <span style="color: red">{{ deleteItem.SupplierGroupMasterName }}</span> -->
+          </v-card-text>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+
+            <v-btn color="green darken-1" flat="flat" @click="warningDialog = false">No</v-btn>
+
+            <v-btn color="green darken-1" flat="flat" @click="deleteGeneralMaster()">Yes</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+      <!-- END: warning model dialog box -->
     </v-app>
   </div>
 </template>
@@ -119,7 +169,12 @@ export default {
       preFix: null,
       generalMasterModel: false,
       editItems: {},
-      staticFields: []
+      staticFields: [],
+      snackbar: false,
+      snackbarColor: '',
+      snackbarText: '',
+      warningDialog: false,
+      deleteItems: ''
     }
   },
   beforeMount: function() {
@@ -175,7 +230,7 @@ export default {
           console.error('Error Occured while fetcing the party master Data', err);
         });
     },
-    UpdateGeneralMasterData: function() {
+    updateGeneralMasterData: function() {
       console.log('Update params', this.editItems);
       const updateParam = {
         docID: localStorage.getItem('menuDocId') || 1121, // Need to remove 1121 value and put 0 apart of this;
@@ -193,6 +248,15 @@ export default {
         }).catch((err) => {
           console.error('ERROR OCCURED!', err);
         });
+    },
+    deleteGeneralMasterRequest: function(params) {
+      console.log('Params', params);
+      this.deleteItems = params;
+      console.log('Delete Items', this.deleteItems);
+      // this.warningDialog = true;
+    },
+    deleteGeneralMaster: function() {
+
     }
   }
 }

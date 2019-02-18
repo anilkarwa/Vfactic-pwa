@@ -46,81 +46,123 @@
                       <v-container grid-list-md>
                         <v-layout wrap>
                           <v-flex xs12 sm6 md4>
-                            <v-text-field
+                            <!-- <v-text-field
                               v-model="editedItems[staticFields[1]]"
                               :label="`${preFix} Code:`"
                               required
-                            ></v-text-field>
+                            ></v-text-field> -->
+                            <label for="code">{{`${preFix} Code: *`}}</label>
+                            <b-form-input id="code" v-model="editedItems[staticFields[1]]" type="text" :placeholder="`${preFix} Code: *`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <v-text-field
+                            <!-- <v-text-field
                               v-model="editedItems[staticFields[2]]"
                               :label="`${preFix} Name:`"
                               required
-                            ></v-text-field>
+                            ></v-text-field> -->
+                            <label for="code">{{`${preFix} Name: *`}}</label>
+                            <b-form-input id="code" v-model="editedItems[staticFields[2]]" type="text" :placeholder="`${preFix} Name: *`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <v-text-field
+                            <!-- <v-text-field
                               v-model="editedItems[staticFields[3]]"
                               :label="`${preFix} Desc:`"
                               required
-                            ></v-text-field>
+                            ></v-text-field> -->
+                            <label for="code">{{`${preFix} Desc: *`}}</label>
+                            <b-form-input id="code" v-model="editedItems[staticFields[3]]" type="text" :placeholder="`${preFix} Desc: *`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <v-select
+                            <!-- <v-select
                               v-model="editedItems[staticFields[4]]"
                               menu-props="auto"
                               :items="itemGroupList"
                               item-text="itemGroupCode"
                               item-value="itemGroupID"
                               :label="`${preFix} Group Id:`"
-                            ></v-select>
+                            ></v-select> -->
+                            <label for="">{{`${preFix} Group Id:`}}</label>
+                            <b-form-select v-model="editedItems[staticFields[4]]" :options="itemGroupList" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <v-text-field
+                            <!-- <v-text-field
                               v-model="editedItems[staticFields[5]]"
                               :label="`Tally Alias:`"
                               required
-                            ></v-text-field>
+                            ></v-text-field> -->
+                            <label for="">{{`Tally Alias:`}}</label>
+                            <b-form-input id="code" v-model="editedItems[staticFields[5]]" type="text" :placeholder="`Tally Alias:`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <v-text-field
+                            <!-- <v-text-field
                               v-model="editedItems[staticFields[6]]"
                               label="HSN Code:"
                               required
-                            ></v-text-field>
+                            ></v-text-field> -->
+                            <label for="">{{`HSN Code:`}}</label>
+                            <b-form-input id="code" v-model="editedItems[staticFields[6]]" type="text" :placeholder="`HSN Code:`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <v-select
+                            <!-- <v-select
                               v-model="editedItems[staticFields[7]]"
                               menu-props="auto"
                               :items="itemTypeList"
                               item-text="itemTypeName"
                               item-value="itemTypeID"
                               label="Item Type"
-                            ></v-select>
+                            ></v-select> -->
+                            <label for="">{{`${preFix} Item Type:`}}</label>
+                            <b-form-select v-model="editedItems[staticFields[7]]" :options="itemTypeList" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <v-select
+                            <!-- <v-select
                               v-model="editedItems[staticFields[8]]"
                               menu-props="auto"
                               :items="UOMList"
                               item-text="UOMCode"
                               item-value="UOMID"
-                            ></v-select>
+                            ></v-select> -->
+                            <label for="">{{`UOM ID`}}</label>
+                            <b-form-select v-model="editedItems[staticFields[7]]" :options="UOMList" />
                           </v-flex>
-                          <v-flex xs12 sm6 md4>
-                            <v-checkbox v-model="editedItems[staticFields[9]]" label="BOM Item ?"></v-checkbox>
+                          <v-layout wrap>
+                            <v-flex xs12 sm6 md3>
+                            <!-- <v-checkbox v-model="editedItems[staticFields[9]]" label="BOM Item ?"></v-checkbox> -->
+                            <b-form-checkbox
+                              id="checkbox1"
+                              v-model="editedItems[staticFields[9]]"
+                            >
+                              BOM Item ?
+                            </b-form-checkbox>
                           </v-flex>
-                          <v-flex xs12 sm6 md4>
-                            <v-checkbox v-model="editedItems[staticFields[10]]" label="NonStkable ?"></v-checkbox>
+                          <v-flex xs12 sm6 md3>
+                            <!-- <v-checkbox v-model="editedItems[staticFields[10]]" label="NonStkable ?"></v-checkbox> -->
+                            <b-form-checkbox
+                              id="checkbox1"
+                              v-model="editedItems[staticFields[10]]"
+                            >
+                              NonStkable ?
+                            </b-form-checkbox>
                           </v-flex>
-                          <v-flex xs12 sm6 md4>
-                             <v-checkbox v-model="editedItems[staticFields[11]]" label="inActive ?"></v-checkbox>
+                          <v-flex xs12 sm6 md3>
+                             <!-- <v-checkbox v-model="editedItems[staticFields[11]]" label="inActive ?"></v-checkbox> -->
+                             <b-form-checkbox
+                              id="checkbox1"
+                              v-model="editedItems[staticFields[11]]"
+                            >
+                              inActive ?
+                            </b-form-checkbox>
                           </v-flex>
-                          <v-flex xs12 sm6 md4>
-                            <v-checkbox v-model="editedItems[staticFields[12]]" label="is Authorized ?"></v-checkbox>
+                          <v-flex xs12 sm6 md3>
+                            <!-- <v-checkbox v-model="editedItems[staticFields[12]]" label="is Authorized ?"></v-checkbox> -->
+                            <b-form-checkbox
+                              id="checkbox1"
+                              v-model="editedItems[staticFields[12]]"
+                            >
+                              is Authorized ?
+                            </b-form-checkbox>
                           </v-flex>
+                          </v-layout>
                           <!-- </v-form> -->
                         </v-layout>
                       </v-container>

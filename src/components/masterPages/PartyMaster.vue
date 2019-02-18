@@ -45,107 +45,145 @@
                       <v-container grid-list-md>
                         <v-layout wrap>
                           <v-flex xs12 sm6 md4>
-                            <v-text-field
+                            <!-- <v-text-field
                               v-model="editItems[staticFields[1]]"
                               :label="`${preFix} Code *`"
                               required
-                            ></v-text-field>
+                            ></v-text-field> -->
+                            <label for="code">{{`${preFix} Code *`}}</label>
+                            <b-form-input id="code" v-model="editItems[staticFields[1]]" type="text" :placeholder="`${preFix} Code *`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <v-text-field
+                            <!-- <v-text-field
                               v-model="editItems[staticFields[2]]"
                               :label="`${preFix} Name *`"
                               required
-                            ></v-text-field>
+                            ></v-text-field> -->
+                            <label for="code">{{`${preFix} Name *`}}</label>
+                            <b-form-input id="code" v-model="editItems[staticFields[2]]" type="text" :placeholder="`${preFix} Name *`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <v-text-field
+                            <!-- <v-text-field
                               v-model="editItems[staticFields[3]]"
                               :label="`${preFix} Alias Name`"
                               required
-                            ></v-text-field>
+                            ></v-text-field> -->
+                            <label for="code">{{`${preFix} Alias Name *`}}</label>
+                            <b-form-input id="code" v-model="editItems[staticFields[3]]" type="text" :placeholder="`${preFix} Alias Name *`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <v-select
+                            <!-- <v-select
                               v-model="editItems[staticFields[4]]"
                               menu-props="auto"
                               :items="partyMasterGroupList"
                               item-text="groupName"
                               item-value="groupID"
                               :label="`${preFix} Group *`"
-                            ></v-select>
+                            ></v-select> -->
+                            <label for="">{{`${preFix} Group *`}}</label>
+                            <b-form-select v-model="editedItems[staticFields[4]]" :options="partyMasterGroupList" :placeholder="`${preFix} Group *`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <v-select
+                            <!-- <v-select
                               v-model="editItems[staticFields[5]]"
                               menu-props="auto"
                               :items="partyMasterLedGroupID"
                               item-text="ledgerGroupName"
                               item-value="ledgerGroupID"
                               :label="`${preFix} Ledger Group *`"
-                            ></v-select>
+                            ></v-select> -->
+                            <label for="">{{`${preFix} Ledger Group *`}}</label>
+                            <b-form-select v-model="editedItems[staticFields[5]]" :options="partyMasterGroupList" :placeholder="`${preFix} Ledger Group *`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <v-text-field
+                            <!-- <v-text-field
                               v-model="editItems[staticFields[6]]"
                               :label="`Address line 1: *`"
                               required
-                            ></v-text-field>
+                            ></v-text-field> -->
+                            <label for="code">{{`Address line 1: *`}}</label>
+                            <b-form-input id="code" v-model="editItems[staticFields[6]]" type="text" :placeholder="`Address line 1: *`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <v-text-field
+                            <!-- <v-text-field
                               v-model="editItems[staticFields[7]]"
                               :label="`Address line 2: *`"
                               required
-                            ></v-text-field>
+                            ></v-text-field> -->
+                            <label for="code">{{`Address line 2: *`}}</label>
+                            <b-form-input id="code" v-model="editItems[staticFields[7]]" type="text" :placeholder="`Address line 2: *`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <v-text-field
+                            <!-- <v-text-field
                               v-model="editItems[staticFields[8]]"
                               :label="`Address line 3: *`"
                               required
-                            ></v-text-field>
+                            ></v-text-field> -->
+                            <label for="code">{{`Address line 3: *`}}</label>
+                            <b-form-input id="code" v-model="editItems[staticFields[8]]" type="text" :placeholder="`Address line 3: *`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <v-text-field
+                            <!-- <v-text-field
                               v-model="editItems[staticFields[9]]"
                               :label="`Address line 4: *`"
                               required
-                            ></v-text-field>
+                            ></v-text-field> -->
+                            <label for="code">{{`Address line 4: *`}}</label>
+                            <b-form-input id="code" v-model="editItems[staticFields[9]]" type="text" :placeholder="`Address line 4: *`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <v-text-field
+                            <!-- <v-text-field
                               v-model="editItems[staticFields[10]]"
                               :label="`City: *`"
                               required
-                            ></v-text-field>
+                            ></v-text-field> -->
+                            <label for="code">{{`City: *`}}</label>
+                            <b-form-input id="code" v-model="editItems[staticFields[10]]" type="text" :placeholder="`City: *`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <v-text-field
+                            <!-- <v-text-field
                               v-model="editItems[staticFields[12]]"
                               :label="`State: *`"
                               required
-                            ></v-text-field>
+                            ></v-text-field> -->
+                            <label for="code">{{`State: *`}}</label>
+                            <b-form-input id="code" v-model="editItems[staticFields[12]]" type="text" :placeholder="`State: *`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <v-text-field
+                            <!-- <v-text-field
                               v-model="editItems[staticFields[13]]"
                               :label="`Country: *`"
                               required
-                            ></v-text-field>
+                            ></v-text-field> -->
+                            <label for="code">{{`Country: *`}}</label>
+                            <b-form-input id="code" v-model="editItems[staticFields[13]]" type="text" :placeholder="`Country: *`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <v-text-field
+                            <!-- <v-text-field
                               v-model="editItems[staticFields[11]]"
                               :label="`Pin Code:`"
                               required
-                            ></v-text-field>
+                            ></v-text-field> -->
+                            <label for="code">{{`Pin Code: *`}}</label>
+                            <b-form-input id="code" v-model="editItems[staticFields[11]]" type="text" :placeholder="`Pin Code: *`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <v-checkbox v-model="editItems[staticFields[14]]" label="in Active ?"></v-checkbox>
+                            <!-- <v-checkbox v-model="editItems[staticFields[14]]" label="in Active ?"></v-checkbox> -->
+                            <b-form-checkbox
+                              id="checkbox1"
+                              v-model="editedItems[staticFields[14]]"
+                            >
+                              in Active ?
+                            </b-form-checkbox>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <v-checkbox v-model="editItems[staticFields[15]]" label="is Authorised ?"></v-checkbox>
+                            <!-- <v-checkbox v-model="editItems[staticFields[15]]" label="is Authorised ?"></v-checkbox> -->
+                            <b-form-checkbox
+                              id="checkbox1"
+                              v-model="editedItems[staticFields[15]]"
+                            >
+                              is Authorised ?
+                            </b-form-checkbox>
                           </v-flex>
                         </v-layout>
                       </v-container>

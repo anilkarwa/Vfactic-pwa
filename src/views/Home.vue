@@ -21,13 +21,11 @@
             <v-flex shrink>
               <div v-if="selected">
                 <h1>{{ selected.name }} </h1>
-                <!-- <component v-bind:is="currentView"></component> -->
-                <!-- <TestView></TestView> -->
+                <component v-bind:is="currentView"></component>
               </div>
               <div v-else>
                 <h1>Welcome, VfactIC</h1>
                 <h2>Date: {{ new Date() }}</h2>
-                <TestView></TestView>
               </div>
             </v-flex>
           </v-layout>
@@ -43,27 +41,16 @@
 </template>
 <script>
 import httpClient from "@/services/httpClient.js"
-import SupplierMaster from "@/components/SupplierMaster.vue"
-import SupplierGroupMaster from "@/components/SupplierGroupMaster.vue"
-import CustomerMaster from "@/components/CustomerMaster.vue"
-import ItemMaster from "@/components/ItemMaster.vue"
-import ItemGroupMaster from "@/components/ItemGroupMaster.vue"
-import UOMMaster from "@/components/UOMMaster.vue"
-
-// import TestView from "@/components/masterPages/PartyMaster.vue"
-// import TestView from "@/components/masterPages/GeneralMaster.vue"
-import TestView from "@/components/masterPages/ItemMaster.vue"
+import PartyMaster from "@/components/masterPages/PartyMaster.vue"
+import GeneralMaster from "@/components/masterPages/GeneralMaster.vue"
+import ItemMaster from "@/components/masterPages/ItemMaster.vue"
 
 export default {
   name: "home",
   components: {
-    SupplierMaster,
-    SupplierGroupMaster,
-    CustomerMaster,
-    ItemMaster,
-    ItemGroupMaster,
-    UOMMaster,
-    TestView
+    PartyMaster,
+    GeneralMaster,
+    ItemMaster
   },
   data: function() {
     return {
@@ -78,9 +65,6 @@ export default {
   beforeMount: function() {
     this.fetchMenu();
   },
-  // watch: {
-  //   selected: 'fetchMenu'
-  // },
   computed: {
     selected () {
       console.log('Active', this.active);
