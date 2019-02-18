@@ -81,7 +81,7 @@
                               :label="`${preFix} Group *`"
                             ></v-select> -->
                             <label for="">{{`${preFix} Group *`}}</label>
-                            <b-form-select v-model="editedItems[staticFields[4]]" :options="partyMasterGroupList" :placeholder="`${preFix} Group *`" />
+                            <b-form-select v-model="editItems[staticFields[4]]" :options="partyMasterGroupList" :placeholder="`${preFix} Group *`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-select
@@ -93,7 +93,7 @@
                               :label="`${preFix} Ledger Group *`"
                             ></v-select> -->
                             <label for="">{{`${preFix} Ledger Group *`}}</label>
-                            <b-form-select v-model="editedItems[staticFields[5]]" :options="partyMasterGroupList" :placeholder="`${preFix} Ledger Group *`" />
+                            <b-form-select v-model="editItems[staticFields[5]]" :options="partyMasterGroupList" :placeholder="`${preFix} Ledger Group *`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-text-field
@@ -171,7 +171,7 @@
                             <!-- <v-checkbox v-model="editItems[staticFields[14]]" label="in Active ?"></v-checkbox> -->
                             <b-form-checkbox
                               id="checkbox1"
-                              v-model="editedItems[staticFields[14]]"
+                              v-model="editItems[staticFields[14]]"
                             >
                               in Active ?
                             </b-form-checkbox>
@@ -180,7 +180,7 @@
                             <!-- <v-checkbox v-model="editItems[staticFields[15]]" label="is Authorised ?"></v-checkbox> -->
                             <b-form-checkbox
                               id="checkbox1"
-                              v-model="editedItems[staticFields[15]]"
+                              v-model="editItems[staticFields[15]]"
                             >
                               is Authorised ?
                             </b-form-checkbox>
@@ -194,9 +194,11 @@
                   <div slot="header">Other Information</div>
                   <v-card>
                     <v-card-text>
-                      <!-- START: Code for dynamic fields -->
-                      <vue-form-generator :schema="dynamicFieldSchema" :model="dynamicFieldModel" :options="dynamicFieldOptions"></vue-form-generator>
-                      <!-- END: Code for dynamic fields -->
+                      <v-flex xs10 sm10 md10 align-center justify-center row fill-height>
+                        <!-- START: Code for dynamic fields -->
+                        <vue-form-generator :schema="dynamicFieldSchema" :model="dynamicFieldModel" :options="dynamicFieldOptions"></vue-form-generator>
+                        <!-- END: Code for dynamic fields -->
+                      </v-flex>
                     </v-card-text>
                   </v-card>
                 </v-expansion-panel-content>
