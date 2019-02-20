@@ -384,25 +384,41 @@ export default {
         });
     },
     validCode: function() {
-      return this.editItems[staticFields[1]] >= 1 ? true : false;
+      if (this.editItems[this.staticFields[1]]) {
+        return (this.editItems[this.staticFields[1]]).length >= 1 ? true : false;
+      } else {
+        return false
+      }
     },
     validName: function() {
-      return this.editItems[staticFields[2]] >= 1 ? true : false;
+      if (this.editItems[this.staticFields[2]]) {
+        return (this.editItems[this.staticFields[2]]).length >= 1 ? true : false;
+      } else { return false; }
     },
     ValidGroupLedgerid: function() {
-      return this.editItems[staticFields[5]] >= 1 ? true : false;
+      if (this.editItems[this.staticFields[5]]) {
+        return (this.editItems[this.staticFields[5]].toString()).length >= 1 ? true : false;
+      } else { return false; }
     },
     validSupplierGroup: function() {
-      return this.editItems[staticFields[4]] >= 1 ? true : false;
+      if (this.editItems[this.staticFields[4]]) {
+        return (this.editItems[this.staticFields[4]].toString()).length >= 1 ? true : false;
+      } else { return false; }
     },
     validCity: function() {
-      return this.editItems[staticFields[10]] >= 1 ? true : false;
+      if (this.editItems[this.staticFields[10]]) {
+        return (this.editItems[this.staticFields[10]]).length >= 1 ? true : false;
+      } else { return false; }
     },
     validState: function() {
-      return this.editItems[staticFields[12]] >= 1 ? true : false;
+      if (this.editItems[this.staticFields[12]]) {
+        return (this.editItems[this.staticFields[12]]).length >= 1 ? true : false;
+      } else { return false; }
     },
     validCountry: function() {
-      return this.editItems[staticFields[13]] >= 1 ? true : false;
+      if (this.editItems[this.staticFields[13]]) {
+        return (this.editItems[this.staticFields[13]]).length >= 1 ? true : false;
+      } else { return false; }
     },
     validate: function() {
       (this.validCode() && this.validName() && this.ValidGroupLedgerid() && this.validSupplierGroup() && this.validCity() && this.validState() && this.validCountry()) ? true : false;

@@ -75,7 +75,7 @@
                               required
                             ></v-text-field> -->
                             <label for="code">{{`Added On: *`}}</label>
-                            <b-form-input id="code" v-model="editItems[staticFields[3]]" type="text" :placeholder="`Added On`" readonly=true />
+                            <b-form-input id="code" v-model="editItems[staticFields[3]]" type="text" :placeholder="`Added On`" readonly />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-text-field
@@ -84,7 +84,7 @@
                               required
                             ></v-text-field> -->
                             <label for="code">{{`Added By: *`}}</label>
-                            <b-form-input id="code" v-model="editItems[staticFields[4]]" type="text" :placeholder="`Added By`" readonly=true />
+                            <b-form-input id="code" v-model="editItems[staticFields[4]]" type="text" :placeholder="`Added By`" readonly />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-text-field
@@ -93,7 +93,7 @@
                               required
                             ></v-text-field> -->
                             <label for="code">{{`Changed On: *`}}</label>
-                            <b-form-input id="code" v-model="editItems[staticFields[5]]" type="text" :placeholder="`Changed On`"  readonly=true />
+                            <b-form-input id="code" v-model="editItems[staticFields[5]]" type="text" :placeholder="`Changed On`"  readonly />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-text-field
@@ -102,7 +102,7 @@
                               required
                             ></v-text-field> -->
                             <label for="code">{{`Changed By: *`}}</label>
-                            <b-form-input id="code" v-model="editItems[staticFields[6]]" type="text" :placeholder="`Changed By`" readonly=true />
+                            <b-form-input id="code" v-model="editItems[staticFields[6]]" type="text" :placeholder="`Changed By`" readonly />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-checkbox v-model="editItems[staticFields[7]]" label="in Active ?"></v-checkbox> -->
@@ -203,7 +203,8 @@ export default {
       },
       dynamicFieldModel: {},
       dynamicFieldOptions: {},
-      codeBlured: true
+      codeBlured: true,
+      nameBlured: true
     }
   },
   beforeMount: function() {
@@ -291,10 +292,14 @@ export default {
 
     },
     validCode: function() {
-      return this.editItems[staticFields[1]] >= 1 ? true : false;
+      if (this.editItems[this.staticFields[1]]) {
+        return (this.editItems[this.staticFields[1]]).length >= 1 ? true : false;
+      } else { return false; }
     },
     validName: function() {
-      return this.editItems[staticFields[2]] >= 1 ? true : false;
+      if (this.editItems[this.staticFields[2]]) {
+        return (this.editItems[this.staticFields[2]]).length >= 1 ? true : false;
+      } else { return false; }
     },
     validate: function() {
       (this.validCode() && this.validName()) ? true : false;

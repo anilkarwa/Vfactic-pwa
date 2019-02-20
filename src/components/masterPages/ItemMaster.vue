@@ -298,16 +298,24 @@ export default {
       console.log('Update Params', updateParams);
     },
     validName: function() {
-      return this.editItems[staticFields[2]] >= 1 ? true : false;
+      if (this.editedItems[this.staticFields[2]]) {
+        return (this.editedItems[this.staticFields[2]]).length >= 1 ? true : false;
+      } else { return false; }
     },
     validitemGroup: function() {
-      return this.editItems[staticFields[4]] >= 1 ? true : false;
+      if (this.editedItems[this.staticFields[4]]) {
+        return (this.editedItems[this.staticFields[4]].toString()).length >= 1 ? true : false;
+      } else { return false; }
     },
     validitemType: function() {
-      return this.editItems[staticFields[7]] >= 1 ? true : false;
+      if (this.editedItems[this.staticFields[7]]) {
+        return (this.editedItems[this.staticFields[7]].toString()).length >= 1 ? true : false;
+      } else { return false; }
     },
     validUOM: function() {
-      return this.editItems[staticFields[8]] >= 1 ? true : false;
+      if (this.editedItems[this.staticFields[8]]) {
+        return (this.editedItems[this.staticFields[8]].toString()).length >= 1 ? true : false;
+      } else { return false; }
     },
     validate: function() {
       (this.validName() && this.validitemGroup() && this.validitemType() && this.validUOM()) ? true : false;
