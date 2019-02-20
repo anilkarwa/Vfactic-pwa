@@ -32,7 +32,8 @@
             <v-toolbar-title>Edit Information</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-toolbar-items>
-              <v-btn dark flat @click="updatePartyMasterData()">Save</v-btn>
+              <!-- <v-btn dark flat @click="updatePartyMasterData()">Save</v-btn> -->
+               <b-button type="submit" variant="primary">Submit</b-button>
             </v-toolbar-items>
           </v-toolbar>
           <v-layout row wrap>
@@ -51,7 +52,10 @@
                               required
                             ></v-text-field> -->
                             <label for="code">{{`${preFix} Code *`}}</label>
-                            <b-form-input id="code" v-model="editItems[staticFields[1]]" type="text" :placeholder="`${preFix} Code`" />
+                            <b-form-input id="code" v-model="editItems[staticFields[1]]" type="text"
+                            v-bind:class="{'form-control':true, 'is-invalid' : !validCode() && codeBlured}"
+                            v-on:blur="codeBlured = true"
+                            :placeholder="`${preFix} Code`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-text-field
@@ -60,7 +64,10 @@
                               required
                             ></v-text-field> -->
                             <label for="code">{{`${preFix} Name *`}}</label>
-                            <b-form-input id="code" v-model="editItems[staticFields[2]]" type="text" :placeholder="`${preFix} Name`" />
+                            <b-form-input id="code" v-model="editItems[staticFields[2]]" type="text"
+                            v-bind:class="{'form-control':true, 'is-invalid' : !validName() && nameBlured}"
+                            v-on:blur="nameBlured = true"
+                            :placeholder="`${preFix} Name`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-text-field
@@ -69,7 +76,8 @@
                               required
                             ></v-text-field> -->
                             <label for="code">{{`${preFix} Alias Name *`}}</label>
-                            <b-form-input id="code" v-model="editItems[staticFields[3]]" type="text" :placeholder="`${preFix} Alias Name `" />
+                            <b-form-input id="code" v-model="editItems[staticFields[3]]" type="text"
+                            :placeholder="`${preFix} Alias Name `" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-select
@@ -81,7 +89,10 @@
                               :label="`${preFix} Group *`"
                             ></v-select> -->
                             <label for="">{{`${preFix} Group *`}}</label>
-                            <b-form-select v-model="editItems[staticFields[4]]" :options="partyMasterGroupList" :placeholder="`${preFix} Group`" value-field="groupID"  text-field="groupName" />
+                            <b-form-select v-model="editItems[staticFields[4]]" :options="partyMasterGroupList"
+                            v-bind:class="{'form-control':true, 'is-invalid' : !validSupplierGroup() && groupNameBlured}"
+                            v-on:blur="groupNameBlured = true"
+                            :placeholder="`${preFix} Group`" value-field="groupID"  text-field="groupName" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-select
@@ -93,7 +104,10 @@
                               :label="`${preFix} Ledger Group *`"
                             ></v-select> -->
                             <label for="">{{`${preFix} Ledger Group *`}}</label>
-                            <b-form-select v-model="editItems[staticFields[5]]" :options="partyMasterLedGroupID" :placeholder="`${preFix} Ledger Group`" value-field="ledgerGroupID" text-field="ledgerGroupName" />
+                            <b-form-select v-model="editItems[staticFields[5]]" :options="partyMasterLedGroupID"
+                            v-bind:class="{'form-control':true, 'is-invalid' : !ValidGroupLedgerid() && ledgerIdBlured}"
+                            v-on:blur="ledgerIdBlured = true"
+                            :placeholder="`${preFix} Ledger Group`" value-field="ledgerGroupID" text-field="ledgerGroupName" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-text-field
@@ -138,7 +152,10 @@
                               required
                             ></v-text-field> -->
                             <label for="code">{{`City: *`}}</label>
-                            <b-form-input id="code" v-model="editItems[staticFields[10]]" type="text" :placeholder="`City`" />
+                            <b-form-input id="code" v-model="editItems[staticFields[10]]" type="text"
+                            v-bind:class="{'form-control':true, 'is-invalid' : !validCity() && cityBlured}"
+                            v-on:blur="cityBlured = true"
+                            :placeholder="`City`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-text-field
@@ -147,7 +164,10 @@
                               required
                             ></v-text-field> -->
                             <label for="code">{{`State: *`}}</label>
-                            <b-form-input id="code" v-model="editItems[staticFields[12]]" type="text" :placeholder="`State`" />
+                            <b-form-input id="code" v-model="editItems[staticFields[12]]" type="text"
+                            v-bind:class="{'form-control':true, 'is-invalid' : !validState() && stateBlured}"
+                            v-on:blur="stateBlured = true"
+                            :placeholder="`State`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-text-field
@@ -156,7 +176,10 @@
                               required
                             ></v-text-field> -->
                             <label for="code">{{`Country: *`}}</label>
-                            <b-form-input id="code" v-model="editItems[staticFields[13]]" type="text" :placeholder="`Country`" />
+                            <b-form-input id="code" v-model="editItems[staticFields[13]]" type="text"
+                            v-bind:class="{'form-control':true, 'is-invalid' : !validCountry() && countryBlured}"
+                            v-on:blur="countryBlured = true"
+                            :placeholder="`Country`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-text-field
@@ -238,7 +261,14 @@ export default {
       },
       dynamicFieldModel: {},
       dynamicFieldOptions: {},
-      selectedID: null
+      selectedID: null,
+      codeBlured: true,
+      nameBlured: true,
+      groupNameBlured: true,
+      ledgerIdBlured: true,
+      cityBlured: true,
+      stateBlured: true,
+      countryBlured: true
     }
   },
   beforeMount: function() {
@@ -329,6 +359,7 @@ export default {
         });
     },
     updatePartyMasterData: function() {
+      evt.preventDefault()
       this.editItems[this.staticFields[4]] = typeof(this.editItems[this.staticFields[4]]) === 'object' ? this.editItems[this.staticFields[4]].groupID : this.editItems[this.staticFields[4]];
       this.editItems[this.staticFields[5]] = typeof(this.editItems[this.staticFields[5]]) === 'object' ? this.editItems[this.staticFields[5]].ledgerGroupID : this.editItems[this.staticFields[5]];
       const updateParams = {
@@ -351,6 +382,30 @@ export default {
         }).catch((err) => {
           console.error('OOps! Error occured while updating the request', err);
         });
+    },
+    validCode: function() {
+      return this.editItems[staticFields[1]] >= 1 ? true : false;
+    },
+    validName: function() {
+      return this.editItems[staticFields[2]] >= 1 ? true : false;
+    },
+    ValidGroupLedgerid: function() {
+      return this.editItems[staticFields[5]] >= 1 ? true : false;
+    },
+    validSupplierGroup: function() {
+      return this.editItems[staticFields[4]] >= 1 ? true : false;
+    },
+    validCity: function() {
+      return this.editItems[staticFields[10]] >= 1 ? true : false;
+    },
+    validState: function() {
+      return this.editItems[staticFields[12]] >= 1 ? true : false;
+    },
+    validCountry: function() {
+      return this.editItems[staticFields[13]] >= 1 ? true : false;
+    },
+    validate: function() {
+      (this.validCode() && this.validName() && this.ValidGroupLedgerid() && this.validSupplierGroup() && this.validCity() && this.validState() && this.validCountry()) ? true : false;
     }
   }
 }

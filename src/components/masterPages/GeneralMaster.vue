@@ -51,7 +51,10 @@
                               required
                             ></v-text-field> -->
                             <label for="code">{{`${preFix} Code: *`}}</label>
-                            <b-form-input id="code" v-model="editItems[staticFields[1]]" type="text" :placeholder="`${preFix} Code`" />
+                            <b-form-input id="code" v-model="editItems[staticFields[1]]" type="text"
+                            v-bind:class="{'form-control':true, 'is-invalid' : !validCode() && codeBlured}"
+                            v-on:blur="codeBlured = true"
+                            :placeholder="`${preFix} Code`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-text-field
@@ -60,7 +63,10 @@
                               required
                             ></v-text-field> -->
                             <label for="code">{{`${preFix} Name: *`}}</label>
-                            <b-form-input id="code" v-model="editItems[staticFields[2]]" type="text" :placeholder="`${preFix} Name`" />
+                            <b-form-input id="code" v-model="editItems[staticFields[2]]" type="text"
+                            v-bind:class="{'form-control':true, 'is-invalid' : !validName() && nameBlured}"
+                            v-on:blur="nameBlured = true"
+                            :placeholder="`${preFix} Name`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-text-field
@@ -197,6 +203,7 @@ export default {
       },
       dynamicFieldModel: {},
       dynamicFieldOptions: {},
+      codeBlured: true
     }
   },
   beforeMount: function() {
@@ -255,6 +262,7 @@ export default {
         });
     },
     updateGeneralMasterData: function() {
+      this.validate();
       console.log('Update params', this.editItems);
       const updateParam = {
         docID: localStorage.getItem('menuDocId') || 1121, // Need to remove 1121 value and put 0 apart of this;
@@ -281,6 +289,15 @@ export default {
     },
     deleteGeneralMaster: function() {
 
+    },
+    validCode: function() {
+      return this.editItems[staticFields[1]] >= 1 ? true : false;
+    },
+    validName: function() {
+      return this.editItems[staticFields[2]] >= 1 ? true : false;
+    },
+    validate: function() {
+      (this.validCode() && this.validName()) ? true : false;
     }
   }
 }

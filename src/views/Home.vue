@@ -21,11 +21,12 @@
             <v-flex shrink>
               <div v-if="selected">
                 <h1>{{ selected.name }} </h1>
-                <component v-bind:is="currentView"></component>
+                <!-- <component v-bind:is="currentView"></component> -->
               </div>
               <div v-else>
                 <h1>Welcome, VfactIC</h1>
                 <h2>Date: {{ new Date() }}</h2>
+                <ValidationExample></ValidationExample>
               </div>
             </v-flex>
           </v-layout>
@@ -44,13 +45,15 @@ import httpClient from "@/services/httpClient.js"
 import PartyMaster from "@/components/masterPages/PartyMaster.vue"
 import GeneralMaster from "@/components/masterPages/GeneralMaster.vue"
 import ItemMaster from "@/components/masterPages/ItemMaster.vue"
+import ValidationExample from "@/components/masterPages/ValidationField.vue"
 
 export default {
   name: "home",
   components: {
     PartyMaster,
     GeneralMaster,
-    ItemMaster
+    ItemMaster,
+    ValidationExample
   },
   data: function() {
     return {

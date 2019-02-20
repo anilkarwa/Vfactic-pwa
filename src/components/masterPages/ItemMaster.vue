@@ -62,7 +62,10 @@
                               required
                             ></v-text-field> -->
                             <label for="code">{{`${preFix} Name: *`}}</label>
-                            <b-form-input id="code" v-model="editedItems[staticFields[2]]" type="text" :placeholder="`${preFix} Name`" />
+                            <b-form-input id="code" v-model="editedItems[staticFields[2]]" type="text"
+                            v-bind:class="{'form-control':true, 'is-invalid' : !validName() && nameBlured}"
+                            v-on:blur="nameBlured = true"
+                            :placeholder="`${preFix} Name`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-text-field
@@ -71,7 +74,8 @@
                               required
                             ></v-text-field> -->
                             <label for="code">{{`${preFix} Desc: *`}}</label>
-                            <b-form-input id="code" v-model="editedItems[staticFields[3]]" type="text" :placeholder="`${preFix} Desc`" />
+                            <b-form-input id="code" v-model="editedItems[staticFields[3]]" type="text"
+                            :placeholder="`${preFix} Desc`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-select
@@ -83,7 +87,10 @@
                               :label="`${preFix} Group Id:`"
                             ></v-select> -->
                             <label for="">{{`${preFix} Group:`}}</label>
-                            <b-form-select v-model="editedItems[staticFields[4]]" :options="itemGroupList" value-field="itemGroupID" text-field="itemGroupCode" />
+                            <b-form-select v-model="editedItems[staticFields[4]]" :options="itemGroupList"
+                            v-bind:class="{'form-control':true, 'is-invalid' : !validitemGroup() && itemGroupBlured}"
+                            v-on:blur="itemGroupBlured = true"
+                            value-field="itemGroupID" text-field="itemGroupCode" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-text-field
@@ -113,7 +120,10 @@
                               label="Item Type"
                             ></v-select> -->
                             <label for="">{{`${preFix} Item Type:`}}</label>
-                            <b-form-select v-model="editedItems[staticFields[7]]" :options="itemTypeList" value-field= "itemTypeID" text-field="itemTypeName" />
+                            <b-form-select v-model="editedItems[staticFields[7]]" :options="itemTypeList"
+                            v-bind:class="{'form-control':true, 'is-invalid' : !validitemType() && itemTypeBlured}"
+                            v-on:blur="itemTypeBlured = true"
+                            value-field= "itemTypeID" text-field="itemTypeName" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-select
@@ -124,7 +134,10 @@
                               item-value="UOMID"
                             ></v-select> -->
                             <label for="">{{`UOM:`}}</label>
-                            <b-form-select v-model="editedItems[staticFields[7]]" :options="UOMList" value-field="UOMID" text-field="UOMCode" />
+                            <b-form-select v-model="editedItems[staticFields[8]]" :options="UOMList"
+                            v-bind:class="{'form-control':true, 'is-invalid' : !validUOM() && UOMBlured}"
+                            v-on:blur="UOMBlured = true"
+                            value-field="UOMID" text-field="UOMCode" />
                           </v-flex>
                           <v-layout wrap>
                             <v-flex xs12 sm4 md4>
@@ -218,6 +231,10 @@ export default {
       },
       dynamicFieldModel: {},
       dynamicFieldOptions: {},
+      nameBlured: true,
+      itemGroupBlured: true,
+      itemTypeBlured: true,
+      UOMBlured: true
     }
   },
   beforeMount: function() {
@@ -279,6 +296,21 @@ export default {
         dynamicFields: this.dynamicFieldModel
       }
       console.log('Update Params', updateParams);
+    },
+    validName: function() {
+      return this.editItems[staticFields[2]] >= 1 ? true : false;
+    },
+    validitemGroup: function() {
+      return this.editItems[staticFields[4]] >= 1 ? true : false;
+    },
+    validitemType: function() {
+      return this.editItems[staticFields[7]] >= 1 ? true : false;
+    },
+    validUOM: function() {
+      return this.editItems[staticFields[8]] >= 1 ? true : false;
+    },
+    validate: function() {
+      (this.validName() && this.validitemGroup() && this.validitemType() && this.validUOM()) ? true : false;
     }
   }
 }
