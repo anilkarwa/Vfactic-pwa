@@ -222,7 +222,7 @@
                        <v-container fluid grid-list-xl>
                         <v-layout row justify-space-between>
                           <v-flex xs12 sm4 md4>
-                      <vue-form-generator :schema="dynamicFieldSchema" :model="dynamicFieldModel"></vue-form-generator>
+                      <vue-form-generator :schema="dynamicFieldSchema" :model="dynamicFieldModel" :options="formOptions" @validated="onValidated"></vue-form-generator>
                           </v-flex>
                         </v-layout>
                        </v-container>
@@ -268,7 +268,12 @@ export default {
       ledgerIdBlured: true,
       cityBlured: true,
       stateBlured: true,
-      countryBlured: true
+      countryBlured: true,
+      formOptions: {
+        validateAfterLoad: true,
+        validateAfterChanged: true,
+        validateAsync: true
+      }
     }
   },
   beforeMount: function() {
@@ -422,6 +427,9 @@ export default {
     },
     validate: function() {
       (this.validCode() && this.validName() && this.ValidGroupLedgerid() && this.validSupplierGroup() && this.validCity() && this.validState() && this.validCountry()) ? true : false;
+    },
+    onValidated: function(isValid, errors) {
+      console.log("Validation result: ", isValid, ", Errors:", errors);
     }
   }
 }

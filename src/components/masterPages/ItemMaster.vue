@@ -192,7 +192,7 @@
                        <v-container fluid grid-list-xl>
                         <v-layout row justify-space-between>
                           <v-flex xs12 sm4 md4>
-                      <vue-form-generator :schema="dynamicFieldSchema" :model="dynamicFieldModel"></vue-form-generator>
+                      <vue-form-generator :schema="dynamicFieldSchema" :model="dynamicFieldModel" :options="formOptions" ></vue-form-generator>
                           </v-flex>
                         </v-layout>
                        </v-container>
@@ -234,7 +234,12 @@ export default {
       nameBlured: true,
       itemGroupBlured: true,
       itemTypeBlured: true,
-      UOMBlured: true
+      UOMBlured: true,
+      formOptions: {
+        validateAfterLoad: true,
+        validateAfterChanged: true,
+        validateAsync: true
+      }
     }
   },
   beforeMount: function() {
