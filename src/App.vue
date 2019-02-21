@@ -76,4 +76,18 @@ export default {
   box-shadow: 0 0 0 ;
 } 
 
+.mandatoryStar{
+  position: absolute;
+  color: rgb(230, 61, 61);
+  font-size: 20px;
+  margin-top: -7px;
+}
+.form-group.required label:after {
+  content:"*";
+  color:red;
+  position: relative;
+  font-size: 20px;
+  margin-top: -9px;
+}
+
 </style>

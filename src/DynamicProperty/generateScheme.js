@@ -36,10 +36,10 @@ const generateSchema = (schemas, model) => {
                 max: p.max,
                 hint: p.help,
                // readonly: function (model){ return model && (model[conditionsOperand[0]] )== p.readOnlyCompareValue}
-               readonly: p.readOnlyCondition == ""? p.required:(conditionsOperand.length == 1?function (model){ 
+               disabled: (!p.readonly)? p.readonly:( (p.readOnlyCondition == "") ? p.readonly:(conditionsOperand.length == 1?function (model){ 
                    
                     switch(p.readOnlyOperator){
-                        case "=" : return model && (model[conditionsOperand[0]] )== p.readOnlyCompareValue;
+                        case "=" :  return model && ((model[conditionsOperand[0]] ) == p.readOnlyCompareValue);
                                     break;
                         case "<" :  return model && (model[conditionsOperand[0]] ) < p.readOnlyCompareValue;
                                     break;
@@ -64,11 +64,11 @@ const generateSchema = (schemas, model) => {
                                                         break;
                                             case "<" :  return model && (model[conditionsOperand[0]] + model[conditionsOperand[2]] ) < p.readOnlyCompareValue;
                                                         break;
-                                            case ">" :  return model && (model[conditionsOperand[0]] + model[conditionsOperand[2]]   ) > p.readOnlyCompareValue;
+                                            case ">" :  return model && (model[conditionsOperand[0]] + model[conditionsOperand[2]] ) > p.readOnlyCompareValue;
                                                         break;
-                                            case "<=" :  return model && (model[conditionsOperand[0]] + model[conditionsOperand[2]]  ) <= p.readOnlyCompareValue;
+                                            case "<=" :  return model && (model[conditionsOperand[0]] + model[conditionsOperand[2]] ) <= p.readOnlyCompareValue;
                                                         break;
-                                            case ">=" :  return model && (model[conditionsOperand[0]] + model[conditionsOperand[2]]  ) >= p.readOnlyCompareValue;
+                                            case ">=" :  return model && (model[conditionsOperand[0]] + model[conditionsOperand[2]] ) >= p.readOnlyCompareValue;
                                                         break;
                                             case "<>" :  return model && (model[conditionsOperand[0]] + model[conditionsOperand[2]] ) != p.readOnlyCompareValue;
                                                         break;
@@ -132,9 +132,9 @@ const generateSchema = (schemas, model) => {
 
                     } 
                     
-                }),
+                })),
                 // required: function (model){ return model && (model[conditionsOperand[0]] )== p.readOnlyCompareValue}
-                required: p.requiredCondtion == ""? p.required:(requiredconditionsOperand.length == 1?function (model){ 
+               required: (p.required)?p.required:( p.requiredCondtion == ""? p.required:(requiredconditionsOperand.length == 1?function (model){ 
                    
                 switch(p.requiredOperator){
                     case "=" : return model && (model[requiredconditionsOperand[0]] )== p.requiredCompareValue;
@@ -230,8 +230,8 @@ const generateSchema = (schemas, model) => {
 
                     } 
                     
-                }),
-                hide: p.visibleCondition == ""? p.required:(hideconditionsOperand.length == 1?function (model){ 
+                })),
+                hide:(p.visible)?p.visible:( p.visibleCondition == ""? p.visible:(hideconditionsOperand.length == 1?function (model){ 
                    
                 switch(p.visiableOperator){
                     case "=" : return model && (model[hideconditionsOperand[0]] )== p.visialbeCompareValue;
@@ -327,7 +327,7 @@ const generateSchema = (schemas, model) => {
 
                     } 
                     
-                }),
+                })),
 
             }
             newSchema.push(schema);
@@ -340,10 +340,10 @@ const generateSchema = (schemas, model) => {
                 label : p.label,
                 values : p.values,
                 help:  p.help,
-                readonly: p.readOnlyCondition == ""? p.required:(conditionsOperand.length == 1?function (model){ 
+                disabled: (!p.readonly)? p.readonly:( (p.readOnlyCondition == "") ? p.readonly:(conditionsOperand.length == 1?function (model){ 
                    
                     switch(p.readOnlyOperator){
-                        case "=" : return model && (model[conditionsOperand[0]] )== p.readOnlyCompareValue;
+                        case "=" :  return model && ((model[conditionsOperand[0]] ) == p.readOnlyCompareValue);
                                     break;
                         case "<" :  return model && (model[conditionsOperand[0]] ) < p.readOnlyCompareValue;
                                     break;
@@ -368,13 +368,13 @@ const generateSchema = (schemas, model) => {
                                                         break;
                                             case "<" :  return model && (model[conditionsOperand[0]] + model[conditionsOperand[2]] ) < p.readOnlyCompareValue;
                                                         break;
-                                            case ">" :  return model && (model[conditionsOperand[0]] + model[conditionsOperand[2]]   ) > p.readOnlyCompareValue;
+                                            case ">" :  return model && (model[conditionsOperand[0]] + model[conditionsOperand[2]] ) > p.readOnlyCompareValue;
                                                         break;
-                                            case "<=" :  return model && (model[conditionsOperand[0]] + model[conditionsOperand[2]]  ) <= p.readOnlyCompareValue;
+                                            case "<=" :  return model && (model[conditionsOperand[0]] + model[conditionsOperand[2]] ) <= p.readOnlyCompareValue;
                                                         break;
-                                            case ">=" :  return model && (model[conditionsOperand[0]] + model[conditionsOperand[2]]  ) >= p.readOnlyCompareValue;
+                                            case ">=" :  return model && (model[conditionsOperand[0]] + model[conditionsOperand[2]] ) >= p.readOnlyCompareValue;
                                                         break;
-                                            case "<>" :  return model && (model[conditionsOperand[0]] + model[conditionsOperand[2]]  ) != p.readOnlyCompareValue;
+                                            case "<>" :  return model && (model[conditionsOperand[0]] + model[conditionsOperand[2]] ) != p.readOnlyCompareValue;
                                                         break;
                                         }
 
@@ -391,7 +391,7 @@ const generateSchema = (schemas, model) => {
                                                         break;
                                             case ">=" :  return model && (model[conditionsOperand[0]] - model[conditionsOperand[2]]  ) >= p.readOnlyCompareValue;
                                                         break;
-                                            case "<>" :  return model && (model[conditionsOperand[0]] - model[conditionsOperand[2]]  ) != p.readOnlyCompareValue;
+                                            case "<>" :  return model && (model[conditionsOperand[0]] - model[conditionsOperand[2]] ) != p.readOnlyCompareValue;
                                                         break;
                                         }
 
@@ -409,8 +409,8 @@ const generateSchema = (schemas, model) => {
                                                             break;
                                                 case ">=" :  return model && (model[conditionsOperand[0]] / model[conditionsOperand[2]]  ) >= p.readOnlyCompareValue;
                                                             break;
-                                                case "<>" :  return model && (model[conditionsOperand[0]] / model[conditionsOperand[2]]  ) != p.readOnlyCompareValue;
-                                                        break;
+                                                case "<>" :  return model && (model[conditionsOperand[0]] / model[conditionsOperand[2]] ) != p.readOnlyCompareValue;
+                                                            break;
                                             }
                                         break;
                             case "*" : 
@@ -425,7 +425,7 @@ const generateSchema = (schemas, model) => {
                                                             break;
                                                 case ">=" :  return model && (model[conditionsOperand[0]] * model[conditionsOperand[2]]  ) >= p.readOnlyCompareValue;
                                                             break;
-                                                case "<>" :  return model && (model[conditionsOperand[0]] * model[conditionsOperand[2]]  ) != p.readOnlyCompareValue;
+                                                case "<>" :  return model && (model[conditionsOperand[0]] * model[conditionsOperand[2]] ) != p.readOnlyCompareValue;
                                                         break;
                                             }
                                          break;
@@ -436,207 +436,210 @@ const generateSchema = (schemas, model) => {
 
                     } 
                     
-                }),
-                required: p.requiredCondtion == ""? p.required:(requiredconditionsOperand.length == 1?function (model){ 
+                })),
+                // required: function (model){ return model && (model[conditionsOperand[0]] )== p.readOnlyCompareValue}
+               required: (p.required)?p.required:( p.requiredCondtion == ""? p.required:(requiredconditionsOperand.length == 1?function (model){ 
                    
-                    switch(p.requiredOperator){
-                        case "=" : return model && (model[requiredconditionsOperand[0]] )== p.requiredCompareValue;
-                                    break;
-                        case "<" :  return model && (model[requiredconditionsOperand[0]] ) < p.requiredCompareValue;
-                                    break;
-                        case ">" :  return model && (model[requiredconditionsOperand[0]] ) > p.requiredCompareValue;
-                                    break;
-                        case "<=" :  return model && (model[requiredconditionsOperand[0]] ) <= p.requiredCompareValue;
-                                     break;
-                        case ">=" :  return model && (model[requiredconditionsOperand[0]] ) >= p.requiredCompareValue;
-                                     break;
-                        case "<>" :  return model && (model[requiredconditionsOperand[0]] ) != p.requiredCompareValue;
-                                     break;
-                     }
-                    
-                    } : 
-                    function (model){ 
-                        if(requiredconditionsOperand.length == 3) {
-    
-                            switch(requiredconditionsOperand[1]){
-                                case "+" : 
+                switch(p.requiredOperator){
+                    case "=" : return model && (model[requiredconditionsOperand[0]] )== p.requiredCompareValue;
+                                break;
+                    case "<" :  return model && (model[requiredconditionsOperand[0]] ) < p.requiredCompareValue;
+                                break;
+                    case ">" :  return model && (model[requiredconditionsOperand[0]] ) > p.requiredCompareValue;
+                                break;
+                    case "<=" :  return model && (model[requiredconditionsOperand[0]] ) <= p.requiredCompareValue;
+                                 break;
+                    case ">=" :  return model && (model[requiredconditionsOperand[0]] ) >= p.requiredCompareValue;
+                                 break;
+                    case "<>" :  return model && (model[requiredconditionsOperand[0]] ) != p.requiredCompareValue;
+                                 break;
+                 }
+                
+                } : 
+                function (model){ 
+                    if(requiredconditionsOperand.length == 3) {
+
+                        switch(requiredconditionsOperand[1]){
+                            case "+" : 
+                                        switch(p.requiredOperator){
+                                            case "=" : return model && (model[requiredconditionsOperand[0]] + model[requiredconditionsOperand[2]] )== p.requiredCompareValue;
+                                                        break;
+                                            case "<" :  return model && (model[requiredconditionsOperand[0]] + model[requiredconditionsOperand[2]] ) < p.requiredCompareValue;
+                                                        break;
+                                            case ">" :  return model && (model[requiredconditionsOperand[0]] + model[requiredconditionsOperand[2]]   ) > p.requiredCompareValue;
+                                                        break;
+                                            case "<=" :  return model && (model[requiredconditionsOperand[0]] + model[requiredconditionsOperand[2]]  ) <= p.requiredCompareValue;
+                                                        break;
+                                            case ">=" :  return model && (model[requiredconditionsOperand[0]] + model[requiredconditionsOperand[2]]  ) >= p.requiredCompareValue;
+                                                        break;
+                                            case "<>" :  return model && (model[requiredconditionsOperand[0]] + model[requiredconditionsOperand[2]] ) != p.requiredCompareValue;
+                                                        break;
+                                        }
+
+                                        break;
+                            case "-" : 
+                                        switch(p.requiredOperator){
+                                            case "=" : return model && (model[requiredconditionsOperand[0]] - model[requiredconditionsOperand[2]] )== p.requiredCompareValue;
+                                                        break;
+                                            case "<" :  return model && (model[requiredconditionsOperand[0]] - model[requiredconditionsOperand[2]] ) < p.requiredCompareValue;
+                                                        break;
+                                            case ">" :  return model && (model[requiredconditionsOperand[0]] - model[requiredconditionsOperand[2]]   ) > p.requiredCompareValue;
+                                                        break;
+                                            case "<=" :  return model && (model[requiredconditionsOperand[0]] - model[requiredconditionsOperand[2]]  ) <= p.requiredCompareValue;
+                                                        break;
+                                            case ">=" :  return model && (model[requiredconditionsOperand[0]] - model[requiredconditionsOperand[2]]  ) >= p.requiredCompareValue;
+                                                        break;
+                                            case "<>" :  return model && (model[requiredconditionsOperand[0]] - model[requiredconditionsOperand[2]] ) != p.requiredCompareValue;
+                                                        break;
+                                        }
+
+                                        break;
+                            case "/" :  
+                                        
                                             switch(p.requiredOperator){
-                                                case "=" : return model && (model[requiredconditionsOperand[0]] + model[requiredconditionsOperand[2]] )== p.requiredCompareValue;
+                                                case "=" : return model && (model[requiredconditionsOperand[0]] / model[requiredconditionsOperand[2]] )== p.requiredCompareValue;
                                                             break;
-                                                case "<" :  return model && (model[requiredconditionsOperand[0]] + model[requiredconditionsOperand[2]] ) < p.requiredCompareValue;
+                                                case "<" :  return model && (model[requiredconditionsOperand[0]] / model[requiredconditionsOperand[2]] ) < p.requiredCompareValue;
                                                             break;
-                                                case ">" :  return model && (model[requiredconditionsOperand[0]] + model[requiredconditionsOperand[2]]   ) > p.requiredCompareValue;
+                                                case ">" :  return model && (model[requiredconditionsOperand[0]] / model[requiredconditionsOperand[2]]   ) > p.requiredCompareValue;
                                                             break;
-                                                case "<=" :  return model && (model[requiredconditionsOperand[0]] + model[requiredconditionsOperand[2]]  ) <= p.requiredCompareValue;
+                                                case "<=" :  return model && (model[requiredconditionsOperand[0]] / model[requiredconditionsOperand[2]]  ) <= p.requiredCompareValue;
                                                             break;
-                                                case ">=" :  return model && (model[requiredconditionsOperand[0]] + model[requiredconditionsOperand[2]]  ) >= p.requiredCompareValue;
+                                                case ">=" :  return model && (model[requiredconditionsOperand[0]] / model[requiredconditionsOperand[2]]  ) >= p.requiredCompareValue;
                                                             break;
-                                                case "<>" :  return model && (model[requiredconditionsOperand[0]] + model[requiredconditionsOperand[2]] ) != p.requiredCompareValue;
+                                                case "<>" :  return model && (model[requiredconditionsOperand[0]] / model[requiredconditionsOperand[2]] ) != p.requiredCompareValue;
                                                             break;
                                             }
-    
-                                            break;
-                                case "-" : 
+                                        break;
+                            case "*" : 
                                             switch(p.requiredOperator){
-                                                case "=" : return model && (model[requiredconditionsOperand[0]] - model[requiredconditionsOperand[2]] )== p.requiredCompareValue;
+                                                case "=" : return model && (model[requiredconditionsOperand[0]] * model[requiredconditionsOperand[2]] )== p.requiredCompareValue;
                                                             break;
-                                                case "<" :  return model && (model[requiredconditionsOperand[0]] - model[requiredconditionsOperand[2]] ) < p.requiredCompareValue;
+                                                case "<" :  return model && (model[requiredconditionsOperand[0]] * model[requiredconditionsOperand[2]] ) < p.requiredCompareValue;
                                                             break;
-                                                case ">" :  return model && (model[requiredconditionsOperand[0]] - model[requiredconditionsOperand[2]]   ) > p.requiredCompareValue;
+                                                case ">" :  return model && (model[requiredconditionsOperand[0]] * model[requiredconditionsOperand[2]]   ) > p.requiredCompareValue;
                                                             break;
-                                                case "<=" :  return model && (model[requiredconditionsOperand[0]] - model[requiredconditionsOperand[2]]  ) <= p.requiredCompareValue;
+                                                case "<=" :  return model && (model[requiredconditionsOperand[0]] * model[requiredconditionsOperand[2]]  ) <= p.requiredCompareValue;
                                                             break;
-                                                case ">=" :  return model && (model[requiredconditionsOperand[0]] - model[requiredconditionsOperand[2]]  ) >= p.requiredCompareValue;
+                                                case ">=" :  return model && (model[requiredconditionsOperand[0]] * model[requiredconditionsOperand[2]]  ) >= p.requiredCompareValue;
                                                             break;
-                                                case "<>" :  return model && (model[requiredconditionsOperand[0]] - model[requiredconditionsOperand[2]] ) != p.requiredCompareValue;
-                                                            break;
+                                                case "<>" :  return model && (model[requiredconditionsOperand[0]] * model[requiredconditionsOperand[2]] ) != p.requiredCompareValue;
+                                                        break;
                                             }
-    
-                                            break;
-                                case "/" :  
-                                            
-                                                switch(p.requiredOperator){
-                                                    case "=" : return model && (model[requiredconditionsOperand[0]] / model[requiredconditionsOperand[2]] )== p.requiredCompareValue;
-                                                                break;
-                                                    case "<" :  return model && (model[requiredconditionsOperand[0]] / model[requiredconditionsOperand[2]] ) < p.requiredCompareValue;
-                                                                break;
-                                                    case ">" :  return model && (model[requiredconditionsOperand[0]] / model[requiredconditionsOperand[2]]   ) > p.requiredCompareValue;
-                                                                break;
-                                                    case "<=" :  return model && (model[requiredconditionsOperand[0]] / model[requiredconditionsOperand[2]]  ) <= p.requiredCompareValue;
-                                                                break;
-                                                    case ">=" :  return model && (model[requiredconditionsOperand[0]] / model[requiredconditionsOperand[2]]  ) >= p.requiredCompareValue;
-                                                                break;
-                                                    case "<>" :  return model && (model[requiredconditionsOperand[0]] / model[requiredconditionsOperand[2]] ) != p.requiredCompareValue;
-                                                                break;
-                                                }
-                                            break;
-                                case "*" : 
-                                                switch(p.requiredOperator){
-                                                    case "=" : return model && (model[requiredconditionsOperand[0]] * model[requiredconditionsOperand[2]] )== p.requiredCompareValue;
-                                                                break;
-                                                    case "<" :  return model && (model[requiredconditionsOperand[0]] * model[requiredconditionsOperand[2]] ) < p.requiredCompareValue;
-                                                                break;
-                                                    case ">" :  return model && (model[requiredconditionsOperand[0]] * model[requiredconditionsOperand[2]]   ) > p.requiredCompareValue;
-                                                                break;
-                                                    case "<=" :  return model && (model[requiredconditionsOperand[0]] * model[requiredconditionsOperand[2]]  ) <= p.requiredCompareValue;
-                                                                break;
-                                                    case ">=" :  return model && (model[requiredconditionsOperand[0]] * model[requiredconditionsOperand[2]]  ) >= p.requiredCompareValue;
-                                                                break;
-                                                    case "<>" :  return model && (model[requiredconditionsOperand[0]] * model[requiredconditionsOperand[2]] ) != p.requiredCompareValue;
-                                                            break;
-                                                }
-                                            break;
-    
-                            }
-    
-                        } else if(conditionsOperand.length == 5){
-    
-                        } 
-                        
-                }),
-                hide: p.visibleCondition == ""? p.required:(hideconditionsOperand.length == 1?function (model){ 
-                   
-                    switch(p.visiableOperator){
-                        case "=" : return model && (model[hideconditionsOperand[0]] )== p.visialbeCompareValue;
-                                    break;
-                        case "<" :  return model && (model[hideconditionsOperand[0]] ) < p.visialbeCompareValue;
-                                    break;
-                        case ">" :  return model && (model[hideconditionsOperand[0]] ) > p.visialbeCompareValue;
-                                    break;
-                        case "<=" :  return model && (model[hideconditionsOperand[0]] ) <= p.visialbeCompareValue;
                                         break;
-                        case ">=" :  return model && (model[hideconditionsOperand[0]] ) >= p.visialbeCompareValue;
-                                        break;
-                        case "<>" :  return model && (model[hideconditionsOperand[0]] ) != p.visialbeCompareValue;
-                                        break;
+
                         }
+
+                    } else if(conditionsOperand.length == 5){
+
+                    } 
                     
-                    } : 
-                    function (model){ 
-                        if(hideconditionsOperand.length == 3) {
-    
-                            switch(hideconditionsOperand[1]){
-                                case "+" : 
+                })),
+                hide:(p.visible)?p.visible:( p.visibleCondition == ""? p.visible:(hideconditionsOperand.length == 1?function (model){ 
+                   
+                switch(p.visiableOperator){
+                    case "=" : return model && (model[hideconditionsOperand[0]] )== p.visialbeCompareValue;
+                                break;
+                    case "<" :  return model && (model[hideconditionsOperand[0]] ) < p.visialbeCompareValue;
+                                break;
+                    case ">" :  return model && (model[hideconditionsOperand[0]] ) > p.visialbeCompareValue;
+                                break;
+                    case "<=" :  return model && (model[hideconditionsOperand[0]] ) <= p.visialbeCompareValue;
+                                    break;
+                    case ">=" :  return model && (model[hideconditionsOperand[0]] ) >= p.visialbeCompareValue;
+                                    break;
+                    case "<>" :  return model && (model[hideconditionsOperand[0]] ) != p.visialbeCompareValue;
+                                    break;
+                    }
+                
+                } : 
+                function (model){ 
+                    if(hideconditionsOperand.length == 3) {
+
+                        switch(hideconditionsOperand[1]){
+                            case "+" : 
+                                        switch(p.visiableOperator){
+                                            case "=" : return model && (model[hideconditionsOperand[0]] + model[hideconditionsOperand[2]] )== p.visialbeCompareValue;
+                                                        break;
+                                            case "<" :  return model && (model[hideconditionsOperand[0]] + model[hideconditionsOperand[2]] ) < p.visialbeCompareValue;
+                                                        break;
+                                            case ">" :  return model && (model[hideconditionsOperand[0]] + model[hideconditionsOperand[2]]   ) > p.visialbeCompareValue;
+                                                        break;
+                                            case "<=" :  return model && (model[hideconditionsOperand[0]] + model[hideconditionsOperand[2]]  ) <= p.visialbeCompareValue;
+                                                        break;
+                                            case ">=" :  return model && (model[hideconditionsOperand[0]] + model[hideconditionsOperand[2]]  ) >= p.visialbeCompareValue;
+                                                        break;
+                                            case "<>" :  return model && (model[hideconditionsOperand[0]] + model[hideconditionsOperand[2]] ) != p.visialbeCompareValue;
+                                                        break;
+                                        }
+
+                                        break;
+                            case "-" : 
+                                        switch(p.visiableOperator){
+                                            case "=" : return model && (model[hideconditionsOperand[0]] - model[hideconditionsOperand[2]] )== p.visialbeCompareValue;
+                                                        break;
+                                            case "<" :  return model && (model[hideconditionsOperand[0]] - model[hideconditionsOperand[2]] ) < p.visialbeCompareValue;
+                                                        break;
+                                            case ">" :  return model && (model[hideconditionsOperand[0]] - model[hideconditionsOperand[2]]   ) > p.visialbeCompareValue;
+                                                        break;
+                                            case "<=" :  return model && (model[hideconditionsOperand[0]] - model[hideconditionsOperand[2]]  ) <= p.visialbeCompareValue;
+                                                        break;
+                                            case ">=" :  return model && (model[hideconditionsOperand[0]] - model[hideconditionsOperand[2]]  ) >= p.visialbeCompareValue;
+                                                        break;
+                                            case "<>" :  return model && (model[hideconditionsOperand[0]] - model[hideconditionsOperand[2]] ) != p.visialbeCompareValue;
+                                                        break;
+                                        }
+
+                                        break;
+                            case "/" :  
+                                        
                                             switch(p.visiableOperator){
-                                                case "=" : return model && (model[hideconditionsOperand[0]] + model[hideconditionsOperand[2]] )== p.visialbeCompareValue;
+                                                case "=" : return model && (model[hideconditionsOperand[0]] / model[hideconditionsOperand[2]] )== p.visialbeCompareValue;
                                                             break;
-                                                case "<" :  return model && (model[hideconditionsOperand[0]] + model[hideconditionsOperand[2]] ) < p.visialbeCompareValue;
+                                                case "<" :  return model && (model[hideconditionsOperand[0]] / model[hideconditionsOperand[2]] ) < p.visialbeCompareValue;
                                                             break;
-                                                case ">" :  return model && (model[hideconditionsOperand[0]] + model[hideconditionsOperand[2]]   ) > p.visialbeCompareValue;
+                                                case ">" :  return model && (model[hideconditionsOperand[0]] / model[hideconditionsOperand[2]]   ) > p.visialbeCompareValue;
                                                             break;
-                                                case "<=" :  return model && (model[hideconditionsOperand[0]] + model[hideconditionsOperand[2]]  ) <= p.visialbeCompareValue;
+                                                case "<=" :  return model && (model[hideconditionsOperand[0]] / model[hideconditionsOperand[2]]  ) <= p.visialbeCompareValue;
                                                             break;
-                                                case ">=" :  return model && (model[hideconditionsOperand[0]] + model[hideconditionsOperand[2]]  ) >= p.visialbeCompareValue;
+                                                case ">=" :  return model && (model[hideconditionsOperand[0]] / model[hideconditionsOperand[2]]  ) >= p.visialbeCompareValue;
                                                             break;
-                                                case "<>" :  return model && (model[hideconditionsOperand[0]] + model[hideconditionsOperand[2]] ) != p.visialbeCompareValue;
+                                                case "<>" :  return model && (model[hideconditionsOperand[0]] / model[hideconditionsOperand[2]] ) != p.visialbeCompareValue;
                                                             break;
                                             }
-    
-                                            break;
-                                case "-" : 
+                                        break;
+                            case "*" : 
                                             switch(p.visiableOperator){
-                                                case "=" : return model && (model[hideconditionsOperand[0]] - model[hideconditionsOperand[2]] )== p.visialbeCompareValue;
+                                                case "=" : return model && (model[hideconditionsOperand[0]] * model[hideconditionsOperand[2]] )== p.visialbeCompareValue;
                                                             break;
-                                                case "<" :  return model && (model[hideconditionsOperand[0]] - model[hideconditionsOperand[2]] ) < p.visialbeCompareValue;
+                                                case "<" :  return model && (model[hideconditionsOperand[0]] * model[hideconditionsOperand[2]] ) < p.visialbeCompareValue;
                                                             break;
-                                                case ">" :  return model && (model[hideconditionsOperand[0]] - model[hideconditionsOperand[2]]   ) > p.visialbeCompareValue;
+                                                case ">" :  return model && (model[hideconditionsOperand[0]] * model[hideconditionsOperand[2]]   ) > p.visialbeCompareValue;
                                                             break;
-                                                case "<=" :  return model && (model[hideconditionsOperand[0]] - model[hideconditionsOperand[2]]  ) <= p.visialbeCompareValue;
+                                                case "<=" :  return model && (model[hideconditionsOperand[0]] * model[hideconditionsOperand[2]]  ) <= p.visialbeCompareValue;
                                                             break;
-                                                case ">=" :  return model && (model[hideconditionsOperand[0]] - model[hideconditionsOperand[2]]  ) >= p.visialbeCompareValue;
+                                                case ">=" :  return model && (model[hideconditionsOperand[0]] * model[hideconditionsOperand[2]]  ) >= p.visialbeCompareValue;
                                                             break;
-                                                case "<>" :  return model && (model[hideconditionsOperand[0]] - model[hideconditionsOperand[2]] ) != p.visialbeCompareValue;
-                                                            break;
+                                                case "<>" :  return model && (model[hideconditionsOperand[0]] * model[hideconditionsOperand[2]] ) != p.visialbeCompareValue;
+                                                        break;
                                             }
-    
-                                            break;
-                                case "/" :  
-                                            
-                                                switch(p.visiableOperator){
-                                                    case "=" : return model && (model[hideconditionsOperand[0]] / model[hideconditionsOperand[2]] )== p.visialbeCompareValue;
-                                                                break;
-                                                    case "<" :  return model && (model[hideconditionsOperand[0]] / model[hideconditionsOperand[2]] ) < p.visialbeCompareValue;
-                                                                break;
-                                                    case ">" :  return model && (model[hideconditionsOperand[0]] / model[hideconditionsOperand[2]]   ) > p.visialbeCompareValue;
-                                                                break;
-                                                    case "<=" :  return model && (model[hideconditionsOperand[0]] / model[hideconditionsOperand[2]]  ) <= p.visialbeCompareValue;
-                                                                break;
-                                                    case ">=" :  return model && (model[hideconditionsOperand[0]] / model[hideconditionsOperand[2]]  ) >= p.visialbeCompareValue;
-                                                                break;
-                                                    case "<>" :  return model && (model[hideconditionsOperand[0]] / model[hideconditionsOperand[2]] ) != p.visialbeCompareValue;
-                                                                break;
-                                                }
-                                            break;
-                                case "*" : 
-                                                switch(p.visiableOperator){
-                                                    case "=" : return model && (model[hideconditionsOperand[0]] * model[hideconditionsOperand[2]] )== p.visialbeCompareValue;
-                                                                break;
-                                                    case "<" :  return model && (model[hideconditionsOperand[0]] * model[hideconditionsOperand[2]] ) < p.visialbeCompareValue;
-                                                                break;
-                                                    case ">" :  return model && (model[hideconditionsOperand[0]] * model[hideconditionsOperand[2]]   ) > p.visialbeCompareValue;
-                                                                break;
-                                                    case "<=" :  return model && (model[hideconditionsOperand[0]] * model[hideconditionsOperand[2]]  ) <= p.visialbeCompareValue;
-                                                                break;
-                                                    case ">=" :  return model && (model[hideconditionsOperand[0]] * model[hideconditionsOperand[2]]  ) >= p.visialbeCompareValue;
-                                                                break;
-                                                    case "<>" :  return model && (model[hideconditionsOperand[0]] * model[hideconditionsOperand[2]] ) != p.visialbeCompareValue;
-                                                            break;
-                                                }
-                                            break;
-    
-                            }
-    
-                        } else if(conditionsOperand.length == 5){
-    
-                        } 
-                        
-                    }),
+                                        break;
+
+                        }
+
+                    } else if(conditionsOperand.length == 5){
+
+                    } 
+                    
+                })),
             }
             newSchema.push(schema);
         }
 
 
     });
+
+    console.log('Schemeaaa='+JSON.stringify(newSchema));
   
  return  newSchema;
 }

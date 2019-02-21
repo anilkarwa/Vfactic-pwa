@@ -6,13 +6,13 @@ import store from './store'
 import './registerServiceWorker'
 import BootstrapVue from 'bootstrap-vue'
 import VueFormGenerator from 'vue-form-generator'
-//import 'vue-form-generator/dist/vfg.css'
+//import 'vue-form-generator/dist/vfg-core.css'
 
 Vue.config.productionTip = false
 Vue.use(Vuetify)
 Vue.use(BootstrapVue)
 Vue.use(VueFormGenerator)
-Vue.use([Vuetify, BootstrapVue, VueFormGenerator])
+//Vue.use([Vuetify, BootstrapVue, VueFormGenerator])
 
 new Vue({
   router,

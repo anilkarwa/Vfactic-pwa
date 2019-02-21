@@ -50,11 +50,15 @@
                               :label="`${preFix} Code: *`"
                               required
                             ></v-text-field> -->
-                            <label for="code">{{`${preFix} Code: *`}}</label>
+                            <label for="code">{{`${preFix} Code: `}}</label><span class="mandatoryStar">*</span>
                             <b-form-input id="code" v-model="editItems[staticFields[1]]" type="text"
                             v-bind:class="{'form-control':true, 'is-invalid' : !validCode() && codeBlured}"
                             v-on:blur="codeBlured = true"
+                            aria-describedby="codeLiveFeedback"
                             :placeholder="`${preFix} Code`" />
+                            <b-form-invalid-feedback id="codeLiveFeedback">
+                              This field is required
+                            </b-form-invalid-feedback>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-text-field
@@ -62,11 +66,15 @@
                               :label="`${preFix} Name: *`"
                               required
                             ></v-text-field> -->
-                            <label for="code">{{`${preFix} Name: *`}}</label>
+                            <label for="code">{{`${preFix} Name: `}}</label><span class="mandatoryStar">*</span>
                             <b-form-input id="code" v-model="editItems[staticFields[2]]" type="text"
                             v-bind:class="{'form-control':true, 'is-invalid' : !validName() && nameBlured}"
                             v-on:blur="nameBlured = true"
+                            aria-describedby="nameLiveFeedback"
                             :placeholder="`${preFix} Name`" />
+                            <b-form-invalid-feedback id="nameLiveFeedback">
+                              This field is required
+                            </b-form-invalid-feedback>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-text-field
@@ -74,7 +82,7 @@
                               :label="`Added On: *`"
                               required
                             ></v-text-field> -->
-                            <label for="code">{{`Added On: *`}}</label>
+                            <label for="code">{{`Added On: `}}</label>
                             <b-form-input id="code" v-model="editItems[staticFields[3]]" type="text" :placeholder="`Added On`" readonly />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
@@ -83,7 +91,7 @@
                               :label="`Added By: *`"
                               required
                             ></v-text-field> -->
-                            <label for="code">{{`Added By: *`}}</label>
+                            <label for="code">{{`Added By: `}}</label>
                             <b-form-input id="code" v-model="editItems[staticFields[4]]" type="text" :placeholder="`Added By`" readonly />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
@@ -92,7 +100,7 @@
                               :label="`Changed On: *`"
                               required
                             ></v-text-field> -->
-                            <label for="code">{{`Changed On: *`}}</label>
+                            <label for="code">{{`Changed On: `}}</label>
                             <b-form-input id="code" v-model="editItems[staticFields[5]]" type="text" :placeholder="`Changed On`"  readonly />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
@@ -101,7 +109,7 @@
                               :label="`Changed By: *`"
                               required
                             ></v-text-field> -->
-                            <label for="code">{{`Changed By: *`}}</label>
+                            <label for="code">{{`Changed By: `}}</label>
                             <b-form-input id="code" v-model="editItems[staticFields[6]]" type="text" :placeholder="`Changed By`" readonly />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
