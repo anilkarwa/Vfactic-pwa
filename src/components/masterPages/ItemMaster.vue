@@ -51,9 +51,15 @@
                               :label="`${preFix} Code:`"
                               required
                             ></v-text-field> -->
-                            <label for="code">{{`${preFix} Code: *`}}</label>
-                            <b-form-input id="code" v-model="editedItems[staticFields[1]]" type="text" :placeholder="`${preFix} Code`" />
-                            <span class="focus-border"></span>
+                            <label for="code">{{`${preFix} Code: `}}</label><span class="mandatoryStar">*</span>
+                            <b-form-input id="code" v-model="editedItems[staticFields[1]]" type="text"
+                            v-bind:class="{'form-control':true, 'is-invalid' : !validCode() && nameBlured}"
+                            v-on:blur="nameBlured = true"
+                            aria-describedby="codeLiveFeedback"
+                            :placeholder="`${preFix} Code`" />
+                            <b-form-invalid-feedback id="codeLiveFeedback">
+                              This field is required
+                            </b-form-invalid-feedback>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-text-field
@@ -61,11 +67,15 @@
                               :label="`${preFix} Name:`"
                               required
                             ></v-text-field> -->
-                            <label for="code">{{`${preFix} Name: *`}}</label>
+                            <label for="code">{{`${preFix} Name: `}}</label><span class="mandatoryStar">*</span>
                             <b-form-input id="code" v-model="editedItems[staticFields[2]]" type="text"
                             v-bind:class="{'form-control':true, 'is-invalid' : !validName() && nameBlured}"
                             v-on:blur="nameBlured = true"
+                            aria-describedby="nameLiveFeedback"
                             :placeholder="`${preFix} Name`" />
+                            <b-form-invalid-feedback id="nameLiveFeedback">
+                              This field is required
+                            </b-form-invalid-feedback>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-text-field
@@ -73,7 +83,7 @@
                               :label="`${preFix} Desc:`"
                               required
                             ></v-text-field> -->
-                            <label for="code">{{`${preFix} Desc: *`}}</label>
+                            <label for="code">{{`${preFix} Desc: `}}</label>
                             <b-form-input id="code" v-model="editedItems[staticFields[3]]" type="text"
                             :placeholder="`${preFix} Desc`" />
                           </v-flex>
@@ -86,11 +96,15 @@
                               item-value="itemGroupID"
                               :label="`${preFix} Group Id:`"
                             ></v-select> -->
-                            <label for="">{{`${preFix} Group:`}}</label>
+                            <label for="">{{`${preFix} Group: `}}</label><span class="mandatoryStar">*</span>
                             <b-form-select v-model="editedItems[staticFields[4]]" :options="itemGroupList"
                             v-bind:class="{'form-control':true, 'is-invalid' : !validitemGroup() && itemGroupBlured}"
                             v-on:blur="itemGroupBlured = true"
+                            aria-describedby="groupIDLiveFeedback"
                             value-field="itemGroupID" text-field="itemGroupCode" />
+                            <b-form-invalid-feedback id="groupIDLiveFeedback">
+                              This field is required
+                            </b-form-invalid-feedback>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-text-field
@@ -119,11 +133,15 @@
                               item-value="itemTypeID"
                               label="Item Type"
                             ></v-select> -->
-                            <label for="">{{`${preFix} Item Type:`}}</label>
+                            <label for="">{{`${preFix} Item Type: `}}</label><span class="mandatoryStar">*</span>
                             <b-form-select v-model="editedItems[staticFields[7]]" :options="itemTypeList"
                             v-bind:class="{'form-control':true, 'is-invalid' : !validitemType() && itemTypeBlured}"
                             v-on:blur="itemTypeBlured = true"
+                            aria-describedby="itemTypeLiveFeedback"
                             value-field= "itemTypeID" text-field="itemTypeName" />
+                             <b-form-invalid-feedback id="itemTypeLiveFeedback">
+                              This field is required
+                            </b-form-invalid-feedback>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <!-- <v-select
@@ -133,11 +151,15 @@
                               item-text="UOMCode"
                               item-value="UOMID"
                             ></v-select> -->
-                            <label for="">{{`UOM:`}}</label>
+                            <label for="">{{`UOM: `}}</label><span class="mandatoryStar">*</span>
                             <b-form-select v-model="editedItems[staticFields[8]]" :options="UOMList"
                             v-bind:class="{'form-control':true, 'is-invalid' : !validUOM() && UOMBlured}"
                             v-on:blur="UOMBlured = true"
+                            aria-describedby="UOMLiveFeedback"
                             value-field="UOMID" text-field="UOMCode" />
+                            <b-form-invalid-feedback id="UOMLiveFeedback">
+                              This field is required
+                            </b-form-invalid-feedback>
                           </v-flex>
                           <v-layout wrap>
                             <v-flex xs12 sm4 md4>
@@ -296,6 +318,11 @@ export default {
         dynamicFields: this.dynamicFieldModel
       }
       console.log('Update Params', updateParams);
+    },
+     validCode: function() {
+      if (this.editedItems[this.staticFields[1]]) {
+        return (this.editedItems[this.staticFields[1]]).length >= 1 ? true : false;
+      } else { return false; }
     },
     validName: function() {
       if (this.editedItems[this.staticFields[2]]) {
