@@ -639,7 +639,7 @@ const generateSchema = (schemas, model) => {
 
     });
 
-    console.log('Schemeaaa='+JSON.stringify(newSchema));
+    // console.log('Schemeaaa='+JSON.stringify(newSchema));
   
  return  newSchema;
 }

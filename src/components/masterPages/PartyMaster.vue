@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <v-app id="inspire">
+      <v-btn color="primary" @click="addItemInPartyMaster">ADD PARTY MASTER</v-btn>
       <!-- START: Code for Data table -->
       <v-data-table :headers="headers" :items="partyMasterTableData" class="elevation-1">
         <template slot="items" slot-scope="props">
@@ -32,8 +33,7 @@
             <v-toolbar-title>Edit Information</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-toolbar-items>
-              <!-- <v-btn dark flat @click="updatePartyMasterData()">Save</v-btn> -->
-               <b-button type="submit" variant="primary">Submit</b-button>
+              <v-btn dark flat @click="updatePartyMasterData()">Save</v-btn>
             </v-toolbar-items>
           </v-toolbar>
           <v-layout row wrap>
@@ -46,11 +46,6 @@
                       <v-container fluid grid-list-xl>
                         <v-layout row justify-space-between>
                           <v-flex xs12 sm6 md4>
-                            <!-- <v-text-field
-                              v-model="editItems[staticFields[1]]"
-                              :label="`${preFix} Code *`"
-                              required
-                            ></v-text-field> -->
                             <label for="code">{{`${preFix} Code: `}}</label><span class="mandatoryStar">*</span>
                             <b-form-input id="code" v-model="editItems[staticFields[1]]" type="text"
                             v-bind:class="{'form-control':true, 'is-invalid' : !validCode() && codeBlured}"
@@ -62,11 +57,6 @@
                             </b-form-invalid-feedback>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <!-- <v-text-field
-                              v-model="editItems[staticFields[2]]"
-                              :label="`${preFix} Name *`"
-                              required
-                            ></v-text-field> -->
                             <label for="code">{{`${preFix} Name: `}}</label><span class="mandatoryStar">*</span>
                             <b-form-input id="code" v-model="editItems[staticFields[2]]" type="text"
                             v-bind:class="{'form-control':true, 'is-invalid' : !validName() && nameBlured}"
@@ -78,24 +68,11 @@
                             </b-form-invalid-feedback>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <!-- <v-text-field
-                              v-model="editItems[staticFields[3]]"
-                              :label="`${preFix} Alias Name`"
-                              required
-                            ></v-text-field> -->
                             <label for="code">{{`${preFix} Alias Name: `}}</label>
                             <b-form-input id="code" v-model="editItems[staticFields[3]]" type="text"
                             :placeholder="`${preFix} Alias Name `" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <!-- <v-select
-                              v-model="editItems[staticFields[4]]"
-                              menu-props="auto"
-                              :items="partyMasterGroupList"
-                              item-text="groupName"
-                              item-value="groupID"
-                              :label="`${preFix} Group *`"
-                            ></v-select> -->
                             <label for="">{{`${preFix} Group: `}}</label><span class="mandatoryStar">*</span>
                             <b-form-select v-model="editItems[staticFields[4]]" :options="partyMasterGroupList"
                             v-bind:class="{'form-control':true, 'is-invalid' : !validSupplierGroup() && groupNameBlured}"
@@ -108,14 +85,6 @@
                             </b-form-invalid-feedback>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <!-- <v-select
-                              v-model="editItems[staticFields[5]]"
-                              menu-props="auto"
-                              :items="partyMasterLedGroupID"
-                              item-text="ledgerGroupName"
-                              item-value="ledgerGroupID"
-                              :label="`${preFix} Ledger Group *`"
-                            ></v-select> -->
                             <label for="">{{`${preFix} Ledger Group: `}}</label><span class="mandatoryStar">*</span>
                             <b-form-select v-model="editItems[staticFields[5]]" :options="partyMasterLedGroupID"
                             v-bind:class="{'form-control':true, 'is-invalid' : !ValidGroupLedgerid() && ledgerIdBlured}"
@@ -127,11 +96,6 @@
                             </b-form-invalid-feedback>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <!-- <v-text-field
-                              v-model="editItems[staticFields[6]]"
-                              :label="`Address line 1: *`"
-                              required
-                            ></v-text-field> -->
                             <label for="code">{{`Address line 1: `}}</label><span class="mandatoryStar">*</span>
                             <b-form-input id="code" v-model="editItems[staticFields[6]]" type="text"
                             aria-describedby="add1LiveFeedback"
@@ -143,11 +107,6 @@
                             </b-form-invalid-feedback>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <!-- <v-text-field
-                              v-model="editItems[staticFields[7]]"
-                              :label="`Address line 2: *`"
-                              required
-                            ></v-text-field> -->
                             <label for="code">{{`Address line 2: `}}</label><span class="mandatoryStar">*</span>
                             <b-form-input id="code" v-model="editItems[staticFields[7]]" type="text" 
                             v-bind:class="{'form-control':true, 'is-invalid' : !validAdd2() && add2Blured}"
@@ -159,11 +118,6 @@
                             </b-form-invalid-feedback>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <!-- <v-text-field
-                              v-model="editItems[staticFields[8]]"
-                              :label="`Address line 3: *`"
-                              required
-                            ></v-text-field> -->
                             <label for="code">{{`Address line 3: `}}</label><span class="mandatoryStar">*</span>
                             <b-form-input id="code" v-model="editItems[staticFields[8]]" type="text" 
                             v-bind:class="{'form-control':true, 'is-invalid' : !validAdd3() && add3Blured}"
@@ -175,11 +129,6 @@
                             </b-form-invalid-feedback>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <!-- <v-text-field
-                              v-model="editItems[staticFields[9]]"
-                              :label="`Address line 4: *`"
-                              required
-                            ></v-text-field> -->
                             <label for="code">{{`Address line 4: `}}</label><span class="mandatoryStar">*</span>
                             <b-form-input id="code" v-model="editItems[staticFields[9]]" type="text" 
                             v-bind:class="{'form-control':true, 'is-invalid' : !validAdd4() && add4Blured}"
@@ -191,11 +140,6 @@
                             </b-form-invalid-feedback>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <!-- <v-text-field
-                              v-model="editItems[staticFields[10]]"
-                              :label="`City: *`"
-                              required
-                            ></v-text-field> -->
                             <label for="code">{{`City: `}}</label><span class="mandatoryStar">*</span>
                             <b-form-input id="code" v-model="editItems[staticFields[10]]" type="text"
                             v-bind:class="{'form-control':true, 'is-invalid' : !validCity() && cityBlured}"
@@ -207,11 +151,6 @@
                             </b-form-invalid-feedback>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <!-- <v-text-field
-                              v-model="editItems[staticFields[12]]"
-                              :label="`State: *`"
-                              required
-                            ></v-text-field> -->
                             <label for="code">{{`State: `}}</label><span class="mandatoryStar">*</span>
                             <b-form-input id="code" v-model="editItems[staticFields[12]]" type="text"
                             v-bind:class="{'form-control':true, 'is-invalid' : !validState() && stateBlured}"
@@ -223,11 +162,6 @@
                             </b-form-invalid-feedback>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <!-- <v-text-field
-                              v-model="editItems[staticFields[13]]"
-                              :label="`Country: *`"
-                              required
-                            ></v-text-field> -->
                             <label for="code">{{`Country: `}}</label><span class="mandatoryStar">*</span>
                             <b-form-input id="code" v-model="editItems[staticFields[13]]" type="text"
                             v-bind:class="{'form-control':true, 'is-invalid' : !validCountry() && countryBlured}"
@@ -239,16 +173,10 @@
                             </b-form-invalid-feedback>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <!-- <v-text-field
-                              v-model="editItems[staticFields[11]]"
-                              :label="`Pin Code:`"
-                              required
-                            ></v-text-field> -->
                             <label for="code">{{`Pin Code: `}}</label>
                             <b-form-input id="code" v-model="editItems[staticFields[11]]" type="text" :placeholder="`Pin Code`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <!-- <v-checkbox v-model="editItems[staticFields[14]]" label="in Active ?"></v-checkbox> -->
                             <b-form-checkbox
                               id="checkbox1"
                               v-model="editItems[staticFields[14]]"
@@ -257,7 +185,6 @@
                             </b-form-checkbox>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <!-- <v-checkbox v-model="editItems[staticFields[15]]" label="is Authorised ?"></v-checkbox> -->
                             <b-form-checkbox
                               id="checkbox1"
                               v-model="editItems[staticFields[15]]"
@@ -294,6 +221,209 @@
         </v-card>
       </v-dialog>
       <!-- END: Dialog box Model code for Party Master Static and Dynamic Field -->
+      <!-- START: Dialog box Model code for Adding new Item in Party Master -->
+      <v-dialog
+        v-model="AddItemInpartyMasterModel"
+        fullscreen
+        hide-overlay
+        transition="dialog-bottom-transition"
+      >
+        <v-card>
+          <v-toolbar dark color="primary">
+            <v-btn icon dark @click="AddItemInpartyMasterModel = false">
+              <v-icon>close</v-icon>
+            </v-btn>
+            <v-toolbar-title>Edit Information</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-toolbar-items>
+              <v-btn dark flat @click="updatePartyMasterData()">Save</v-btn>
+            </v-toolbar-items>
+          </v-toolbar>
+          <v-layout row wrap>
+            <v-flex xs12>
+              <v-expansion-panel popout>
+                <v-expansion-panel-content>
+                  <div slot="header">Details</div>
+                  <v-card>
+                    <v-card-text>
+                      <v-container fluid grid-list-xl>
+                        <v-layout row justify-space-between>
+                          <v-flex xs12 sm6 md4>
+                            <label for="code">{{`${preFix} Code: `}}</label><span class="mandatoryStar">*</span>
+                            <b-form-input id="code" v-model="addItems[staticFields[0]]" type="text"
+                            v-bind:class="{'form-control':true, 'is-invalid' : !validCode() && codeBlured}"
+                            v-on:blur="codeBlured = true"
+                            aria-describedby="codeLiveFeedback"
+                            :placeholder="`${preFix} Code`" />
+                            <b-form-invalid-feedback id="codeLiveFeedback">
+                              This field is required
+                            </b-form-invalid-feedback>
+                          </v-flex>
+                          <v-flex xs12 sm6 md4>
+                            <label for="code">{{`${preFix} Name: `}}</label><span class="mandatoryStar">*</span>
+                            <b-form-input id="code" v-model="addItems[staticFields[1]]" type="text"
+                            v-bind:class="{'form-control':true, 'is-invalid' : !validName() && nameBlured}"
+                            v-on:blur="nameBlured = true"
+                            aria-describedby="nameLiveFeedback"
+                            :placeholder="`${preFix} Name`" />
+                            <b-form-invalid-feedback id="nameLiveFeedback">
+                              This field is required
+                            </b-form-invalid-feedback>
+                          </v-flex>
+                          <v-flex xs12 sm6 md4>
+                            <label for="code">{{`${preFix} Alias Name: `}}</label>
+                            <b-form-input id="code" v-model="addItems[staticFields[2]]" type="text"
+                            :placeholder="`${preFix} Alias Name `" />
+                          </v-flex>
+                          <v-flex xs12 sm6 md4>
+                            <label for="">{{`${preFix} Group: `}}</label><span class="mandatoryStar">*</span>
+                            <b-form-select v-model="addItems[staticFields[3]]" :options="partyMasterGroupList"
+                            v-bind:class="{'form-control':true, 'is-invalid' : !validSupplierGroup() && groupNameBlured}"
+                            v-on:blur="groupNameBlured = true"
+                            aria-describedby="groupIDLiveFeedback"
+                            :placeholder="`${preFix} Group`" value-field="groupID"  text-field="groupName" />
+
+                            <b-form-invalid-feedback id="groupIDLiveFeedback">
+                              This field is required
+                            </b-form-invalid-feedback>
+                          </v-flex>
+                          <v-flex xs12 sm6 md4>
+                            <label for="">{{`${preFix} Ledger Group: `}}</label><span class="mandatoryStar">*</span>
+                            <b-form-select v-model="addItems[staticFields[4]]" :options="partyMasterLedGroupID"
+                            v-bind:class="{'form-control':true, 'is-invalid' : !ValidGroupLedgerid() && ledgerIdBlured}"
+                            v-on:blur="ledgerIdBlured = true"
+                            aria-describedby="ledgerLiveFeedback"
+                            :placeholder="`${preFix} Ledger Group`" value-field="ledgerGroupID" text-field="ledgerGroupName" />
+                            <b-form-invalid-feedback id="ledgerLiveFeedback">
+                              This field is required
+                            </b-form-invalid-feedback>
+                          </v-flex>
+                          <v-flex xs12 sm6 md4>
+                            <label for="code">{{`Address line 1: `}}</label><span class="mandatoryStar">*</span>
+                            <b-form-input id="code" v-model="addItems[staticFields[5]]" type="text"
+                            aria-describedby="add1LiveFeedback"
+                            v-bind:class="{'form-control':true, 'is-invalid' : !validAdd1() && add2Blured}"
+                            v-on:blur="cityBlured = true"
+                             :placeholder="`Address line 1`" />
+                             <b-form-invalid-feedback id="add1LiveFeedback">
+                              This field is required
+                            </b-form-invalid-feedback>
+                          </v-flex>
+                          <v-flex xs12 sm6 md4>
+                            <label for="code">{{`Address line 2: `}}</label><span class="mandatoryStar">*</span>
+                            <b-form-input id="code" v-model="addItems[staticFields[6]]" type="text" 
+                            v-bind:class="{'form-control':true, 'is-invalid' : !validAdd2() && add2Blured}"
+                            v-on:blur="cityBlured = true"
+                            aria-describedby="add2LiveFeedback"
+                            :placeholder="`Address line 2`" />
+                            <b-form-invalid-feedback id="add2LiveFeedback">
+                              This field is required
+                            </b-form-invalid-feedback>
+                          </v-flex>
+                          <v-flex xs12 sm6 md4>
+                            <label for="code">{{`Address line 3: `}}</label><span class="mandatoryStar">*</span>
+                            <b-form-input id="code" v-model="addItems[staticFields[7]]" type="text" 
+                            v-bind:class="{'form-control':true, 'is-invalid' : !validAdd3() && add3Blured}"
+                            v-on:blur="cityBlured = true"
+                            aria-describedby="add3LiveFeedback"
+                            :placeholder="`Address line 3`" />
+                            <b-form-invalid-feedback id="add3LiveFeedback">
+                              This field is required
+                            </b-form-invalid-feedback>
+                          </v-flex>
+                          <v-flex xs12 sm6 md4>
+                            <label for="code">{{`Address line 4: `}}</label><span class="mandatoryStar">*</span>
+                            <b-form-input id="code" v-model="addItems[staticFields[8]]" type="text" 
+                            v-bind:class="{'form-control':true, 'is-invalid' : !validAdd4() && add4Blured}"
+                            v-on:blur="cityBlured = true"
+                            aria-describedby="add4LiveFeedback"
+                            :placeholder="`Address line 4`" />
+                            <b-form-invalid-feedback id="add4LiveFeedback">
+                              This field is required
+                            </b-form-invalid-feedback>
+                          </v-flex>
+                          <v-flex xs12 sm6 md4>
+                            <label for="code">{{`City: `}}</label><span class="mandatoryStar">*</span>
+                            <b-form-input id="code" v-model="addItems[staticFields[9]]" type="text"
+                            v-bind:class="{'form-control':true, 'is-invalid' : !validCity() && cityBlured}"
+                            v-on:blur="cityBlured = true"
+                            aria-describedby="cityLiveFeedback"
+                            :placeholder="`City`" />
+                            <b-form-invalid-feedback id="cityLiveFeedback">
+                              This field is required
+                            </b-form-invalid-feedback>
+                          </v-flex>
+                          <v-flex xs12 sm6 md4>
+                            <label for="code">{{`State: `}}</label><span class="mandatoryStar">*</span>
+                            <b-form-input id="code" v-model="addItems[staticFields[11]]" type="text"
+                            v-bind:class="{'form-control':true, 'is-invalid' : !validState() && stateBlured}"
+                            v-on:blur="stateBlured = true"
+                            aria-describedby="stateLiveFeedback"
+                            :placeholder="`State`" />
+                            <b-form-invalid-feedback id="stateLiveFeedback">
+                              This field is required
+                            </b-form-invalid-feedback>
+                          </v-flex>
+                          <v-flex xs12 sm6 md4>
+                            <label for="code">{{`Country: `}}</label><span class="mandatoryStar">*</span>
+                            <b-form-input id="code" v-model="addItems[staticFields[12]]" type="text"
+                            v-bind:class="{'form-control':true, 'is-invalid' : !validCountry() && countryBlured}"
+                            v-on:blur="countryBlured = true"
+                            aria-describedby="countryLiveFeedback"
+                            :placeholder="`Country`" />
+                            <b-form-invalid-feedback id="countryLiveFeedback">
+                              This field is required
+                            </b-form-invalid-feedback>
+                          </v-flex>
+                          <v-flex xs12 sm6 md4>
+                            <label for="code">{{`Pin Code: `}}</label>
+                            <b-form-input id="code" v-model="addItems[staticFields[10]]" type="text" :placeholder="`Pin Code`" />
+                          </v-flex>
+                          <!-- <v-flex xs12 sm6 md4>
+                            <b-form-checkbox
+                              id="checkbox1"
+                              v-model="addItems[staticFields[14]]"
+                            >
+                              in Active ?
+                            </b-form-checkbox>
+                          </v-flex> -->
+                          <!-- <v-flex xs12 sm6 md4>
+                            <b-form-checkbox
+                              id="checkbox1"
+                              v-model="addItems[staticFields[15]]"
+                            >
+                              is Authorised ?
+                            </b-form-checkbox>
+                          </v-flex> -->
+                        </v-layout>
+                      </v-container>
+                    </v-card-text>
+                  </v-card>
+                </v-expansion-panel-content>
+                <v-expansion-panel-content>
+                  <div slot="header">Other Information</div>
+                  <v-card>
+                    <v-card-text>
+                     
+                        <!-- START: Code for dynamic fields -->
+                       <v-container fluid grid-list-xl>
+                        <v-layout row justify-space-between>
+                          <v-flex xs12 sm4 md4>
+                      <vue-form-generator :schema="addDynamicFieldSchema" :model="addDynamicFieldModel" :options="formOptions" @validated="onValidated"></vue-form-generator>
+                          </v-flex>
+                        </v-layout>
+                       </v-container>
+                        <!-- END: Code for dynamic fields -->
+                      
+                    </v-card-text>
+                  </v-card>
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+            </v-flex>
+          </v-layout>
+        </v-card>
+      </v-dialog>
+      <!-- END: Dialog box Model code for Adding new Item in Party Master -->
     </v-app>
   </div>
 </template>
@@ -310,6 +440,7 @@ export default {
       preFix: null,
       partyMasterModel: false,
       editItems: {},
+      addItems: {},
       staticFields: [],
       partyMasterGroupList: [],
       partyMasterLedGroupID: [],
@@ -317,6 +448,10 @@ export default {
         fields: []
       },
       dynamicFieldModel: {},
+      addDynamicFieldSchema: {
+        fields: []
+      },
+      addDynamicFieldModel: {},
       dynamicFieldOptions: {},
       selectedID: null,
       codeBlured: true,
@@ -334,7 +469,8 @@ export default {
       add1Blured: true,
       add2Blured: true,
       add3Blured: true,
-      add4Blured: true
+      add4Blured: true,
+      AddItemInpartyMasterModel: false
     }
   },
   beforeMount: function() {
@@ -342,12 +478,13 @@ export default {
   },
   methods: {
     loadPatryMasteData: function() {
+      const docID = localStorage.getItem('menuDocId') || 0;
       /**
        * Code for loading the party master data
        */
       httpClient({
         method: 'GET',
-        url: `${process.env.VUE_APP_API_BASE}PartyMaster?docID=1121`,
+        url: `${process.env.VUE_APP_API_BASE}PartyMaster?docID=${docID}`,
       })
         .then((result) => {
           if (result.status === 200) {
@@ -376,8 +513,8 @@ export default {
       /**
        * Reading MenuDocID from localstorage:: saved in home view while selecting the menu
        */
-      // const docID = localStorage.getItem('menuDocId') || 0; // commented for testing purpose uncomment in PROD:
-      const docID = 1121;
+      const docID = localStorage.getItem('menuDocId') || 0; // commented for testing purpose uncomment in PROD:
+      // const docID = 1121;
       this.partyMasterModel = true;
       httpClient({
         method: 'GET',
@@ -512,6 +649,31 @@ export default {
     },
     onValidated: function(isValid, errors) {
       console.log("Validation result: ", isValid, ", Errors:", errors);
+    },
+    addItemInPartyMaster: function() {
+      const docID = localStorage.getItem('menuDocId') || 0;
+      httpClient({
+        method: 'GET',
+        url: `${process.env.VUE_APP_API_BASE}PartyMaster?docID=${docID}&type=0`
+      }).then((result) => {
+        console.log('Response from server', result);
+        const addItemInPartyMaster = result.data;
+        console.log('Add Items In Party Master', addItemInPartyMaster);
+        this.addItems = addItemInPartyMaster.staticFieldData;
+        console.log('this.addItems', JSON.stringify(this.addItems));
+        this.staticFields = Object.keys(this.addItems);
+        this.preFix = addItemInPartyMaster.prefix;
+
+        this.partyMasterGroupList = addItemInPartyMaster.groupList;
+        this.partyMasterLedGroupID = addItemInPartyMaster.ledgerGroupList;
+
+        this.addDynamicFieldModel = addItemInPartyMaster.dynamicFieldModal.modal[0];
+        this.addDynamicFieldSchema.fields = generateSchema(addItemInPartyMaster.dynamicFieldModal.fieldProperties, this.addDynamicFieldModel);
+
+        this.AddItemInpartyMasterModel = true;
+      }).catch((err) => {
+        console.error('Error Occured', err);
+      });
     }
   }
 }
