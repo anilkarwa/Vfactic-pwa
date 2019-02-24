@@ -11,8 +11,21 @@ import VueFormGenerator from 'vue-form-generator'
 Vue.config.productionTip = false
 Vue.use(Vuetify)
 Vue.use(BootstrapVue)
-Vue.use(VueFormGenerator)
-//Vue.use([Vuetify, BootstrapVue, VueFormGenerator])
+Vue.use(VueFormGenerator,{
+  validators: {
+    firstCustomValidator: (value, field, model) => {
+      if (value === "") {
+        if (field.required) {
+          return ["This field is required!"];
+        } else {
+          return [];
+        }
+      }
+      alert(value)
+      return null;
+    }
+  }
+})
 
 new Vue({
   router,

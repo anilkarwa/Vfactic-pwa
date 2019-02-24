@@ -206,7 +206,7 @@
                        <v-container fluid grid-list-xl>
                         <v-layout row justify-space-between>
                           <v-flex xs12 sm4 md4>
-                      <vue-form-generator :schema="dynamicFieldSchema" :model="dynamicFieldModel" :options="formOptions" @validated="onValidated"></vue-form-generator>
+                      <vue-form-generator id="Form-generator-css" :schema="dynamicFieldSchema" :model="dynamicFieldModel" :options="formOptions" @validated="onValidated"></vue-form-generator>
                           </v-flex>
                         </v-layout>
                        </v-container>
@@ -431,8 +431,14 @@
 import httpClient from "@/services/httpClient.js"
 import VueFormGenerator from 'vue-form-generator'
 import generateSchema from '@/DynamicProperty/generateScheme.js'
+import generateGroupSchema from '@/DynamicProperty/generateGroupSchema.js'
+import VueFormGenerator from 'vue-form-generator'
+
 
 export default {
+  components:{
+    "vue-form-generator": VueFormGenerator.component
+  },
   data: function() {
     return {
       headers: [ { text: "Edit", align: "center" } ],
@@ -446,7 +452,8 @@ export default {
       partyMasterGroupList: [],
       partyMasterLedGroupID: [],
       dynamicFieldSchema: {
-        fields: []
+        fields: [],
+        groups: []
       },
       dynamicFieldModel: {},
       addDynamicFieldSchema: {
@@ -541,7 +548,7 @@ export default {
           this.editItems[this.staticFields[5]] = partyMasterFields.staticFieldData[0].LedGroupID;
           this.dynamicFieldModel = partyMasterFields.dynamicFieldModal.modal[0];
           this.dynamicFieldSchema.fields =generateSchema(partyMasterFields.dynamicFieldModal.fieldProperties, this.dynamicFieldModel);
-        
+          this.dynamicFieldSchema.groups = generateGroupSchema(partyMasterFields.dynamicFieldModal.fieldProperties, this.dynamicFieldModel);
         }).catch((err) => {
           /**
            * When API call failed: check error in browser console::

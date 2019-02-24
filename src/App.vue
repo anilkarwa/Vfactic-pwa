@@ -50,8 +50,9 @@ export default {
   border-left: 0;
   border-right: 0;
   border-radius: 0;
-  border-bottom: 2px solid #ccc;
+  border-bottom: 1.5px solid #ccc;
   background-color: transparent;
+  width:90%;
 }
 
 
@@ -61,8 +62,9 @@ export default {
   border-left: 0;
   border-right: 0;
   border-radius: 0;
-  border-bottom: 2px solid #ccc;
+  border-bottom: 1.5px solid #ccc;
   background-color: transparent;
+  width:90%;
 }
 
  .custom-select:focus{
@@ -88,6 +90,37 @@ export default {
   position: relative;
   font-size: 20px;
   margin-top: -9px;
+}
+.form-group.error .form-control{
+  border-bottom: 1.5px solid rgb(202, 41, 41);
+}
+
+.form-group.error .custom-select{
+  border-bottom: 1.5px solid rgb(202, 41, 41);
+}
+
+.errors.help-block span{
+  margin-top: 0.25rem;
+  font-size: 80%;
+  color: #dc3545;
+  font-weight: 100px;
+}
+
+
+fieldset {
+ padding-left: 20px;
+ margin-bottom: 30px;
+}
+
+legend {
+  padding: 0.2em 0.5em;
+  border-bottom:2px solid rgb(104, 105, 104);
+  color:rgb(44, 46, 44);
+  margin-bottom: 11px;
+}
+
+#Form-generator-css > fieldset > div {
+  background-color: transparent!important;
 }
 
 </style>
