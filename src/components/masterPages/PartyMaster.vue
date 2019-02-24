@@ -409,7 +409,7 @@
                        <v-container fluid grid-list-xl>
                         <v-layout row justify-space-between>
                           <v-flex xs12 sm4 md4>
-                      <vue-form-generator :schema="addDynamicFieldSchema" :model="addDynamicFieldModel" :options="formOptions" @validated="onValidated"></vue-form-generator>
+                      <vue-form-generator id="Form-generator-css" :schema="addDynamicFieldSchema" :model="addDynamicFieldModel" :options="formOptions" @validated="onValidated"></vue-form-generator>
                           </v-flex>
                         </v-layout>
                        </v-container>
@@ -431,6 +431,7 @@
 import httpClient from "@/services/httpClient.js"
 import generateSchema from '@/DynamicProperty/generateScheme.js'
 import generateGroupSchema from '@/DynamicProperty/generateGroupSchema.js'
+import generateNewModal from '@/DynamicProperty/generateNewModal.js'
 import VueFormGenerator from 'vue-form-generator'
 
 
@@ -456,7 +457,8 @@ export default {
       },
       dynamicFieldModel: {},
       addDynamicFieldSchema: {
-        fields: []
+        fields: [],
+         groups: []
       },
       addDynamicFieldModel: {},
       dynamicFieldOptions: {},
@@ -674,9 +676,11 @@ export default {
         this.partyMasterGroupList = addItemInPartyMaster.groupList;
         this.partyMasterLedGroupID = addItemInPartyMaster.ledgerGroupList;
 
-        this.addDynamicFieldModel = addItemInPartyMaster.dynamicFieldModal.modal[0];
-        this.addDynamicFieldSchema.fields = generateSchema(addItemInPartyMaster.dynamicFieldModal.fieldProperties, this.addDynamicFieldModel);
-
+      
+        this.addDynamicFieldSchema.fields = generateSchema(addItemInPartyMaster.dynamicFieldModal.fieldProperties, addItemInPartyMaster.dynamicFieldModal.modal);
+        this.addDynamicFieldSchema.groups = generateGroupSchema(addItemInPartyMaster.dynamicFieldModal.fieldProperties, addItemInPartyMaster.dynamicFieldModal.modal);
+        this.addDynamicFieldModel = generateNewModal(addItemInPartyMaster.dynamicFieldModal.fieldProperties,addItemInPartyMaster.dynamicFieldModal.modal)
+        console.log('add modal'+JSON.stringify(this.addDynamicFieldModel));
         this.AddItemInpartyMasterModel = true;
       }).catch((err) => {
         console.error('Error Occured', err);
