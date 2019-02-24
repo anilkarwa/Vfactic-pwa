@@ -168,7 +168,7 @@
             <v-toolbar-title>Add Item Group Master</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-toolbar-items>
-              <v-btn dark flat @click="">Add</v-btn>
+              <v-btn dark flat @click="addItemRequest()">Add</v-btn>
             </v-toolbar-items>
           </v-toolbar>
           <v-layout row wrap>
@@ -408,6 +408,9 @@ export default {
     validate: function() {
       (this.validCode() && this.validName()) ? true : false;
     },
+    addValidation: function() {
+      (this.validAddCode() && this.validAddName()) ? true : false;
+    },
     addItemInPartyMaster: function() {
       const docID = localStorage.getItem('menuDocId') || 0;
       httpClient({
@@ -425,6 +428,30 @@ export default {
       }).catch((err) => {
         console.error('Error Occured', err);
       });
+    },
+    addItemRequest: function() {
+      if (this.addValidation()) {
+        console.log('Add Item Request');
+      // this.addItems.AddedBy = 'Nitin';
+      console.log('Add Item Details', this.addItems);
+      console.log('Dynamic Data', this.addDynamicFieldModel)
+      const postParams = {
+        docID: localStorage.getItem('menuDocId'),
+        userID: localStorage.getItem('userId'),
+        staticFields: this.addItems,
+        dynamicFields: this.addDynamicFieldModel
+      }
+      console.log('postParams', postParams);
+      httpClient({
+        method: 'POST',
+        url: `${process.env.VUE_APP_API_BASE}PartyMaster`,
+        data: postParams
+      }).then((result) => {
+        console.log('Result', result);
+      }).catch((err) => {
+        console.error('Opps! Error Occured!');
+      });
+      }
     }
   }
 }

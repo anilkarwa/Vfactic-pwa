@@ -236,7 +236,7 @@
             <v-toolbar-title>Add Record</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-toolbar-items>
-              <v-btn dark flat @click="updatePartyMasterData()">Save</v-btn>
+              <v-btn dark flat @click="addItemRequest()">Add</v-btn>
             </v-toolbar-items>
           </v-toolbar>
           <v-layout row wrap>
@@ -409,7 +409,8 @@
                        <v-container fluid grid-list-xl>
                         <v-layout row justify-space-between>
                           <v-flex xs12 sm4 md4>
-                      <vue-form-generator :schema="addDynamicFieldSchema" :model="addDynamicFieldModel" :options="formOptions" @validated="onValidated"></vue-form-generator>
+                      <!-- <vue-form-generator id="Form-generator-css" :schema="addDynamicFieldSchema" :model="addDynamicFieldModel" :options="formOptions" @validated="onValidated"></vue-form-generator> -->
+                      <vue-form-generator :schema="addDynamicFieldSchema" :model="addDynamicFieldModel"></vue-form-generator>
                           </v-flex>
                         </v-layout>
                        </v-container>
@@ -432,7 +433,6 @@ import httpClient from "@/services/httpClient.js"
 import VueFormGenerator from 'vue-form-generator'
 import generateSchema from '@/DynamicProperty/generateScheme.js'
 import generateGroupSchema from '@/DynamicProperty/generateGroupSchema.js'
-import VueFormGenerator from 'vue-form-generator'
 
 
 export default {
@@ -457,7 +457,8 @@ export default {
       },
       dynamicFieldModel: {},
       addDynamicFieldSchema: {
-        fields: []
+        fields: [],
+        groups: []
       },
       addDynamicFieldModel: {},
       dynamicFieldOptions: {},
@@ -547,7 +548,7 @@ export default {
           // this.editItems[this.staticFields[5]] = this.partyMasterLedGroupID.find(value => value.ledgerGroupID === partyMasterFields.staticFieldData[0].LedGroupID);
           this.editItems[this.staticFields[5]] = partyMasterFields.staticFieldData[0].LedGroupID;
           this.dynamicFieldModel = partyMasterFields.dynamicFieldModal.modal[0];
-          this.dynamicFieldSchema.fields =generateSchema(partyMasterFields.dynamicFieldModal.fieldProperties, this.dynamicFieldModel);
+          this.dynamicFieldSchema.fields = generateSchema(partyMasterFields.dynamicFieldModal.fieldProperties, this.dynamicFieldModel);
           this.dynamicFieldSchema.groups = generateGroupSchema(partyMasterFields.dynamicFieldModal.fieldProperties, this.dynamicFieldModel);
         }).catch((err) => {
           /**
@@ -658,6 +659,19 @@ export default {
     validate: function() {
       (this.validCode() && this.validName() && this.ValidGroupLedgerid() && this.validSupplierGroup() && this.validCity() && this.validState() && this.validCountry()) ? true : false;
     },
+    addValidation: function() {
+      (this.addValidCode() &&
+      this.addValidName() &&
+      this.addValidSupplierGroup() &&
+      this.addValidGroupLedgerid() &&
+      this.addValidAdd1() &&
+      this.addValidAdd2() &&
+      this.addValidAdd3() &&
+      this.addValidAdd4() &&
+      this.addValidCity() &&
+      this.addValidState() &&
+      this.addValidCountry()) ? true : false;
+    },
     addValidCode: function() {
       if(this.addFlag) {
         if (this.addItems[this.staticFields[0]]) {
@@ -765,13 +779,40 @@ export default {
         this.partyMasterGroupList = addItemInPartyMaster.groupList;
         this.partyMasterLedGroupID = addItemInPartyMaster.ledgerGroupList;
 
-        
+        this.addDynamicFieldModel = addItemInPartyMaster.dynamicFieldModal.modal;
+        console.log('this.addDynamicFieldModel', this.addDynamicFieldModel);
+        console.log('-----', addItemInPartyMaster.dynamicFieldModal.fieldProperties);
         this.addDynamicFieldSchema.fields = generateSchema(addItemInPartyMaster.dynamicFieldModal.fieldProperties, this.addDynamicFieldModel);
-        this.addDynamicFieldModel = VueFormGenerator.schema.createDefaultObject(this.addDynamicFieldSchema,{});
+        this.addDynamicFieldSchema.groups = generateGroupSchema(addItemInPartyMaster.dynamicFieldModal.fieldProperties, this.addDynamicFieldModel);
+        // this.addDynamicFieldModel = VueFormGenerator.schema.createDefaultObject(this.addDynamicFieldSchema,{});
         this.AddItemInpartyMasterModel = true;
       }).catch((err) => {
         console.error('Error Occured', err);
       });
+    },
+    addItemRequest: function() {
+      if (this.addValidation()) {
+        console.log('Add Item Request');
+      // this.addItems.AddedBy = 'Nitin';
+      console.log('Add Item Details', this.addItems);
+      console.log('Dynamic Data', this.addDynamicFieldModel)
+      const postParams = {
+        docID: localStorage.getItem('menuDocId'),
+        userID: localStorage.getItem('userId'),
+        staticFields: this.addItems,
+        dynamicFields: this.addDynamicFieldModel
+      }
+      console.log('postParams', postParams);
+      httpClient({
+        method: 'POST',
+        url: `${process.env.VUE_APP_API_BASE}PartyMaster`,
+        data: postParams
+      }).then((result) => {
+        console.log('Result', result);
+      }).catch((err) => {
+        console.error('Opps! Error Occured!');
+      });
+      }
     }
   }
 }

@@ -192,7 +192,7 @@
             <v-toolbar-title>Settings</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-toolbar-items>
-              <v-btn dark flat @click="">ADD</v-btn>
+              <v-btn dark flat @click="addItemRequest()">ADD</v-btn>
             </v-toolbar-items>
           </v-toolbar>
           <v-layout row wrap>
@@ -467,6 +467,13 @@ export default {
     validate: function() {
       (this.validName() && this.validitemGroup() && this.validitemType() && this.validUOM()) ? true : false;
     },
+    addValidation: function() {
+      (this.validAddUOM() &&
+      this.validAdditemType() &&
+      this.validitemAddGroup() &&
+      this.validAddName() &&
+      this.validAddCode()) ? true : false;
+    },
     validAddUOM: function() {
       if (this.addItems[this.staticFields[7]]) {
         return (this.addItems[this.staticFields[7]].toString()).length >= 1 ? true : false;
@@ -506,6 +513,7 @@ export default {
         console.log('this.addItems', JSON.stringify(this.addItems));
         this.staticFields = Object.keys(this.addItems);
         // console.log('this.staticFields', this.staticFields);
+        this.itemTypeList = addItemInItemMaster.itemType;
         this.UOMList = addItemInItemMaster.UOMList;
         // console.log('UOM LIST', this.UOMList);
         this.addDynamicFieldModel = addItemInItemMaster.dynamicFieldModal.modal;
@@ -514,6 +522,30 @@ export default {
       }).catch((err) => {
         console.error('Error Occured', err);
       });
+    },
+    addItemRequest: function() {
+      if (this.addValidation()) {
+        console.log('Add Item Request');
+      // this.addItems.AddedBy = 'Nitin';
+      console.log('Add Item Details', this.addItems);
+      console.log('Dynamic Data', this.addDynamicFieldModel)
+      const postParams = {
+        docID: localStorage.getItem('menuDocId'),
+        userID: localStorage.getItem('userId'),
+        staticFields: this.addItems,
+        dynamicFields: this.addDynamicFieldModel
+      }
+      console.log('postParams', postParams);
+      httpClient({
+        method: 'POST',
+        url: `${process.env.VUE_APP_API_BASE}PartyMaster`,
+        data: postParams
+      }).then((result) => {
+        console.log('Result', result);
+      }).catch((err) => {
+        console.error('Opps! Error Occured!');
+      });
+      }
     }
   }
 }
