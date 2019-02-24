@@ -1,11 +1,13 @@
 import VueFormGenerator from 'vue-form-generator'
 
-const generateSchema = (schemas, model) => {
+const generateGroupSchema = (schemas, model) => {
     console.log('This is GenerateSchema Function', schemas);
     var tempSchema = schemas;
     var newSchema = [];
+    
     tempSchema.forEach(p => {
-
+        var groupSchema ={};
+        var schema = {};
         //  var conditionsOperands = p.readOnlyCondition.replace('#','').replace('#','');
         var conditionsOperand = p.readOnlyCondition.split(" ");
         for(var i=0 ; i< conditionsOperand.length;i++){
@@ -23,10 +25,11 @@ const generateSchema = (schemas, model) => {
             hideconditionsOperand[i] = removeHash(hideconditionsOperand[i]);
          }
  
+         groupSchema["legend"]= p.groupLegendName;
 
-        if(p.type == "input" && p.groupLegendName == ""){
+        if(p.type == "input" && p.groupLegendName != ""){
         
-           var schema = {
+            schema = {
                 type: "input",
                 inputType:(p.inputType) =="text" ? "text": "number",
                 model : p.model,
@@ -421,11 +424,11 @@ const generateSchema = (schemas, model) => {
                 })),
 
             }
-            newSchema.push(schema);
+            groupSchema["fields"] = new Array(schema);
         }
-        if(p.type == "select" && p.groupLegendName == ""){
+        if(p.type == "select" && p.groupLegendName != ""){
 
-            var schema = {
+            schema = {
                 type :"select",
                 model: p.model,
                 label : p.label,
@@ -816,13 +819,23 @@ const generateSchema = (schemas, model) => {
                     
                 })),
             }
-            newSchema.push(schema);
+            groupSchema["fields"] = new Array(schema);
+        }
+       let flag = false;
+        newSchema.forEach(e =>{
+            if(e.legend == groupSchema.legend && groupSchema.legend != ""){
+                flag = true;
+                let data =e.fields;
+                data.push(schema);
+                e.fields= data;
+            }
+        });
+        if(!flag && groupSchema.legend !=""){
+            newSchema.push(groupSchema);
         }
 
-
     });
-
-    console.log('Schemeaaa='+JSON.stringify(newSchema));
+console.log('group schema'+JSON.stringify(newSchema));
   
  return  newSchema;
 }
@@ -832,4 +845,4 @@ function removeHash(value){
     return (value.replace('#','').replace('#',''));
 }
 
-export default generateSchema;
+export default generateGroupSchema;
