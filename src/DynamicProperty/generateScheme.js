@@ -27,14 +27,18 @@ const generateSchema = (schemas, model) => {
         if(p.type == "input" && p.groupLegendName == ""){
         
            var schema = {
-                type: "input",
+                type:(p.isComboBox)? "inputDropdown": "input",
                 inputType:(p.inputType) =="text" ? "text": "number",
                 model : p.model,
                 label : p.label,
                 min: p.min,
                 max: p.max,
                 hint: p.help,
+                featured: p.featured,
+                inputSelectId: p.comboBoxId,
                 default: p.default?p.useStdDefault:"",
+                //if inputDropdown
+                values: p.values,
                 validator: (p.inputType) =="text" ? VueFormGenerator.validators.string:VueFormGenerator.validators.number,
                // readonly: function (model){ return model && (model[conditionsOperand[0]] )== p.readOnlyCompareValue}
                disabled: (!p.readonly)? p.readonly:( (p.readOnlyCondition == "") ? p.readonly:(conditionsOperand.length == 1?function (model){ 
@@ -431,6 +435,7 @@ const generateSchema = (schemas, model) => {
                 label : p.label,
                 values : p.values,
                 help:  p.help,
+                featured: p.featured,
                 default: p.default?p.useStdDefault:"",
                 validator:  VueFormGenerator.validators.required,
                 disabled: (!p.readonly)? p.readonly:( (p.readOnlyCondition == "") ? p.readonly:(conditionsOperand.length == 1?function (model){ 

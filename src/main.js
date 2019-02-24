@@ -7,6 +7,8 @@ import './registerServiceWorker'
 import BootstrapVue from 'bootstrap-vue'
 import VueFormGenerator from 'vue-form-generator'
 //import 'vue-form-generator/dist/vfg-core.css'
+import fieldInputDropdown from "./CustomFields/fieldInputDropdown.vue";
+Vue.component("fieldInputDropdown", fieldInputDropdown);
 
 Vue.config.productionTip = false
 Vue.use(Vuetify)
