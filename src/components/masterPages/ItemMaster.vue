@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <v-app id="inspire">
+      <v-btn color="primary" @click="addItemInItemMaster">ADD ITEM MASTER</v-btn>
       <!-- START: table -->
       <v-data-table :headers="headers" :items="itemMasterDataTable" class="elevation-1">
         <template slot="items" slot-scope="props">
@@ -46,11 +47,6 @@
                       <v-container fluid grid-list-xl>
                         <v-layout row justify-space-between>
                           <v-flex xs12 sm6 md4>
-                            <!-- <v-text-field
-                              v-model="editedItems[staticFields[1]]"
-                              :label="`${preFix} Code:`"
-                              required
-                            ></v-text-field> -->
                             <label for="code">{{`${preFix} Code: `}}</label><span class="mandatoryStar">*</span>
                             <b-form-input id="code" v-model="editedItems[staticFields[1]]" type="text"
                             v-bind:class="{'form-control':true, 'is-invalid' : !validCode() && nameBlured}"
@@ -62,11 +58,6 @@
                             </b-form-invalid-feedback>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <!-- <v-text-field
-                              v-model="editedItems[staticFields[2]]"
-                              :label="`${preFix} Name:`"
-                              required
-                            ></v-text-field> -->
                             <label for="code">{{`${preFix} Name: `}}</label><span class="mandatoryStar">*</span>
                             <b-form-input id="code" v-model="editedItems[staticFields[2]]" type="text"
                             v-bind:class="{'form-control':true, 'is-invalid' : !validName() && nameBlured}"
@@ -78,24 +69,11 @@
                             </b-form-invalid-feedback>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <!-- <v-text-field
-                              v-model="editedItems[staticFields[3]]"
-                              :label="`${preFix} Desc:`"
-                              required
-                            ></v-text-field> -->
                             <label for="code">{{`${preFix} Desc: `}}</label>
                             <b-form-input id="code" v-model="editedItems[staticFields[3]]" type="text"
                             :placeholder="`${preFix} Desc`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <!-- <v-select
-                              v-model="editedItems[staticFields[4]]"
-                              menu-props="auto"
-                              :items="itemGroupList"
-                              item-text="itemGroupCode"
-                              item-value="itemGroupID"
-                              :label="`${preFix} Group Id:`"
-                            ></v-select> -->
                             <label for="">{{`${preFix} Group: `}}</label><span class="mandatoryStar">*</span>
                             <b-form-select v-model="editedItems[staticFields[4]]" :options="itemGroupList"
                             v-bind:class="{'form-control':true, 'is-invalid' : !validitemGroup() && itemGroupBlured}"
@@ -107,32 +85,14 @@
                             </b-form-invalid-feedback>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <!-- <v-text-field
-                              v-model="editedItems[staticFields[5]]"
-                              :label="`Tally Alias:`"
-                              required
-                            ></v-text-field> -->
                             <label for="">{{`Tally Alias:`}}</label>
                             <b-form-input id="code" v-model="editedItems[staticFields[5]]" type="text" :placeholder="`Tally Alias`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <!-- <v-text-field
-                              v-model="editedItems[staticFields[6]]"
-                              label="HSN Code:"
-                              required
-                            ></v-text-field> -->
                             <label for="">{{`HSN Code:`}}</label>
                             <b-form-input id="code" v-model="editedItems[staticFields[6]]" type="text" :placeholder="`HSN Code`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <!-- <v-select
-                              v-model="editedItems[staticFields[7]]"
-                              menu-props="auto"
-                              :items="itemTypeList"
-                              item-text="itemTypeName"
-                              item-value="itemTypeID"
-                              label="Item Type"
-                            ></v-select> -->
                             <label for="">{{`${preFix} Item Type: `}}</label><span class="mandatoryStar">*</span>
                             <b-form-select v-model="editedItems[staticFields[7]]" :options="itemTypeList"
                             v-bind:class="{'form-control':true, 'is-invalid' : !validitemType() && itemTypeBlured}"
@@ -144,13 +104,6 @@
                             </b-form-invalid-feedback>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <!-- <v-select
-                              v-model="editedItems[staticFields[8]]"
-                              menu-props="auto"
-                              :items="UOMList"
-                              item-text="UOMCode"
-                              item-value="UOMID"
-                            ></v-select> -->
                             <label for="">{{`UOM: `}}</label><span class="mandatoryStar">*</span>
                             <b-form-select v-model="editedItems[staticFields[8]]" :options="UOMList"
                             v-bind:class="{'form-control':true, 'is-invalid' : !validUOM() && UOMBlured}"
@@ -163,7 +116,6 @@
                           </v-flex>
                           <v-layout wrap>
                             <v-flex xs12 sm4 md4>
-                            <!-- <v-checkbox v-model="editedItems[staticFields[9]]" label="BOM Item ?"></v-checkbox> -->
                             <b-form-checkbox
                               id="BOMItem"
                               v-model="editedItems[staticFields[9]]"
@@ -172,7 +124,6 @@
                             </b-form-checkbox>
                           </v-flex>
                           <v-flex xs12 sm8 md8>
-                            <!-- <v-checkbox v-model="editedItems[staticFields[10]]" label="NonStkable ?"></v-checkbox> -->
                             <b-form-checkbox
                               id="NonSktable"
                               v-model="editedItems[staticFields[10]]"
@@ -181,7 +132,6 @@
                             </b-form-checkbox>
                           </v-flex>
                           <v-flex xs12 sm4 md4>
-                             <!-- <v-checkbox v-model="editedItems[staticFields[11]]" label="inActive ?"></v-checkbox> -->
                              <b-form-checkbox
                               id="inActive"
                               v-model="editedItems[staticFields[11]]"
@@ -190,7 +140,6 @@
                             </b-form-checkbox>
                           </v-flex>
                           <v-flex xs12 sm8 md8>
-                            <!-- <v-checkbox v-model="editedItems[staticFields[12]]" label="is Authorized ?"></v-checkbox> -->
                             <b-form-checkbox
                               id="Authorised"
                               v-model="editedItems[staticFields[12]]"
@@ -214,7 +163,7 @@
                        <v-container fluid grid-list-xl>
                         <v-layout row justify-space-between>
                           <v-flex xs12 sm4 md4>
-                      <vue-form-generator :schema="dynamicFieldSchema" :model="dynamicFieldModel"></vue-form-generator>
+                      <vue-form-generator :schema="dynamicFieldSchema" :model="dynamicFieldModel" :options="formOptions" ></vue-form-generator>
                           </v-flex>
                         </v-layout>
                        </v-container>
@@ -228,6 +177,165 @@
         </v-card>
       </v-dialog>
       <!-- END: dialog box model code -->
+      <!-- START: dialog box model code for adding new Item in Item Master -->
+      <v-dialog
+        v-model="addItemMasterModel"
+        fullscreen
+        hide-overlay
+        transition="dialog-bottom-transition"
+      >
+        <v-card>
+          <v-toolbar dark color="primary">
+            <v-btn icon dark @click="addItemMasterModel = false">
+              <v-icon>close</v-icon>
+            </v-btn>
+            <v-toolbar-title>Settings</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-toolbar-items>
+              <v-btn dark flat @click="">ADD</v-btn>
+            </v-toolbar-items>
+          </v-toolbar>
+          <v-layout row wrap>
+            <v-flex xs12>
+              <v-expansion-panel popout>
+                <v-expansion-panel-content>
+                  <div slot="header">ADD Item Master Details</div>
+                  <v-card>
+                    <v-card-text>
+                      <!-- START: Supplier detail form code -->
+                      <v-container fluid grid-list-xl>
+                        <v-layout row justify-space-between>
+                          <v-flex xs12 sm6 md4>
+                            <label for="code">{{`${preFix} Code: `}}</label><span class="mandatoryStar">*</span>
+                            <b-form-input id="code" v-model="addItems[staticFields[0]]" type="text"
+                            v-bind:class="{'form-control':true, 'is-invalid' : !validAddCode() && nameBlured}"
+                            v-on:blur="nameBlured = true"
+                            aria-describedby="codeLiveFeedback"
+                            :placeholder="`${preFix} Code`" />
+                            <b-form-invalid-feedback id="codeLiveFeedback">
+                              This field is required
+                            </b-form-invalid-feedback>
+                          </v-flex>
+                          <v-flex xs12 sm6 md4>
+                            <label for="code">{{`${preFix} Name: `}}</label><span class="mandatoryStar">*</span>
+                            <b-form-input id="code" v-model="addItems[staticFields[1]]" type="text"
+                            v-bind:class="{'form-control':true, 'is-invalid' : !validAddName() && nameBlured}"
+                            v-on:blur="nameBlured = true"
+                            aria-describedby="nameLiveFeedback"
+                            :placeholder="`${preFix} Name`" />
+                            <b-form-invalid-feedback id="nameLiveFeedback">
+                              This field is required
+                            </b-form-invalid-feedback>
+                          </v-flex>
+                          <v-flex xs12 sm6 md4>
+                            <label for="code">{{`${preFix} Desc: `}}</label>
+                            <b-form-input id="code" v-model="addItems[staticFields[2]]" type="text"
+                            :placeholder="`${preFix} Desc`" />
+                          </v-flex>
+                          <v-flex xs12 sm6 md4>
+                            <label for="">{{`${preFix} Group: `}}</label><span class="mandatoryStar">*</span>
+                            <b-form-select v-model="addItems[staticFields[3]]" :options="itemGroupList"
+                            v-bind:class="{'form-control':true, 'is-invalid' : !validitemAddGroup() && itemGroupBlured}"
+                            v-on:blur="itemGroupBlured = true"
+                            aria-describedby="groupIDLiveFeedback"
+                            value-field="itemGroupID" text-field="itemGroupCode" />
+                            <b-form-invalid-feedback id="groupIDLiveFeedback">
+                              This field is required
+                            </b-form-invalid-feedback>
+                          </v-flex>
+                          <v-flex xs12 sm6 md4>
+                            <label for="">{{`Tally Alias:`}}</label>
+                            <b-form-input id="code" v-model="addItems[staticFields[4]]" type="text" :placeholder="`Tally Alias`" />
+                          </v-flex>
+                          <v-flex xs12 sm6 md4>
+                            <label for="">{{`HSN Code:`}}</label>
+                            <b-form-input id="code" v-model="addItems[staticFields[5]]" type="text" :placeholder="`HSN Code`" />
+                          </v-flex>
+                          <v-flex xs12 sm6 md4>
+                            <label for="">{{`${preFix} Item Type: `}}</label><span class="mandatoryStar">*</span>
+                            <b-form-select v-model="addItems[staticFields[6]]" :options="itemTypeList"
+                            v-bind:class="{'form-control':true, 'is-invalid' : !validAdditemType() && itemTypeBlured}"
+                            v-on:blur="itemTypeBlured = true"
+                            aria-describedby="itemTypeLiveFeedback"
+                            value-field= "itemTypeID" text-field="itemTypeName" />
+                             <b-form-invalid-feedback id="itemTypeLiveFeedback">
+                              This field is required
+                            </b-form-invalid-feedback>
+                          </v-flex>
+                          <v-flex xs12 sm6 md4>
+                            <label for="">{{`UOM: `}}</label><span class="mandatoryStar">*</span>
+                            <b-form-select v-model="addItems[staticFields[7]]" :options="UOMList"
+                            v-bind:class="{'form-control':true, 'is-invalid' : !validAddUOM() && UOMBlured}"
+                            v-on:blur="UOMBlured = true"
+                            aria-describedby="UOMLiveFeedback"
+                            value-field="UOMID" text-field="UOMCode" />
+                            <b-form-invalid-feedback id="UOMLiveFeedback">
+                              This field is required
+                            </b-form-invalid-feedback>
+                          </v-flex>
+                          <v-layout wrap>
+                            <v-flex xs12 sm4 md4>
+                            <b-form-checkbox
+                              id="BOMItem"
+                              v-model="addItems[staticFields[8]]"
+                            >
+                              BOM Item ?
+                            </b-form-checkbox>
+                          </v-flex>
+                          <v-flex xs12 sm8 md8>
+                            <b-form-checkbox
+                              id="NonSktable"
+                              v-model="addItems[staticFields[9]]"
+                            >
+                              NonStkable ?
+                            </b-form-checkbox>
+                          </v-flex>
+                          <!-- <v-flex xs12 sm4 md4>
+                             <b-form-checkbox
+                              id="inActive"
+                              v-model="addItems[staticFields[11]]"
+                            >
+                              inActive ?
+                            </b-form-checkbox>
+                          </v-flex> -->
+                          <!-- <v-flex xs12 sm8 md8>
+                            <b-form-checkbox
+                              id="Authorised"
+                              v-model="addItems[staticFields[12]]"
+                            >
+                              is Authorized ?
+                            </b-form-checkbox>
+                          </v-flex> -->
+                          </v-layout>
+                          <!-- </v-form> -->
+                        </v-layout>
+                      </v-container>
+                      <!-- END: Supplier detail form code -->
+                    </v-card-text>
+                  </v-card>
+                </v-expansion-panel-content>
+                <v-expansion-panel-content>
+                  <div slot="header">Other Information</div>
+                  <v-card>
+                    <v-card-text>
+                      <!-- START: Code for dynamic fields -->
+                       <v-container fluid grid-list-xl>
+                        <v-layout row justify-space-between>
+                          <v-flex xs12 sm4 md4>
+                      <vue-form-generator :schema="addDynamicFieldSchema" :model="addDynamicFieldModel" :options="formOptions" ></vue-form-generator>
+                          </v-flex>
+                        </v-layout>
+                       </v-container>
+                      <!-- END: Code for dynamic fields -->
+                    </v-card-text>
+                  </v-card>
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+            </v-flex>
+          </v-layout>
+        </v-card>
+      </v-dialog>
+      <!-- END: dialog box model code for adding new Item in Item Master -->
     </v-app>
   </div>
 </template>
@@ -243,6 +351,7 @@ export default {
       itemMasterDataTable: [],
       itemMasterModel: false,
       editedItems: {},
+      addItems: {},
       staticFields: [],
       preFix: null,
       UOMList: [],
@@ -253,10 +362,21 @@ export default {
       },
       dynamicFieldModel: {},
       dynamicFieldOptions: {},
+      addDynamicFieldSchema: {
+        fields: []
+      },
+      addDynamicFieldModel: {},
+      addDynamicFieldOptions: {},
       nameBlured: true,
       itemGroupBlured: true,
       itemTypeBlured: true,
-      UOMBlured: true
+      UOMBlured: true,
+      formOptions: {
+        validateAfterLoad: true,
+        validateAfterChanged: true,
+        validateAsync: true
+      },
+      addItemMasterModel: false
     }
   },
   beforeMount: function() {
@@ -346,6 +466,54 @@ export default {
     },
     validate: function() {
       (this.validName() && this.validitemGroup() && this.validitemType() && this.validUOM()) ? true : false;
+    },
+    validAddUOM: function() {
+      if (this.addItems[this.staticFields[7]]) {
+        return (this.addItems[this.staticFields[7]].toString()).length >= 1 ? true : false;
+      } else { return false; }
+    },
+    validAdditemType: function() {
+      if (this.addItems[this.staticFields[6]]) {
+        return (this.addItems[this.staticFields[6]].toString()).length >= 1 ? true : false;
+      } else { return false; }
+    },
+    validitemAddGroup: function() {
+      if (this.addItems[this.staticFields[3]]) {
+        return (this.addItems[this.staticFields[3]].toString()).length >= 1 ? true : false;
+      } else { return false; }
+    },
+    validAddName: function() {
+      if (this.addItems[this.staticFields[1]]) {
+        return (this.addItems[this.staticFields[1]].toString()).length >= 1 ? true : false;
+      } else { return false; }
+    },
+    validAddCode: function() {
+      if (this.addItems[this.staticFields[0]]) {
+        return (this.addItems[this.staticFields[0]].toString()).length >= 1 ? true : false;
+      } else { return false; }
+    },
+    addItemInItemMaster: function() {
+      const docID = localStorage.getItem('menuDocId') || 0;
+      httpClient({
+        method: 'GET',
+        url: `${process.env.VUE_APP_API_BASE}ItemMaster?docID=${docID}&type=0`
+      }).then((result) => {
+        console.log('Result', result.data);
+        const addItemInItemMaster = result.data;
+        this.preFix = addItemInItemMaster.prefix;
+        // console.log('this.preFix', this.preFix);
+        this.addItems = addItemInItemMaster.staticFieldData;
+        console.log('this.addItems', JSON.stringify(this.addItems));
+        this.staticFields = Object.keys(this.addItems);
+        // console.log('this.staticFields', this.staticFields);
+        this.UOMList = addItemInItemMaster.UOMList;
+        // console.log('UOM LIST', this.UOMList);
+        this.addDynamicFieldModel = addItemInItemMaster.dynamicFieldModal.modal;
+        this.addDynamicFieldSchema.fields = DynamicFieldSchema(addItemInItemMaster.dynamicFieldModal.fieldProperties, addItemInItemMaster.dynamicFieldModal.modal[0]);
+        this.addItemMasterModel = true;
+      }).catch((err) => {
+        console.error('Error Occured', err);
+      });
     }
   }
 }
