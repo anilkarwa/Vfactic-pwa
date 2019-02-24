@@ -233,7 +233,7 @@
             <v-btn icon dark @click="AddItemInpartyMasterModel = false">
               <v-icon>close</v-icon>
             </v-btn>
-            <v-toolbar-title>Edit Information</v-toolbar-title>
+            <v-toolbar-title>Add Record</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-toolbar-items>
               <v-btn dark flat @click="updatePartyMasterData()">Save</v-btn>
@@ -251,7 +251,7 @@
                           <v-flex xs12 sm6 md4>
                             <label for="code">{{`${preFix} Code: `}}</label><span class="mandatoryStar">*</span>
                             <b-form-input id="code" v-model="addItems[staticFields[0]]" type="text"
-                            v-bind:class="{'form-control':true, 'is-invalid' : !validCode() && codeBlured}"
+                            v-bind:class="{'form-control':true, 'is-invalid' : !addValidCode() && codeBlured}"
                             v-on:blur="codeBlured = true"
                             aria-describedby="codeLiveFeedback"
                             :placeholder="`${preFix} Code`" />
@@ -262,7 +262,7 @@
                           <v-flex xs12 sm6 md4>
                             <label for="code">{{`${preFix} Name: `}}</label><span class="mandatoryStar">*</span>
                             <b-form-input id="code" v-model="addItems[staticFields[1]]" type="text"
-                            v-bind:class="{'form-control':true, 'is-invalid' : !validName() && nameBlured}"
+                            v-bind:class="{'form-control':true, 'is-invalid' : !addValidName() && nameBlured}"
                             v-on:blur="nameBlured = true"
                             aria-describedby="nameLiveFeedback"
                             :placeholder="`${preFix} Name`" />
@@ -278,7 +278,7 @@
                           <v-flex xs12 sm6 md4>
                             <label for="">{{`${preFix} Group: `}}</label><span class="mandatoryStar">*</span>
                             <b-form-select v-model="addItems[staticFields[3]]" :options="partyMasterGroupList"
-                            v-bind:class="{'form-control':true, 'is-invalid' : !validSupplierGroup() && groupNameBlured}"
+                            v-bind:class="{'form-control':true, 'is-invalid' : !addValidSupplierGroup() && groupNameBlured}"
                             v-on:blur="groupNameBlured = true"
                             aria-describedby="groupIDLiveFeedback"
                             :placeholder="`${preFix} Group`" value-field="groupID"  text-field="groupName" />
@@ -290,7 +290,7 @@
                           <v-flex xs12 sm6 md4>
                             <label for="">{{`${preFix} Ledger Group: `}}</label><span class="mandatoryStar">*</span>
                             <b-form-select v-model="addItems[staticFields[4]]" :options="partyMasterLedGroupID"
-                            v-bind:class="{'form-control':true, 'is-invalid' : !ValidGroupLedgerid() && ledgerIdBlured}"
+                            v-bind:class="{'form-control':true, 'is-invalid' : !addValidGroupLedgerid() && ledgerIdBlured}"
                             v-on:blur="ledgerIdBlured = true"
                             aria-describedby="ledgerLiveFeedback"
                             :placeholder="`${preFix} Ledger Group`" value-field="ledgerGroupID" text-field="ledgerGroupName" />
@@ -302,7 +302,7 @@
                             <label for="code">{{`Address line 1: `}}</label><span class="mandatoryStar">*</span>
                             <b-form-input id="code" v-model="addItems[staticFields[5]]" type="text"
                             aria-describedby="add1LiveFeedback"
-                            v-bind:class="{'form-control':true, 'is-invalid' : !validAdd1() && add2Blured}"
+                            v-bind:class="{'form-control':true, 'is-invalid' : !addValidAdd1() && add2Blured}"
                             v-on:blur="cityBlured = true"
                              :placeholder="`Address line 1`" />
                              <b-form-invalid-feedback id="add1LiveFeedback">
@@ -312,7 +312,7 @@
                           <v-flex xs12 sm6 md4>
                             <label for="code">{{`Address line 2: `}}</label><span class="mandatoryStar">*</span>
                             <b-form-input id="code" v-model="addItems[staticFields[6]]" type="text" 
-                            v-bind:class="{'form-control':true, 'is-invalid' : !validAdd2() && add2Blured}"
+                            v-bind:class="{'form-control':true, 'is-invalid' : !addValidAdd2() && add2Blured}"
                             v-on:blur="cityBlured = true"
                             aria-describedby="add2LiveFeedback"
                             :placeholder="`Address line 2`" />
@@ -323,7 +323,7 @@
                           <v-flex xs12 sm6 md4>
                             <label for="code">{{`Address line 3: `}}</label><span class="mandatoryStar">*</span>
                             <b-form-input id="code" v-model="addItems[staticFields[7]]" type="text" 
-                            v-bind:class="{'form-control':true, 'is-invalid' : !validAdd3() && add3Blured}"
+                            v-bind:class="{'form-control':true, 'is-invalid' : !addValidAdd3() && add3Blured}"
                             v-on:blur="cityBlured = true"
                             aria-describedby="add3LiveFeedback"
                             :placeholder="`Address line 3`" />
@@ -334,7 +334,7 @@
                           <v-flex xs12 sm6 md4>
                             <label for="code">{{`Address line 4: `}}</label><span class="mandatoryStar">*</span>
                             <b-form-input id="code" v-model="addItems[staticFields[8]]" type="text" 
-                            v-bind:class="{'form-control':true, 'is-invalid' : !validAdd4() && add4Blured}"
+                            v-bind:class="{'form-control':true, 'is-invalid' : !addValidAdd4() && add4Blured}"
                             v-on:blur="cityBlured = true"
                             aria-describedby="add4LiveFeedback"
                             :placeholder="`Address line 4`" />
@@ -345,7 +345,7 @@
                           <v-flex xs12 sm6 md4>
                             <label for="code">{{`City: `}}</label><span class="mandatoryStar">*</span>
                             <b-form-input id="code" v-model="addItems[staticFields[9]]" type="text"
-                            v-bind:class="{'form-control':true, 'is-invalid' : !validCity() && cityBlured}"
+                            v-bind:class="{'form-control':true, 'is-invalid' : !addValidCity() && cityBlured}"
                             v-on:blur="cityBlured = true"
                             aria-describedby="cityLiveFeedback"
                             :placeholder="`City`" />
@@ -356,7 +356,7 @@
                           <v-flex xs12 sm6 md4>
                             <label for="code">{{`State: `}}</label><span class="mandatoryStar">*</span>
                             <b-form-input id="code" v-model="addItems[staticFields[11]]" type="text"
-                            v-bind:class="{'form-control':true, 'is-invalid' : !validState() && stateBlured}"
+                            v-bind:class="{'form-control':true, 'is-invalid' : !addValidState() && stateBlured}"
                             v-on:blur="stateBlured = true"
                             aria-describedby="stateLiveFeedback"
                             :placeholder="`State`" />
@@ -367,7 +367,7 @@
                           <v-flex xs12 sm6 md4>
                             <label for="code">{{`Country: `}}</label><span class="mandatoryStar">*</span>
                             <b-form-input id="code" v-model="addItems[staticFields[12]]" type="text"
-                            v-bind:class="{'form-control':true, 'is-invalid' : !validCountry() && countryBlured}"
+                            v-bind:class="{'form-control':true, 'is-invalid' : !addValidCountry() && countryBlured}"
                             v-on:blur="countryBlured = true"
                             aria-describedby="countryLiveFeedback"
                             :placeholder="`Country`" />
@@ -429,6 +429,7 @@
 </template>
 <script>
 import httpClient from "@/services/httpClient.js"
+import VueFormGenerator from 'vue-form-generator'
 import generateSchema from '@/DynamicProperty/generateScheme.js'
 
 export default {
@@ -470,7 +471,8 @@ export default {
       add2Blured: true,
       add3Blured: true,
       add4Blured: true,
-      AddItemInpartyMasterModel: false
+      AddItemInpartyMasterModel: false,
+      addFlag: false
     }
   },
   beforeMount: function() {
@@ -507,8 +509,8 @@ export default {
         });
     },
     editPartyMasterData: function(params) {
-      console.log('EDit Party Master with Item Data', params.SUPPID);
-      this.selectedID = params.SUPPID || 0;
+      console.log('EDit Party Master with Item Data', JSON.stringify(params));
+      this.selectedID = params[Object.keys(params)[0]];
       console.log('Selected ID', this.selectedID);
       /**
        * Reading MenuDocID from localstorage:: saved in home view while selecting the menu
@@ -527,7 +529,9 @@ export default {
           this.preFix = partyMasterFields.prefix;
           console.log('Static Fields', JSON.stringify(partyMasterFields.staticFieldData[0]));
           this.editItems = partyMasterFields.staticFieldData[0];
+          console.log('Edit Items', this.editItems);
           this.staticFields = Object.keys(this.editItems);
+          console.log('Static Fields', this.staticFields);
           this.partyMasterGroupList = partyMasterFields.groupList;
 
           // this.editItems[this.staticFields[4]] = this.partyMasterGroupList.find(value => value.groupID === partyMasterFields.staticFieldData[0].SUPPGROUPID);
@@ -647,6 +651,93 @@ export default {
     validate: function() {
       (this.validCode() && this.validName() && this.ValidGroupLedgerid() && this.validSupplierGroup() && this.validCity() && this.validState() && this.validCountry()) ? true : false;
     },
+    addValidCode: function() {
+      if(this.addFlag) {
+        if (this.addItems[this.staticFields[0]]) {
+        return (this.addItems[this.staticFields[0]]).length >= 1 ? true : false;
+      } else { return false; }
+      } else{
+        return true;
+      }
+    },
+    addValidName: function() {
+      if(this.addFlag) {
+        if (this.addItems[this.staticFields[1]]) {
+        return (this.addItems[this.staticFields[1]]).length >= 1 ? true : false;
+      } else { return false; }
+      } else{
+        return true;
+      }
+    },
+    addValidSupplierGroup: function() {
+      if(this.addFlag) {
+        if (this.addItems[this.staticFields[3]]) {
+        return (this.addItems[this.staticFields[3]]).length >= 1 ? true : false;
+      } else { return false; }
+      } else{
+        return true;
+      }
+    },
+    addValidGroupLedgerid: function() {
+      if(this.addFlag) {
+        if (this.addItems[this.staticFields[4]]) {
+        return (this.addItems[this.staticFields[4]]).length >= 1 ? true : false;
+      } else { return false; }
+      } else{
+        return true;
+      }
+    },
+    addValidAdd1: function() {
+      if(this.addFlag) {
+        if (this.addItems[this.staticFields[5]]) {
+        return (this.addItems[this.staticFields[5]]).length >= 1 ? true : false;
+      } else { return false; }
+      } else{
+        return true;
+      }
+    },
+    addValidAdd2: function() {
+      if(this.addFlag) {
+        if (this.addItems[this.staticFields[6]]) {
+        return (this.addItems[this.staticFields[6]]).length >= 1 ? true : false;
+      } else { return false; }
+      } else { return true;}
+    },
+    addValidAdd3: function() {
+      if(this.addFlag) {
+        if (this.addItems[this.staticFields[7]]) {
+        return (this.addItems[this.staticFields[7]]).length >= 1 ? true : false;
+      } else { return false; }
+      } else{ return true}
+    },
+    addValidAdd4: function() {
+      if(this.addFlag) {
+        if (this.addItems[this.staticFields[8]]) {
+        return (this.addItems[this.staticFields[8]]).length >= 1 ? true : false;
+      } else { return false; }
+      } else{ return true}
+    },
+    addValidCity: function() {
+      if(this.addFlag) {
+        if (this.addItems[this.staticFields[9]]) {
+        return (this.addItems[this.staticFields[9]]).length >= 1 ? true : false;
+      } else { return false; }
+      }else{ return true}
+    },
+    addValidState: function() {
+      if(this.addFlag) {
+        if (this.addItems[this.staticFields[11]]) {
+        return (this.addItems[this.staticFields[11]]).length >= 1 ? true : false;
+      } else { return false; }
+      }else{ return true}
+    },
+    addValidCountry: function() {
+      if(this.addFlag) {
+        if (this.addItems[this.staticFields[12]]) {
+        return (this.addItems[this.staticFields[12]]).length >= 1 ? true : false;
+      } else { return false; }
+      }else{ return true}
+    },
     onValidated: function(isValid, errors) {
       console.log("Validation result: ", isValid, ", Errors:", errors);
     },
@@ -667,9 +758,9 @@ export default {
         this.partyMasterGroupList = addItemInPartyMaster.groupList;
         this.partyMasterLedGroupID = addItemInPartyMaster.ledgerGroupList;
 
-        this.addDynamicFieldModel = addItemInPartyMaster.dynamicFieldModal.modal[0];
+        
         this.addDynamicFieldSchema.fields = generateSchema(addItemInPartyMaster.dynamicFieldModal.fieldProperties, this.addDynamicFieldModel);
-
+        this.addDynamicFieldModel = VueFormGenerator.schema.createDefaultObject(this.addDynamicFieldSchema,{});
         this.AddItemInpartyMasterModel = true;
       }).catch((err) => {
         console.error('Error Occured', err);
