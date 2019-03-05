@@ -10,8 +10,12 @@
       <v-container fluid fill-height>
         <v-layout
           justify-center
+          justify-space-around
         >
-          <v-flex xs8 sm4 mt-5 pt-5>
+        <v-flex xs sm md4>
+           <v-img :src=image width=50px; hight=50px;></v-img>
+        </v-flex>
+        <v-flex xs8 sm4 mt-5 pt-5>
         <v-card>
           <v-toolbar color="blue darken-1" dark>
             <v-toolbar-title>Select Company</v-toolbar-title>
@@ -130,7 +134,8 @@ export default {
       },
       snackbar: false,
       snackbarColor: '',
-      snackbarText: ''
+      snackbarText: '',
+      image: require('@/assets/login-bg-1.gif')
     }
   },
   beforeMount: function() {

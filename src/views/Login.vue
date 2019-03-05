@@ -11,7 +11,11 @@
         <v-layout
           justify-center
           align-center
+          justify-space-around
         >
+        <v-flex xs sm md4>
+           <v-img :src=loginImage width=50px; hight=50px;></v-img>
+        </v-flex>
           <v-flex xs12 sm8 md4>
             <v-card class="elevation-12">
               <v-toolbar dark color="blue darken-1">
@@ -33,7 +37,7 @@
       </v-container>
     </v-content>
     <v-footer color="blue darken-1" app inset>
-      <span class="white--text">NitinAgarwal &copy; 2019</span>
+      <span class="white--text">Softvent &copy; 2019</span>
     </v-footer>
     <!-- START: Code for snackBar -->
       <v-snackbar
@@ -67,7 +71,8 @@ export default {
       LoginFormvalid: true,
       snackbar: false,
       snackbarColor: '',
-      snackbarText: ''
+      snackbarText: '',
+      loginImage: require('@/assets/login-bg-2.gif')
     }
   },
   methods: {
@@ -104,5 +109,4 @@ export default {
 }
 </script>
 <style>
-
 </style>

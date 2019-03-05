@@ -1,7 +1,10 @@
 <template>
   <div id="app">
     <v-app id="inspire">
-      <v-btn color="primary" @click="addItemInPartyMaster">ADD GENERAL MASTER</v-btn>
+        <div class="text-md-center text-lg-center">
+          <v-btn fab dark small color="indigo" @click="addItemInPartyMaster"> <v-icon dark>add</v-icon></v-btn>
+        </div>
+       Add New Record
       <!-- START: Code for Supplier Group Master Table data -->
       <v-data-table :headers="headers" :items="generalMasterTableData" class="elevation-1">
         <template slot="items" slot-scope="props">
@@ -40,7 +43,7 @@
             <v-flex xs12>
               <v-expansion-panel popout>
                 <v-expansion-panel-content>
-                  <div slot="header">supplier Group Master Details</div>
+                  <div slot="header">Group Master Details</div>
                   <v-card>
                     <v-card-text>
                       <v-container fluid grid-list-xl>
@@ -113,7 +116,7 @@
                        <v-container fluid grid-list-xl>
                         <v-layout row justify-space-between>
                           <v-flex xs12 sm4 md4>
-                      <vue-form-generator :schema="dynamicFieldSchema" :model="dynamicFieldModel" :options="formOptions" ></vue-form-generator>
+                      <vue-form-generator id="Form-generator-css" ref="vfg" :schema="dynamicFieldSchema" :model="dynamicFieldModel" :options="formOptions" @validated="onValidated"  ></vue-form-generator>
                           </v-flex>
                         </v-layout>
                        </v-container>
@@ -165,7 +168,7 @@
             <v-btn icon dark @click="addGeneralMasterModel = false">
               <v-icon>close</v-icon>
             </v-btn>
-            <v-toolbar-title>Add Item Group Master</v-toolbar-title>
+            <v-toolbar-title>Add Group Master</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-toolbar-items>
               <v-btn dark flat @click="addItemRequest()">Add</v-btn>
@@ -175,11 +178,11 @@
             <v-flex xs12>
               <v-expansion-panel popout>
                 <v-expansion-panel-content>
-                  <div slot="header">supplier Group Master Details</div>
+                  <div slot="header">Details</div>
                   <v-card>
                     <v-card-text>
                       <v-container fluid grid-list-xl>
-                        <v-layout row justify-space-between>
+                        <v-layout row >
                           <v-flex xs12 sm6 md4>
                             <label for="code">{{`${preFix} Code: `}}</label><span class="mandatoryStar">*</span>
                             <b-form-input id="code" v-model="addItems[staticFields[0]]" type="text"
@@ -249,7 +252,7 @@
                         <v-layout row justify-space-between>
                           <v-flex xs12 sm4 md4>
                             <span>No data Found</span>
-                      <!-- <vue-form-generator :schema="dynamicFieldSchema" :model="dynamicFieldModel" :options="formOptions" ></vue-form-generator> -->
+                       <vue-form-generator id="Form-generator-css" ref="vfg" :schema="addDynamicFieldSchema" :model="addDynamicFieldModel" :options="formOptions"  @validated="onValidatedAdd" ></vue-form-generator>
                           </v-flex>
                         </v-layout>
                        </v-container>
@@ -263,12 +266,32 @@
         </v-card>
       </v-dialog>
       <!-- END: dialog box model code For Adding the new Item-->
+      <v-snackbar
+        v-model="snackbar"
+        :color="color"
+        :multi-line="true"
+        :timeout="timeout"
+        :vertical="mode === 'vertical'"
+      >{{ text }}
+        <v-btn
+          dark
+          flat
+          @click="snackbar = false"
+        >
+          Close
+        </v-btn>
+      </v-snackbar>
     </v-app>
   </div>
 </template>
 <script>
 import httpClient from "@/services/httpClient.js"
-import DynamicFieldSchema from '@/DynamicProperty/generateScheme.js'
+import VueFormGenerator from 'vue-form-generator'
+import generateSchema from '@/DynamicProperty/generateScheme.js'
+import generateGroupSchema from '@/DynamicProperty/generateGroupSchema.js'
+import generateNewModal from '@/DynamicProperty/generateNewModal.js'
+import customeValidaton from '@/DynamicProperty/customeValidation.js'
+
 
 export default {
   data: function() {
@@ -286,11 +309,17 @@ export default {
       snackbarText: '',
       warningDialog: false,
       deleteItems: '',
-       dynamicFieldSchema: {
-        fields: []
+      dynamicFieldSchema: {
+        fields: [],
+        groups:[]
       },
       dynamicFieldModel: {},
       dynamicFieldOptions: {},
+      addDynamicFieldSchema: {
+        fields: [],
+        groups: []
+      },
+     addDynamicFieldModel: {},
       codeBlured: true,
       nameBlured: true,
       formOptions: {
@@ -298,23 +327,38 @@ export default {
         validateAfterChanged: true,
         validateAsync: true
       },
-      addGeneralMasterModel: false
+      addGeneralMasterModel: false,
+      isFormSavedOnce: false,
+      isDynamicFormValid: false,
+      snackbar: false,
+      color: '',
+      mode: '',
+      timeout: 5000,
+      text: '',
+      dynamicShema:{},
+      dynamicModal: {}
     }
   },
   beforeMount: function() {
     this.loadGeneralMaster();
   },
   methods: {
+    showSnackBar(type,message){
+      this.snackbar = true;
+      this.color = type;
+      this.text = message;
+    },
     loadGeneralMaster: function() {
       /**
        * Code for loading the party master data
        */
+      const docID =  localStorage.getItem('menuDocId') || 0;
+      this.headers = [ { text: "Edit", align: "center" } ];
       httpClient({
         method: 'GET',
-        url: `${process.env.VUE_APP_API_BASE}GeneralMaster?docID=1122`
+        url: `${process.env.VUE_APP_API_BASE}GeneralMaster?docID=${docID}`
       })
         .then((result) => {
-          console.log('General Master:: server response::', result);
           const generalMasterData = result.data;
           /**
            * Logic for putting data into data table::
@@ -325,88 +369,110 @@ export default {
             this.headers.push({ text: element, align: "center", value: element })
           });
           this.generalMasterTableData = generalMasterData.tableData;
-          console.log('this.generalMasterTableData', this.generalMasterTableData);
         }).catch((err) => {
           /**
            * When API call failed: check error in browser console::
            */
-          console.error('Error Occured while fetcing the party master Data', err);
+          this.showSnackBar('error',err.response.data);
         });
     },
-    editGeneralMasterData: function() {
+    editGeneralMasterData: function(params) {
       this.generalMasterModel = true;
+      const docID = localStorage.getItem('menuDocId') || 0;
+      const selectedI = params[Object.keys(params)[0]];
+      this.selectedID = params[Object.keys(params)[0]];
       httpClient({
         method: 'GET',
-        url: `${process.env.VUE_APP_API_BASE}GeneralMaster?selectedID=2&docID=1122`
+        url: `${process.env.VUE_APP_API_BASE}GeneralMaster?selectedID=${this.selectedID}&docID=${docID}`
       })
         .then((result) => {
-          console.log('Edit Fields Result::', result.data);
           const generalMasterEditFields = result.data;
           this.preFix = generalMasterEditFields.prefix;
-
-          this.editItems = generalMasterEditFields.staticFieldData[0]
-          console.log('EDit Item Master', JSON.stringify(this.editItems));
+          this.editItems = generalMasterEditFields.staticFieldData[0];
           this.staticFields = Object.keys(this.editItems);
-           this.dynamicFieldModel = generalMasterEditFields.dynamicFieldModal.modal[0];
-          this.dynamicFieldSchema.fields = DynamicFieldSchema(generalMasterEditFields.dynamicFieldModal.fieldProperties, generalMasterEditFields.dynamicFieldModal.modal[0]);
+         
+          if(generalMasterEditFields.dynamicFieldModal != ""){
+            this.dynamicShema = generalMasterEditFields.dynamicFieldModal.fieldProperties;
+            this.dynamicModal = generalMasterEditFields.dynamicFieldModal.modal[0];
+            this.dynamicFieldModel =  this.dynamicModal
+            this.dynamicFieldSchema.fields = DynamicFieldSchema(this.dynamicShema,  this.dynamicModal);
+            this.dynamicFieldSchema.groups = generateGroupSchema(this.dynamicShema,  this.dynamicModal);
+          }
         }).catch((err) => {
-          /**
-           * When API call failed: check error in browser console::
-           */
-          console.error('Error Occured while fetcing the party master Data', err);
+          this.showSnackBar('error',err.response.data);
         });
     },
     updateGeneralMasterData: function() {
-      this.validate();
-      console.log('Update params', this.editItems);
+      this.validateOnclick();
+      console.log('Update params',JSON.stringify(this.editItems));
       const updateParam = {
-        docID: localStorage.getItem('menuDocId') || 1121, // Need to remove 1121 value and put 0 apart of this;
+        docID: localStorage.getItem('menuDocId') || 0, 
         userID: localStorage.getItem('userId') || 0,
         staticFields: this.editItems,
-        dynamicFields: ''
+        dynamicFields: this.dynamicFieldModel
       }
+      if(this.validate() && this.isDynamicFormValid){
       httpClient({
         method: 'PUT',
         url: `${process.env.VUE_APP_API_BASE}GeneralMaster`,
-        data: this.editItems
+        data: updateParam
       })
         .then((result) => {
-          console.log('Result', result);
+        this.showSnackBar('success',result.data);
+        this.loadGeneralMaster();
         }).catch((err) => {
-          console.error('ERROR OCCURED!', err);
+          this.showSnackBar('error',err.response.data);
         });
+      }else{
+         this.showSnackBar('error','Please fill mandatory fields!');
+      }
     },
     deleteGeneralMasterRequest: function(params) {
-      console.log('Params', params);
-      this.deleteItems = params;
-      console.log('Delete Items', this.deleteItems);
-      // this.warningDialog = true;
-    },
-    deleteGeneralMaster: function() {
+      const selectedID = params[Object.keys(params)[0]];
+      const docID = localStorage.getItem('menuDocId') || 0; 
+      const userID = localStorage.getItem('userId') || 0;
+       /**
+       * Delete Item in party Master
+       */
+      httpClient({
+        method: 'DELETE',
+        url: `${process.env.VUE_APP_API_BASE}GeneralMaster?selectedID=${selectedID}&docID=${docID}&userID=${userID}`
+      })
+        .then((result) => {
+        this.showSnackBar('success',result.data);
+        this.loadGeneralMaster();
+        }).catch((err) => {
+          this.showSnackBar('error',err.response.data);
+        });
 
+      // this.warningDialog = true;
     },
     validCode: function() {
       if (this.editItems[this.staticFields[1]]) {
-        return (this.editItems[this.staticFields[1]]).length >= 1 ? true : false;
+        return (this.editItems[this.staticFields[1]].toString()).length >= 1 ? true : false;
       } else { return false; }
     },
     validAddCode: function() {
+      if(this.isFormSavedOnce){
       if (this.addItems[this.staticFields[0]]) {
-        return (this.addItems[this.staticFields[0]]).length >= 1 ? true : false;
+        return (this.addItems[this.staticFields[0]].toString()).length >= 1 ? true : false;
       } else { return false; }
+      }else { return true;}
     },
     validName: function() {
       if (this.editItems[this.staticFields[2]]) {
-        return (this.editItems[this.staticFields[2]]).length >= 1 ? true : false;
+        return (this.editItems[this.staticFields[2]].toString()).length >= 1 ? true : false;
       } else { return false; }
     },
     validAddName: function() {
+      if(this.isFormSavedOnce){
       if (this.addItems[this.staticFields[1]]) {
-        return (this.addItems[this.staticFields[1]]).length >= 1 ? true : false;
+        return (this.addItems[this.staticFields[1]].toString()).length >= 1 ? true : false;
       } else { return false; }
+       }else { return true;}
     },
     validate: function() {
-      (this.validCode() && this.validName()) ? true : false;
+      return (this.validCode() && this.validName()) ? true : false;
     },
     addValidation: function() {
       (this.validAddCode() && this.validAddName()) ? true : false;
@@ -417,42 +483,71 @@ export default {
         method: 'GET',
         url: `${process.env.VUE_APP_API_BASE}GeneralMaster?docID=${docID}&type=0`
       }).then((result) => {
-        console.log('Response from server', result.data);
         const addFieldForGeneralMaster = result.data;
         this.preFix = addFieldForGeneralMaster.prefix;
         this.addItems = addFieldForGeneralMaster.staticFieldData;
-        console.log('AddItems', this.addItems);
         this.staticFields = Object.keys(this.addItems);
-        console.log('Static Field', this.staticFields);
+        this.dynamicShema =addFieldForGeneralMaster.dynamicFieldModal.fieldProperties;
+        this.dynamicModal = addFieldForGeneralMaster.dynamicFieldModal.modal;
+        if(addFieldForGeneralMaster.dynamicFieldModal.modal !=null){
+        this.addDynamicFieldSchema.fields = generateSchema(this.dynamicShema, this.dynamicModal);
+        this.addDynamicFieldSchema.groups = generateGroupSchema(this.dynamicShema, this.dynamicModal);
+        this.addDynamicFieldModel = generateNewModal(this.dynamicShema,this.dynamicModal)
+        }
         this.addGeneralMasterModel = true;
       }).catch((err) => {
-        console.error('Error Occured', err);
+        this.showSnackBar('error',err.response.data);
+
       });
     },
+     addValidation: function() {
+      return (
+      this.validAddName() &&
+      this.validAddCode()) ? true : false;
+    },
     addItemRequest: function() {
-      if (this.addValidation()) {
-        console.log('Add Item Request');
-      // this.addItems.AddedBy = 'Nitin';
-      console.log('Add Item Details', this.addItems);
-      console.log('Dynamic Data', this.addDynamicFieldModel)
+      this.isFormSavedOnce = true;
+      this.validateOnclick();
       const postParams = {
         docID: localStorage.getItem('menuDocId'),
         userID: localStorage.getItem('userId'),
         staticFields: this.addItems,
         dynamicFields: this.addDynamicFieldModel
       }
-      console.log('postParams', postParams);
+
+      if (this.addValidation() && this.isDynamicFormValid) {
       httpClient({
         method: 'POST',
-        url: `${process.env.VUE_APP_API_BASE}PartyMaster`,
+        url: `${process.env.VUE_APP_API_BASE}GeneralMaster`,
         data: postParams
       }).then((result) => {
-        console.log('Result', result);
+        this.showSnackBar('success',result.data);
+        this.addGeneralMasterModel = false;
+        this.loadGeneralMaster();
       }).catch((err) => {
-        console.error('Opps! Error Occured!');
+        this.showSnackBar('error',err.response.data);
       });
+      } else{
+        this.showSnackBar('error','Please fill all mandatory field.')
       }
-    }
+    },
+    onValidatedAdd: function(isValid, errors) {
+      if(this.dynamicShema != null){
+     customeValidaton(this.dynamicShema,this.addDynamicFieldSchema.fields,this.addDynamicFieldSchema.groups,this.addDynamicFieldModel);
+      }
+      console.log("Validation result: ", isValid, ", Errors:", errors);
+      this.isDynamicFormValid = isValid;
+    },
+     onValidated: function(isValid, errors) {
+       if(this.dynamicShema != null){
+       customeValidaton(this.dynamicShema,this.dynamicFieldSchema.fields,this.dynamicFieldSchema.groups,this.dynamicFieldModel);
+       }
+      console.log("Validation result: ", isValid, ", Errors:", errors);
+      this.isDynamicFormValid = isValid;
+    },
+    validateOnclick: function($event) {
+      var errors = this.$refs.vfg.validate();
+    },
   }
 }
 </script>

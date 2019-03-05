@@ -26,14 +26,14 @@
               <div v-else>
                 <h1>Welcome, VfactIC</h1>
                 <h2>Date: {{ new Date() }}</h2>
-                <!-- <ValidationExample></ValidationExample> -->
+                
               </div>
             </v-flex>
           </v-layout>
         </v-container>
       </v-content>
       <v-footer app fixed color="blue darken-1">
-        <span>NitinAgarwal &copy; 2019</span>
+        <span>Softvent &copy; 2019</span>
       </v-footer>
 
 
@@ -45,7 +45,7 @@ import httpClient from "@/services/httpClient.js"
 import PartyMaster from "@/components/masterPages/PartyMaster.vue"
 import GeneralMaster from "@/components/masterPages/GeneralMaster.vue"
 import ItemMaster from "@/components/masterPages/ItemMaster.vue"
-import ValidationExample from "@/components/masterPages/ValidationField.vue"
+
 
 export default {
   name: "home",
@@ -53,7 +53,6 @@ export default {
     PartyMaster,
     GeneralMaster,
     ItemMaster,
-    ValidationExample
   },
   data: function() {
     return {
@@ -72,10 +71,16 @@ export default {
     selected () {
       console.log('Active', this.active);
       if (!this.active.length) return undefined
-
       const id = this.active[0]
       const selectedmenu = this.menuChildren.find(user => user.id === id)
-      this.readMenuDocId(selectedmenu)
+       localStorage.setItem('menuDocId', selectedmenu.docId)
+      this.currentView = '';
+      let that = this;
+      setTimeout(() => 
+        {
+          that.currentView = selectedmenu.view;
+        },
+        100);
       return selectedmenu;
     }
   },
@@ -108,13 +113,6 @@ export default {
         }
       });
     },
-    readMenuDocId(menuData) {
-      console.log('Reading.....', menuData);
-      localStorage.setItem('menuDocId', menuData.docId)
-      this.currentView = menuData.view;
-      console.log('Current View.....', this.currentView);
-      // console.log('Doc ID from localstorage', localStorage.getItem('menuDocId'));
-    }
   }
 };
 </script>

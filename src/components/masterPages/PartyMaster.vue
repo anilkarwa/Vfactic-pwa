@@ -1,7 +1,13 @@
 <template>
   <div id="app">
     <v-app id="inspire">
-      <v-btn color="primary" @click="addItemInPartyMaster">ADD PARTY MASTER</v-btn>
+      <!-- <v-btn color="primary" @click="addItemInPartyMaster">ADD PARTY MASTER</v-btn> -->
+      <!-- <v-layout class="text-md-center text-lg-center"> -->
+        <div class="text-md-center text-lg-center">
+          <v-btn fab dark  color="indigo" @click="addItemInPartyMaster"> <v-icon dark>add</v-icon></v-btn>
+        </div>
+      <!-- </v-layout> -->
+       Add New Record
       <!-- START: Code for Data table -->
       <v-data-table :headers="headers" :items="partyMasterTableData" class="elevation-1">
         <template slot="items" slot-scope="props">
@@ -74,7 +80,16 @@
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <label for="">{{`${preFix} Group: `}}</label><span class="mandatoryStar">*</span>
-                            <b-form-select v-model="editItems[staticFields[4]]" :options="partyMasterGroupList"
+                             <b-form-select v-model="editItems[staticFields[4]]" :options="partyMasterGroupList"
+                            v-bind:class="{'form-control':true, 'is-invalid' : !validSupplierGroup() && groupNameBlured}"
+                            v-on:blur="groupNameBlured = true"
+                            aria-describedby="groupIDLiveFeedback"
+                            :placeholder="`${preFix} Group`" value-field="groupID"  text-field="groupName" />
+                            <b-form-invalid-feedback id="groupIDLiveFeedback">
+                              This field is required
+                            </b-form-invalid-feedback>
+
+                            <!-- <b-form-select v-model="editItems[staticFields[4]]" :options="partyMasterGroupList"
                             v-bind:class="{'form-control':true, 'is-invalid' : !validSupplierGroup() && groupNameBlured}"
                             v-on:blur="groupNameBlured = true"
                             aria-describedby="groupIDLiveFeedback"
@@ -82,7 +97,7 @@
 
                             <b-form-invalid-feedback id="groupIDLiveFeedback">
                               This field is required
-                            </b-form-invalid-feedback>
+                            </b-form-invalid-feedback> -->
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <label for="">{{`${preFix} Ledger Group: `}}</label><span class="mandatoryStar">*</span>
@@ -107,37 +122,21 @@
                             </b-form-invalid-feedback>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <label for="code">{{`Address line 2: `}}</label><span class="mandatoryStar">*</span>
+                            <label for="code">{{`Address line 2: `}}</label>
                             <b-form-input id="code" v-model="editItems[staticFields[7]]" type="text" 
-                            v-bind:class="{'form-control':true, 'is-invalid' : !validAdd2() && add2Blured}"
-                            v-on:blur="cityBlured = true"
-                            aria-describedby="add2LiveFeedback"
                             :placeholder="`Address line 2`" />
-                            <b-form-invalid-feedback id="add2LiveFeedback">
-                              This field is required
-                            </b-form-invalid-feedback>
+                            
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <label for="code">{{`Address line 3: `}}</label><span class="mandatoryStar">*</span>
+                            <label for="code">{{`Address line 3: `}}</label>
                             <b-form-input id="code" v-model="editItems[staticFields[8]]" type="text" 
-                            v-bind:class="{'form-control':true, 'is-invalid' : !validAdd3() && add3Blured}"
-                            v-on:blur="cityBlured = true"
-                            aria-describedby="add3LiveFeedback"
                             :placeholder="`Address line 3`" />
-                            <b-form-invalid-feedback id="add3LiveFeedback">
-                              This field is required
-                            </b-form-invalid-feedback>
+                            
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <label for="code">{{`Address line 4: `}}</label><span class="mandatoryStar">*</span>
+                            <label for="code">{{`Address line 4: `}}</label>
                             <b-form-input id="code" v-model="editItems[staticFields[9]]" type="text" 
-                            v-bind:class="{'form-control':true, 'is-invalid' : !validAdd4() && add4Blured}"
-                            v-on:blur="cityBlured = true"
-                            aria-describedby="add4LiveFeedback"
                             :placeholder="`Address line 4`" />
-                            <b-form-invalid-feedback id="add4LiveFeedback">
-                              This field is required
-                            </b-form-invalid-feedback>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <label for="code">{{`City: `}}</label><span class="mandatoryStar">*</span>
@@ -186,7 +185,7 @@
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <b-form-checkbox
-                              id="checkbox1"
+                              id="checkbox2"
                               v-model="editItems[staticFields[15]]"
                             >
                               is Authorised ?
@@ -206,7 +205,7 @@
                        <v-container fluid grid-list-xl>
                         <v-layout row justify-space-between>
                           <v-flex xs12 sm4 md4>
-                      <vue-form-generator id="Form-generator-css" :schema="dynamicFieldSchema" :model="dynamicFieldModel" :options="formOptions" @validated="onValidated"></vue-form-generator>
+                      <vue-form-generator id="Form-generator-css" ref="vfg" :schema="dynamicFieldSchema" :model="dynamicFieldModel" :options="formOptions" @validated="onValidated"></vue-form-generator>
                           </v-flex>
                         </v-layout>
                        </v-container>
@@ -310,37 +309,22 @@
                             </b-form-invalid-feedback>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <label for="code">{{`Address line 2: `}}</label><span class="mandatoryStar">*</span>
+                            <label for="code">{{`Address line 2: `}}</label>
                             <b-form-input id="code" v-model="addItems[staticFields[6]]" type="text" 
-                            v-bind:class="{'form-control':true, 'is-invalid' : !addValidAdd2() && add2Blured}"
-                            v-on:blur="cityBlured = true"
-                            aria-describedby="add2LiveFeedback"
                             :placeholder="`Address line 2`" />
-                            <b-form-invalid-feedback id="add2LiveFeedback">
-                              This field is required
-                            </b-form-invalid-feedback>
+                            
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <label for="code">{{`Address line 3: `}}</label><span class="mandatoryStar">*</span>
+                            <label for="code">{{`Address line 3: `}}</label>
                             <b-form-input id="code" v-model="addItems[staticFields[7]]" type="text" 
-                            v-bind:class="{'form-control':true, 'is-invalid' : !addValidAdd3() && add3Blured}"
-                            v-on:blur="cityBlured = true"
-                            aria-describedby="add3LiveFeedback"
                             :placeholder="`Address line 3`" />
-                            <b-form-invalid-feedback id="add3LiveFeedback">
-                              This field is required
-                            </b-form-invalid-feedback>
+                           
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <label for="code">{{`Address line 4: `}}</label><span class="mandatoryStar">*</span>
+                            <label for="code">{{`Address line 4: `}}</label>
                             <b-form-input id="code" v-model="addItems[staticFields[8]]" type="text" 
-                            v-bind:class="{'form-control':true, 'is-invalid' : !addValidAdd4() && add4Blured}"
-                            v-on:blur="cityBlured = true"
-                            aria-describedby="add4LiveFeedback"
                             :placeholder="`Address line 4`" />
-                            <b-form-invalid-feedback id="add4LiveFeedback">
-                              This field is required
-                            </b-form-invalid-feedback>
+                            
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <label for="code">{{`City: `}}</label><span class="mandatoryStar">*</span>
@@ -409,7 +393,7 @@
                        <v-container fluid grid-list-xl>
                         <v-layout row justify-space-between>
                           <v-flex xs12 sm4 md4>
-                      <vue-form-generator id="Form-generator-css" :schema="addDynamicFieldSchema" :model="addDynamicFieldModel" :options="formOptions" @validated="onValidated"></vue-form-generator>
+                      <vue-form-generator id="Form-generator-css" ref="vfg" :schema="addDynamicFieldSchema" :model="addDynamicFieldModel" :options="formOptions" @validated="onValidatedAdd"></vue-form-generator>
                           </v-flex>
                         </v-layout>
                        </v-container>
@@ -424,6 +408,21 @@
         </v-card>
       </v-dialog>
       <!-- END: Dialog box Model code for Adding new Item in Party Master -->
+            <v-snackbar
+        v-model="snackbar"
+        :color="color"
+        :multi-line="true"
+        :timeout="timeout"
+        :vertical="mode === 'vertical'"
+      >{{ text }}
+        <v-btn
+          dark
+          flat
+          @click="snackbar = false"
+        >
+          Close
+        </v-btn>
+      </v-snackbar>
     </v-app>
   </div>
 </template>
@@ -433,6 +432,7 @@ import VueFormGenerator from 'vue-form-generator'
 import generateSchema from '@/DynamicProperty/generateScheme.js'
 import generateGroupSchema from '@/DynamicProperty/generateGroupSchema.js'
 import generateNewModal from '@/DynamicProperty/generateNewModal.js'
+import customeValidaton from '@/DynamicProperty/customeValidation.js'
 
 export default {
   components:{
@@ -472,22 +472,37 @@ export default {
       formOptions: {
         validateAfterLoad: true,
         validateAfterChanged: true,
-        validateAsync: true
+        validateAsync: true,
+        validationErrorCLass :"error"
       },
       add1Blured: true,
       add2Blured: true,
       add3Blured: true,
       add4Blured: true,
       AddItemInpartyMasterModel: false,
-      addFlag: false
+      addFlag: false,
+      isDynamicFormValid: false,
+      snackbar: false,
+      color: '',
+      mode: '',
+      timeout: 5000,
+      text: '',
+      dynamicShema:{},
+      dynamicModal: {}
     }
   },
   beforeMount: function() {
     this.loadPatryMasteData();
   },
   methods: {
+    showSnackBar(type,message){
+      this.snackbar = true;
+      this.color = type;
+      this.text = message;
+    },
     loadPatryMasteData: function() {
       const docID = localStorage.getItem('menuDocId') || 0;
+      this.headers= [ { text: "Edit", align: "center" } ],
       /**
        * Code for loading the party master data
        */
@@ -504,61 +519,43 @@ export default {
             this.preFix = partyMasterData.prefix;
             this.partyMasterHeadersKey = Object.keys(partyMasterData.tableData[0]);
             this.partyMasterHeadersKey.forEach(element => {
-              this.headers.push({ text: element, align: "center", value: element })
+            this.headers.push({ text: element, align: "center", value: element })
             })
             this.partyMasterTableData = partyMasterData.tableData;
           }
         }).catch((err) => {
-          /**
-           * When API call failed: check error in browser console::
-           */
-          console.error('Error Occured while fetcing the party master Data', err);
+          this.showSnackBar('error',err.response.data);
         });
     },
     editPartyMasterData: function(params) {
-      console.log('EDit Party Master with Item Data', JSON.stringify(params));
       this.selectedID = params[Object.keys(params)[0]];
-      console.log('Selected ID', this.selectedID);
-      /**
-       * Reading MenuDocID from localstorage:: saved in home view while selecting the menu
-       */
-      const docID = localStorage.getItem('menuDocId') || 0; // commented for testing purpose uncomment in PROD:
-      // const docID = 1121;
+      const docID = localStorage.getItem('menuDocId') || 0; 
       this.partyMasterModel = true;
       httpClient({
         method: 'GET',
         url: `${process.env.VUE_APP_API_BASE}PartyMaster?selectedID=${this.selectedID}&docID=${docID}`
       })
         .then((result) => {
-          console.log('Party Master: edit Model:: server response', result.data);
-          // console.log('Party Master: edit Model:: server response', JSON.stringify(result.data.staticFieldData[0]));
           const partyMasterFields = result.data;
           this.preFix = partyMasterFields.prefix;
-          console.log('Static Fields', JSON.stringify(partyMasterFields.staticFieldData[0]));
           this.editItems = partyMasterFields.staticFieldData[0];
-          console.log('Edit Items', this.editItems);
           this.staticFields = Object.keys(this.editItems);
-          console.log('Static Fields', this.staticFields);
           this.partyMasterGroupList = partyMasterFields.groupList;
-
-          // this.editItems[this.staticFields[4]] = this.partyMasterGroupList.find(value => value.groupID === partyMasterFields.staticFieldData[0].SUPPGROUPID);
-          this.editItems[this.staticFields[4]] = partyMasterFields.staticFieldData[0].SUPPGROUPID;
           this.partyMasterLedGroupID = partyMasterFields.ledgerGroupList;
-          // this.editItems[this.staticFields[5]] = this.partyMasterLedGroupID.find(value => value.ledgerGroupID === partyMasterFields.staticFieldData[0].LedGroupID);
-          this.editItems[this.staticFields[5]] = partyMasterFields.staticFieldData[0].LedGroupID;
-          this.dynamicFieldModel = partyMasterFields.dynamicFieldModal.modal[0];
-          this.dynamicFieldSchema.fields = generateSchema(partyMasterFields.dynamicFieldModal.fieldProperties, this.dynamicFieldModel);
-          this.dynamicFieldSchema.groups = generateGroupSchema(partyMasterFields.dynamicFieldModal.fieldProperties, this.dynamicFieldModel);
+          if(partyMasterFields.dynamicFieldModal != ""){
+            this.dynamicShema = partyMasterFields.dynamicFieldModal.fieldProperties;
+            this.dynamicModal = partyMasterFields.dynamicFieldModal.modal[0];
+            this.dynamicFieldModel = this.dynamicModal;
+            this.dynamicFieldSchema.fields = generateSchema(this.dynamicShema, this.dynamicModal);
+            this.dynamicFieldSchema.groups = generateGroupSchema(this.dynamicShema, this.dynamicModal);
+          }
         }).catch((err) => {
-          /**
-           * When API call failed: check error in browser console::
-           */
-          console.error('Error Occured while fetcing the party master Data', err);
+          this.showSnackBar('error',err.response.data);
         });
     },
     deletePartyMasterData: function(params) {
       const selectedID = this.selectedID;
-      const docID = localStorage.getItem('menuDocId') || 1121; // Need to remove 1121 value and put 0 apart of this;
+      const docID = localStorage.getItem('menuDocId') || 0;
       const userID = localStorage.getItem('userId') || 0;
       /**
        * Delete Item in party Master
@@ -568,17 +565,18 @@ export default {
         url: `${process.env.VUE_APP_API_BASE}PartyMaster?selectedID=${selectedID}&docID=${docID}&userID=${userID}`
       })
         .then((result) => {
-          console.log('Delete Request Response', result);
+          this.loadPatryMasteData();
+          this.showSnackBar('success',result.data);
         }).catch((err) => {
-          console.error('Error occured: while Delete request', err);
+          this.showSnackBar('error',err.response.data);
         });
     },
     updatePartyMasterData: function() {
-      evt.preventDefault()
+      this.validateOnclick();
       this.editItems[this.staticFields[4]] = typeof(this.editItems[this.staticFields[4]]) === 'object' ? this.editItems[this.staticFields[4]].groupID : this.editItems[this.staticFields[4]];
       this.editItems[this.staticFields[5]] = typeof(this.editItems[this.staticFields[5]]) === 'object' ? this.editItems[this.staticFields[5]].ledgerGroupID : this.editItems[this.staticFields[5]];
       const updateParams = {
-        docID: localStorage.getItem('menuDocId') || 1121, // Need to remove 1121 value and put 0 apart of this
+        docID: localStorage.getItem('menuDocId') || 0, 
         userID: localStorage.getItem('userId') || 0,
         staticFields: this.editItems,
         dynamicFields: this.dynamicFieldModel
@@ -587,16 +585,25 @@ export default {
       /**
        * API call for updating the PartyMaster
        */
+      if(this.updateValidation() && this.isDynamicFormValid){
       httpClient({
         method: 'PUT',
         url: `${process.env.VUE_APP_API_BASE}PartyMaster`,
         data: updateParams
       })
         .then((result) => {
-          console.log('Update Response from server', result);
+          this.loadPatryMasteData();
+          this.showSnackBar('success',result.data);
         }).catch((err) => {
-          console.error('OOps! Error occured while updating the request', err);
+          this.showSnackBar('error',err.response.data);
         });
+      } else{
+        this.showSnackBar('error','Please fill required before saving! ');
+      }
+    },
+    updateValidation(){
+      return(this.validCode() && this.validName() && this.ValidGroupLedgerid() && this.validSupplierGroup() && this.validAdd1() &&
+      this.validCity() && this.validState() && this.validCountry())? true: false;
     },
     validCode: function() {
       if (this.editItems[this.staticFields[1]]) {
@@ -605,6 +612,7 @@ export default {
         return false
       }
     },
+   
     validName: function() {
       if (this.editItems[this.staticFields[2]]) {
         return (this.editItems[this.staticFields[2]]).length >= 1 ? true : false;
@@ -655,18 +663,13 @@ export default {
         return (this.editItems[this.staticFields[13]]).length >= 1 ? true : false;
       } else { return false; }
     },
-    validate: function() {
-      (this.validCode() && this.validName() && this.ValidGroupLedgerid() && this.validSupplierGroup() && this.validCity() && this.validState() && this.validCountry()) ? true : false;
-    },
     addValidation: function() {
-      (this.addValidCode() &&
+      this.addFlag = true;
+      return (this.addValidCode() &&
       this.addValidName() &&
       this.addValidSupplierGroup() &&
       this.addValidGroupLedgerid() &&
       this.addValidAdd1() &&
-      this.addValidAdd2() &&
-      this.addValidAdd3() &&
-      this.addValidAdd4() &&
       this.addValidCity() &&
       this.addValidState() &&
       this.addValidCountry()) ? true : false;
@@ -692,7 +695,7 @@ export default {
     addValidSupplierGroup: function() {
       if(this.addFlag) {
         if (this.addItems[this.staticFields[3]]) {
-        return (this.addItems[this.staticFields[3]]).length >= 1 ? true : false;
+        return (this.addItems[this.staticFields[3]].toString()).length >= 1  ? true : false;
       } else { return false; }
       } else{
         return true;
@@ -701,7 +704,7 @@ export default {
     addValidGroupLedgerid: function() {
       if(this.addFlag) {
         if (this.addItems[this.staticFields[4]]) {
-        return (this.addItems[this.staticFields[4]]).length >= 1 ? true : false;
+        return (this.addItems[this.staticFields[4]].toString()).length >= 1 ? true : false;
       } else { return false; }
       } else{
         return true;
@@ -758,58 +761,71 @@ export default {
       } else { return false; }
       }else{ return true}
     },
-    onValidated: function(isValid, errors) {
+    onValidatedAdd: function(isValid, errors) {
+       if(this.dynamicShema != null){
+           customeValidaton(this.dynamicShema,this.addDynamicFieldSchema.fields,this.addDynamicFieldSchema.groups,this.addDynamicFieldModel);
+       }
       console.log("Validation result: ", isValid, ", Errors:", errors);
+      this.isDynamicFormValid = isValid;
     },
+    onValidated: function(isValid, errors) {
+       if(this.dynamicShema != null){
+         customeValidaton(this.dynamicShema,this.dynamicFieldSchema.fields,this.dynamicFieldSchema.groups,this.dynamicFieldModel);
+       }
+      console.log("Validation result: ", isValid, ", Errors:", errors);
+      this.isDynamicFormValid = isValid;
+    },
+    validateOnclick: function($event) {
+      var errors = this.$refs.vfg.validate();
+    },
+
     addItemInPartyMaster: function() {
       const docID = localStorage.getItem('menuDocId') || 0;
       httpClient({
         method: 'GET',
         url: `${process.env.VUE_APP_API_BASE}PartyMaster?docID=${docID}&type=0`
       }).then((result) => {
-        console.log('Response from server', result);
         const addItemInPartyMaster = result.data;
-        console.log('Add Items In Party Master', addItemInPartyMaster);
         this.addItems = addItemInPartyMaster.staticFieldData;
-        console.log('this.addItems', JSON.stringify(this.addItems));
         this.staticFields = Object.keys(this.addItems);
         this.preFix = addItemInPartyMaster.prefix;
-
         this.partyMasterGroupList = addItemInPartyMaster.groupList;
         this.partyMasterLedGroupID = addItemInPartyMaster.ledgerGroupList;
-
-      
-        this.addDynamicFieldSchema.fields = generateSchema(addItemInPartyMaster.dynamicFieldModal.fieldProperties, addItemInPartyMaster.dynamicFieldModal.modal);
-        this.addDynamicFieldSchema.groups = generateGroupSchema(addItemInPartyMaster.dynamicFieldModal.fieldProperties, addItemInPartyMaster.dynamicFieldModal.modal);
-        this.addDynamicFieldModel = generateNewModal(addItemInPartyMaster.dynamicFieldModal.fieldProperties,addItemInPartyMaster.dynamicFieldModal.modal)
-        console.log('add modal'+JSON.stringify(this.addDynamicFieldModel));
+        if(addItemInPartyMaster.dynamicFieldModal != ""){
+          this.dynamicShema =addItemInPartyMaster.dynamicFieldModal.fieldProperties;
+          this.dynamicModal = addItemInPartyMaster.dynamicFieldModal.modal;
+          this.addDynamicFieldSchema.fields = generateSchema( this.dynamicShema, this.dynamicModal);
+          this.addDynamicFieldSchema.groups = generateGroupSchema( this.dynamicShema, this.dynamicModal);
+          this.addDynamicFieldModel = generateNewModal( this.dynamicShema,this.dynamicModal);
+        }
         this.AddItemInpartyMasterModel = true;
       }).catch((err) => {
-        console.error('Error Occured', err);
+        this.showSnackBar('error',err.response.data);
       });
     },
     addItemRequest: function() {
-      if (this.addValidation()) {
-        console.log('Add Item Request');
-      // this.addItems.AddedBy = 'Nitin';
-      console.log('Add Item Details', this.addItems);
-      console.log('Dynamic Data', this.addDynamicFieldModel)
-      const postParams = {
-        docID: localStorage.getItem('menuDocId'),
-        userID: localStorage.getItem('userId'),
-        staticFields: this.addItems,
-        dynamicFields: this.addDynamicFieldModel
-      }
-      console.log('postParams', postParams);
+    this.addFlag = true;
+    this.validateOnclick();
+    const postParams = {
+      docID: localStorage.getItem('menuDocId'),
+      userID: localStorage.getItem('userId'),
+      staticFields: this.addItems,
+      dynamicFields: this.addDynamicFieldModel
+    }
+    if (this.addValidation() && this.isDynamicFormValid ) {
       httpClient({
         method: 'POST',
         url: `${process.env.VUE_APP_API_BASE}PartyMaster`,
         data: postParams
       }).then((result) => {
-        console.log('Result', result);
+        this.showSnackBar('success',result.data);
+        this.AddItemInpartyMasterModel = false;
+        this.loadPatryMasteData();
       }).catch((err) => {
-        console.error('Opps! Error Occured!');
+        this.showSnackBar('error',err.response.data);
       });
+      } else{
+        this.showSnackBar('error','Please fill all mandatory field.')
       }
     }
   }

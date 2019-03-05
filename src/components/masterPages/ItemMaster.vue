@@ -1,7 +1,10 @@
 <template>
   <div id="app">
     <v-app id="inspire">
-      <v-btn color="primary" @click="addItemInItemMaster">ADD ITEM MASTER</v-btn>
+        <div class="text-md-center text-lg-center">
+          <v-btn fab dark small color="indigo" @click="addItemInItemMaster"> <v-icon dark>add</v-icon></v-btn>
+        </div>
+       Add New Record
       <!-- START: table -->
       <v-data-table :headers="headers" :items="itemMasterDataTable" class="elevation-1">
         <template slot="items" slot-scope="props">
@@ -93,31 +96,32 @@
                             <b-form-input id="code" v-model="editedItems[staticFields[6]]" type="text" :placeholder="`HSN Code`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <label for="">{{`${preFix} Item Type: `}}</label><span class="mandatoryStar">*</span>
-                            <b-form-select v-model="editedItems[staticFields[7]]" :options="itemTypeList"
+                            <label for="">{{`${preFix} Type: `}}</label><span class="mandatoryStar">*</span>
+                            <b-form-input v-model="editedItems[staticFields[7]]" type="text" :placeholder="`Item Type`" list="ItemTypeList"
                             v-bind:class="{'form-control':true, 'is-invalid' : !validitemType() && itemTypeBlured}"
-                            v-on:blur="itemTypeBlured = true"
-                            aria-describedby="itemTypeLiveFeedback"
-                            value-field= "itemTypeID" text-field="itemTypeName" />
+                            v-on:blur="itemTypeBlured = true" aria-describedby="itemTypeLiveFeedback" />
+                             <datalist id="ItemTypeList">
+                                <option v-for="data in itemTypeList" :key="data.id">{{data.itemTypeName}}</option>
+                            </datalist>
                              <b-form-invalid-feedback id="itemTypeLiveFeedback">
                               This field is required
                             </b-form-invalid-feedback>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <label for="">{{`UOM: `}}</label><span class="mandatoryStar">*</span>
-                            <b-form-select v-model="editedItems[staticFields[8]]" :options="UOMList"
-                            v-bind:class="{'form-control':true, 'is-invalid' : !validUOM() && UOMBlured}"
-                            v-on:blur="UOMBlured = true"
-                            aria-describedby="UOMLiveFeedback"
-                            value-field="UOMID" text-field="UOMCode" />
-                            <b-form-invalid-feedback id="UOMLiveFeedback">
-                              This field is required
-                            </b-form-invalid-feedback>
+                             <label for="">{{`Item UOM: `}}</label><span class="mandatoryStar">*</span>
+                                <b-form-select v-model="editedItems[staticFields[8]]" :options="UOMList"
+                                v-bind:class="{'form-control':true, 'is-invalid' : !validUOM() && UOMBlured}"
+                                v-on:blur="UOMBlured = true"
+                                aria-describedby="UOMLiveFeedback"
+                                value-field="UOMID" text-field="UOMCode" />
+                                <b-form-invalid-feedback id="UOMLiveFeedback">
+                                  This field is required
+                               </b-form-invalid-feedback> 
                           </v-flex>
                           <v-layout wrap>
                             <v-flex xs12 sm4 md4>
                             <b-form-checkbox
-                              id="BOMItem"
+                              id="BOMItemEdit"
                               v-model="editedItems[staticFields[9]]"
                             >
                               BOM Item ?
@@ -125,7 +129,7 @@
                           </v-flex>
                           <v-flex xs12 sm8 md8>
                             <b-form-checkbox
-                              id="NonSktable"
+                              id="NonSktableEdit"
                               v-model="editedItems[staticFields[10]]"
                             >
                               NonStkable ?
@@ -163,7 +167,7 @@
                        <v-container fluid grid-list-xl>
                         <v-layout row justify-space-between>
                           <v-flex xs12 sm4 md4>
-                      <vue-form-generator :schema="dynamicFieldSchema" :model="dynamicFieldModel" :options="formOptions" ></vue-form-generator>
+                      <vue-form-generator id="Form-generator-css"  ref="vfg" :schema="dynamicFieldSchema" :model="dynamicFieldModel" :options="formOptions" @validated="onValidated" ></vue-form-generator>
                           </v-flex>
                         </v-layout>
                        </v-container>
@@ -253,17 +257,18 @@
                           </v-flex>
                           <v-flex xs12 sm6 md4>
                             <label for="">{{`${preFix} Item Type: `}}</label><span class="mandatoryStar">*</span>
-                            <b-form-select v-model="addItems[staticFields[6]]" :options="itemTypeList"
+                            <b-form-input name="ItemTypeListAdd" v-model="addItems[staticFields[6]]" type="text" :placeholder="`Item Type`" list="ItemTypeListAdd"
                             v-bind:class="{'form-control':true, 'is-invalid' : !validAdditemType() && itemTypeBlured}"
-                            v-on:blur="itemTypeBlured = true"
-                            aria-describedby="itemTypeLiveFeedback"
-                            value-field= "itemTypeID" text-field="itemTypeName" />
-                             <b-form-invalid-feedback id="itemTypeLiveFeedback">
+                            v-on:blur="itemTypeBlured = true" aria-describedby="itemTypeLiveFeedback" />
+                             <datalist id="ItemTypeListAdd">
+                                <option v-for="data in itemTypeList" :key="data.id" :value="data.itemTypeName">{{data.itemTypeName}}</option>
+                            </datalist>
+                            <b-form-invalid-feedback id="itemTypeLiveFeedback">
                               This field is required
                             </b-form-invalid-feedback>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
-                            <label for="">{{`UOM: `}}</label><span class="mandatoryStar">*</span>
+                            <label for="">{{`Item UOM: `}}</label><span class="mandatoryStar">*</span>
                             <b-form-select v-model="addItems[staticFields[7]]" :options="UOMList"
                             v-bind:class="{'form-control':true, 'is-invalid' : !validAddUOM() && UOMBlured}"
                             v-on:blur="UOMBlured = true"
@@ -322,7 +327,7 @@
                        <v-container fluid grid-list-xl>
                         <v-layout row justify-space-between>
                           <v-flex xs12 sm4 md4>
-                      <vue-form-generator :schema="addDynamicFieldSchema" :model="addDynamicFieldModel" :options="formOptions" ></vue-form-generator>
+                       <vue-form-generator id="Form-generator-css" ref="vfg" :schema="addDynamicFieldSchema" :model="addDynamicFieldModel" :options="formOptions" @validated="onValidatedAdd" ></vue-form-generator>
                           </v-flex>
                         </v-layout>
                        </v-container>
@@ -336,12 +341,31 @@
         </v-card>
       </v-dialog>
       <!-- END: dialog box model code for adding new Item in Item Master -->
+            <v-snackbar
+        v-model="snackbar"
+        :color="color"
+        :multi-line="true"
+        :timeout="timeout"
+        :vertical="mode === 'vertical'"
+      >{{ text }}
+        <v-btn
+          dark
+          flat
+          @click="snackbar = false"
+        >
+          Close
+        </v-btn>
+      </v-snackbar>
     </v-app>
   </div>
 </template>
 <script>
 import httpClient from "@/services/httpClient.js";
+import VueFormGenerator from 'vue-form-generator'
 import DynamicFieldSchema from '@/DynamicProperty/generateScheme.js'
+import generateGroupSchema from '@/DynamicProperty/generateGroupSchema.js'
+import generateNewModal from '@/DynamicProperty/generateNewModal.js'
+import customeValidaton from '@/DynamicProperty/customeValidation.js'
 
 export default {
   data: function() {
@@ -358,12 +382,14 @@ export default {
       itemGroupList: [],
       itemTypeList: [],
       dynamicFieldSchema: {
-        fields: []
+        fields: [],
+        groups:[]
       },
       dynamicFieldModel: {},
       dynamicFieldOptions: {},
       addDynamicFieldSchema: {
-        fields: []
+        fields: [],
+        groups:[]
       },
       addDynamicFieldModel: {},
       addDynamicFieldOptions: {},
@@ -376,68 +402,118 @@ export default {
         validateAfterChanged: true,
         validateAsync: true
       },
-      addItemMasterModel: false
+      addItemMasterModel: false,
+      isFormSavedOnce: false,
+      isDynamicFormValid: false,
+      snackbar: false,
+      color: '',
+      mode: '',
+      timeout: 5000,
+      text: '',
+      dynamicShema:{},
+      dynamicModal: {}
     }
   },
   beforeMount: function() {
     this.loadItemMaster();
   },
   methods: {
+    showSnackBar(type,message){
+      this.snackbar = true;
+      this.color = type;
+      this.text = message;
+    },
     loadItemMaster: function() {
-      const docID = 1114;
+      const docID = localStorage.getItem('menuDocId') || 0;
+      this. headers= [ { text: "Edit", align: "center" } ],
       httpClient({
         method: 'GET',
         url: `${process.env.VUE_APP_API_BASE}ItemMaster?docID=${docID}`
       })
       .then((result) => {
-        console.log('Response from server', result.data.tableData);
         this.itemMasterDataTable = result.data.tableData;
         this.itemMasterHeadersKey = Object.keys(result.data.tableData[0]);
         this.itemMasterHeadersKey.forEach(element => {
-          this.headers.push({ text: element, align: "center", value: element })
+        this.headers.push({ text: element, align: "center", value: element })
         })
       }).catch((err) => {
-        console.log('Error!', err);
+        this.showSnackBar('error',err.response.data);
       });
     },
     editItemMasterData: function(params) {
-      console.log('EDit Master Data', params.ITEMID);
-      const selectedID = params.ITEMID;
-      const docID = 1114;
+      const selectedID = params[Object.keys(params)[0]];
+      this.selectedID = params[Object.keys(params)[0]];
+      const docID = localStorage.getItem('menuDocId') || 0;
       httpClient({
         method: 'GET',
         url: `${process.env.VUE_APP_API_BASE}ItemMaster?selectedID=${selectedID}&docID=${docID}`
       })
         .then((result) => {
-          console.log('Item Master', result.data);
           const itemMasterData = result.data;
           this.preFix = itemMasterData.prefix;
           this.editedItems = itemMasterData.staticFieldData[0];
-          console.log('Edit Items', JSON.stringify(this.editedItems));
           this.staticFields = Object.keys(this.editedItems);
           this.UOMList = itemMasterData.UOMList;
           this.itemGroupList = itemMasterData.itemGroupList;
           this.itemTypeList = itemMasterData.itemType;
-
-          this.dynamicFieldModel = itemMasterData.dynamicFieldModal.modal[0];
-          this.dynamicFieldSchema.fields = DynamicFieldSchema(itemMasterData.dynamicFieldModal.fieldProperties, itemMasterData.dynamicFieldModal.modal[0]);
-
+          if(itemMasterData.dynamicFieldModal != ""){
+            this.dynamicShema = itemMasterData.dynamicFieldModal.fieldProperties;
+            this.dynamicModal = itemMasterData.dynamicFieldModal.modal[0];
+            this.dynamicFieldModel = this.dynamicModal;
+            this.dynamicFieldSchema.fields = DynamicFieldSchema(this.dynamicShema, this.dynamicModal);
+            this.dynamicFieldSchema.groups = generateGroupSchema(this.dynamicShema, this.dynamicModal);
+          }
+         
           this.itemMasterModel = true;
         }).catch((err) => {
-          console.error('Error', err);
+          this.showSnackBar('error',err.response.data);
         });
     },
     deleteItemMasterData: function(params) {
+      const selectedID = params[Object.keys(params)[0]];
+      const docID = localStorage.getItem('menuDocId') || 1121; // Need to remove 1121 value and put 0 apart of this;
+      const userID = localStorage.getItem('userId') || 0;
+       /**
+       * Delete Item in party Master
+       */
+      httpClient({
+        method: 'DELETE',
+        url: `${process.env.VUE_APP_API_BASE}ItemMaster?selectedID=${selectedID}&docID=${docID}&userID=${userID}`
+      })
+        .then((result) => {
+          this.loadItemMaster();
+          this.showSnackBar('success',result.data);
+        }).catch((err) => {
+           this.showSnackBar('error',err.response.data);
+        });
 
     },
     updateItemMasterData: function() {
+      this.validateOnclick();
       const updateParams = {
-        docID: localStorage.getItem('menuDocId') || 1121, // Need to remove 1121 value and put 0 apart of this
+        docID: localStorage.getItem('menuDocId') || 0, // Need to remove 1121 value and put 0 apart of this
         userID: localStorage.getItem('userId') || 0,
         staticFields: this.editedItems,
         dynamicFields: this.dynamicFieldModel
       }
-      console.log('Update Params', updateParams);
+         /**
+       * API call for updating the PartyMaster
+       */
+      if(this.validate() && this.isDynamicFormValid){
+      httpClient({
+        method: 'PUT',
+        url: `${process.env.VUE_APP_API_BASE}ItemMaster`,
+        data: updateParams
+      })
+        .then((result) => {
+          this.loadItemMaster();
+          this.showSnackBar('success',result.data);
+        }).catch((err) => {
+          this.showSnackBar('error',err.response.data);
+        });
+      }else{
+        this.showSnackBar('error','Please fill mandatory fields!');
+      }
     },
      validCode: function() {
       if (this.editedItems[this.staticFields[1]]) {
@@ -465,39 +541,50 @@ export default {
       } else { return false; }
     },
     validate: function() {
-      (this.validName() && this.validitemGroup() && this.validitemType() && this.validUOM()) ? true : false;
+     return (this.validCode() &&this.validName() && this.validitemGroup() && this.validitemType() && this.validUOM()) ? true : false;
     },
     addValidation: function() {
-      (this.validAddUOM() &&
+      return (this.validAddUOM() &&
       this.validAdditemType() &&
       this.validitemAddGroup() &&
       this.validAddName() &&
       this.validAddCode()) ? true : false;
     },
     validAddUOM: function() {
-      if (this.addItems[this.staticFields[7]]) {
-        return (this.addItems[this.staticFields[7]].toString()).length >= 1 ? true : false;
-      } else { return false; }
+      if(this.isFormSavedOnce){
+        if (this.addItems[this.staticFields[7]]) {
+          return (this.addItems[this.staticFields[7]].toString()).length >= 1 ? true : false;
+        } else { return false; }
+      }else { return true; }
     },
     validAdditemType: function() {
-      if (this.addItems[this.staticFields[6]]) {
-        return (this.addItems[this.staticFields[6]].toString()).length >= 1 ? true : false;
-      } else { return false; }
+      if(this.isFormSavedOnce){
+        if (this.addItems[this.staticFields[6]]) {
+          
+          return (this.addItems[this.staticFields[6]]) != "" ? true : false;
+        } else { return false; }
+      }else { return true; }
     },
     validitemAddGroup: function() {
-      if (this.addItems[this.staticFields[3]]) {
-        return (this.addItems[this.staticFields[3]].toString()).length >= 1 ? true : false;
-      } else { return false; }
+      if(this.isFormSavedOnce){
+        if (this.addItems[this.staticFields[3]]) {
+          return (this.addItems[this.staticFields[3]].toString()).length >= 1 ? true : false;
+        } else { return false; }
+      }else { return true; }
     },
     validAddName: function() {
-      if (this.addItems[this.staticFields[1]]) {
-        return (this.addItems[this.staticFields[1]].toString()).length >= 1 ? true : false;
-      } else { return false; }
+      if(this.isFormSavedOnce){
+        if (this.addItems[this.staticFields[1]]) {
+          return (this.addItems[this.staticFields[1]].toString()).length >= 1 ? true : false;
+        } else { return false; }
+      }else { return true; }
     },
     validAddCode: function() {
-      if (this.addItems[this.staticFields[0]]) {
-        return (this.addItems[this.staticFields[0]].toString()).length >= 1 ? true : false;
-      } else { return false; }
+      if(this.isFormSavedOnce){
+        if (this.addItems[this.staticFields[0]]) {
+          return (this.addItems[this.staticFields[0]].toString()).length >= 1 ? true : false;
+        } else { return false; }
+      }else { return true; }
     },
     addItemInItemMaster: function() {
       const docID = localStorage.getItem('menuDocId') || 0;
@@ -505,48 +592,72 @@ export default {
         method: 'GET',
         url: `${process.env.VUE_APP_API_BASE}ItemMaster?docID=${docID}&type=0`
       }).then((result) => {
-        console.log('Result', result.data);
         const addItemInItemMaster = result.data;
-        this.preFix = addItemInItemMaster.prefix;
-        // console.log('this.preFix', this.preFix);
+        this.preFix = addItemInItemMaster.prefix;;
         this.addItems = addItemInItemMaster.staticFieldData;
-        console.log('this.addItems', JSON.stringify(this.addItems));
         this.staticFields = Object.keys(this.addItems);
-        // console.log('this.staticFields', this.staticFields);
+        this.itemGroupList = addItemInItemMaster.itemGroupList;
         this.itemTypeList = addItemInItemMaster.itemType;
         this.UOMList = addItemInItemMaster.UOMList;
-        // console.log('UOM LIST', this.UOMList);
-        this.addDynamicFieldModel = addItemInItemMaster.dynamicFieldModal.modal;
-        this.addDynamicFieldSchema.fields = DynamicFieldSchema(addItemInItemMaster.dynamicFieldModal.fieldProperties, addItemInItemMaster.dynamicFieldModal.modal[0]);
+       
+        if(addItemInItemMaster.dynamicFieldModal.modal != ""){
+          this.dynamicShema =addItemInItemMaster.dynamicFieldModal.fieldProperties;
+          this.dynamicModal = addItemInItemMaster.dynamicFieldModal.modal;
+          this.addDynamicFieldModel = this.dynamicModal;
+          this.addDynamicFieldSchema.fields = DynamicFieldSchema(this.dynamicShema, this.dynamicModal);
+          this.addDynamicFieldSchema.groups = generateGroupSchema(this.dynamicShema, this.dynamicModal);
+          this.addDynamicFieldModel = generateNewModal(this.dynamicShema,this.dynamicModal);
+        }
         this.addItemMasterModel = true;
       }).catch((err) => {
-        console.error('Error Occured', err);
+        this.showSnackBar('error',err.response.data);
       });
     },
     addItemRequest: function() {
-      if (this.addValidation()) {
-        console.log('Add Item Request');
-      // this.addItems.AddedBy = 'Nitin';
-      console.log('Add Item Details', this.addItems);
-      console.log('Dynamic Data', this.addDynamicFieldModel)
+      this.isFormSavedOnce = true;
+      this.validateOnclick();
       const postParams = {
         docID: localStorage.getItem('menuDocId'),
         userID: localStorage.getItem('userId'),
         staticFields: this.addItems,
         dynamicFields: this.addDynamicFieldModel
       }
-      console.log('postParams', postParams);
+      console.log('postParams', JSON.stringify(postParams));
+   if (this.addValidation() && this.isDynamicFormValid) {
       httpClient({
         method: 'POST',
-        url: `${process.env.VUE_APP_API_BASE}PartyMaster`,
+        url: `${process.env.VUE_APP_API_BASE}ItemMaster`,
         data: postParams
       }).then((result) => {
         console.log('Result', result);
+          this.showSnackBar('success',result.data);
+          this.addItemMasterModel = false;
+          this.loadItemMaster();
       }).catch((err) => {
-        console.error('Opps! Error Occured!');
+
+        this.showSnackBar('error',err.response.data);
       });
+      } else{
+        this.showSnackBar('error','Please fill all mandatory field.')
       }
-    }
+    },
+     onValidatedAdd: function(isValid, errors) {
+       if(this.dynamicShema != null){
+        customeValidaton(this.dynamicShema,this.addDynamicFieldSchema.fields,this.addDynamicFieldSchema.groups,this.addDynamicFieldModel);
+       }
+      console.log("Validation result: ", isValid, ", Errors:", errors);
+      this.isDynamicFormValid = isValid;
+    },
+    onValidated: function(isValid, errors) {
+      if(this.dynamicShema != null){
+       customeValidaton(this.dynamicShema,this.dynamicFieldSchema.fields,this.dynamicFieldSchema.groups,this.dynamicFieldModel);
+      }
+      console.log("Validation result: ", isValid, ", Errors:", errors);
+      this.isDynamicFormValid = isValid;
+    },
+     validateOnclick: function($event) {
+      var errors = this.$refs.vfg.validate();
+    },
   }
 }
 </script>

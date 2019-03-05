@@ -23,7 +23,6 @@ Vue.use(VueFormGenerator,{
           return [];
         }
       }
-      alert(value)
       return null;
     }
   }

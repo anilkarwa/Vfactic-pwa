@@ -44,6 +44,9 @@ export default {
 #nav a.router-link-exact-active {
   color: #42b983;
 }
+.theme--light.application{
+  background-color: white!important;
+}
 
 .form-control {
   border-top: 0;
@@ -122,5 +125,62 @@ legend {
 #Form-generator-css > fieldset > div {
   background-color: transparent!important;
 }
+.hint{
+  font-size: 75%;
+  font-style: italic;
+  color: cornflowerblue;
+
+}
+
+.help{
+  margin-left: .3em;
+  position: relative;
+}
+.help .icon{
+display: inline-block;
+    width: 20px;
+    height: 18px;
+    background-image: url("./assets/help-icon.png");
+    background-repeat: no-repeat;
+    background-position: 50%;
+    background-size:contain;
+}
+
+.help .helpText{
+  background-color:#444;
+  bottom:30px;
+  color:#fff;
+  display:block;
+  left:0;
+  opacity:0;
+  padding:20px;
+  pointer-events:none;
+  position:absolute;
+  text-align:justify;
+  width:300px;
+  transition:all .25s ease-out;
+  box-shadow:2px 2px 6px rgba(0,0,0,.5);
+  border-radius:6px
+  }
+ 
+ .help .helpText a{
+   font-weight:700;
+   text-decoration:underline
+   }
+
+.help .helpText:before{
+  bottom:-20px;
+  content:" ";
+  display:block;
+  height:20px;
+  left:0;
+  position:absolute;
+  width:100%
+  }
+.help:hover .helpText{
+  opacity:1;
+  pointer-events:auto;
+  transform:translateY(0)
+  }
 
 </style>
