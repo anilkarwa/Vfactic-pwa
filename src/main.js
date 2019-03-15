@@ -5,7 +5,7 @@ import router from './router'
 import store from './store'
 import './registerServiceWorker'
 import BootstrapVue from 'bootstrap-vue'
-import VueFormGenerator from 'vue-form-generator'
+import VueFormGenerator from 'vue-form-generator/dist/vfg.js'
 //import 'vue-form-generator/dist/vfg-core.css'
 import fieldInputDropdown from "./CustomFields/fieldInputDropdown.vue";
 Vue.component("fieldInputDropdown", fieldInputDropdown);

@@ -45,6 +45,7 @@ import httpClient from "@/services/httpClient.js"
 import PartyMaster from "@/components/masterPages/PartyMaster.vue"
 import GeneralMaster from "@/components/masterPages/GeneralMaster.vue"
 import ItemMaster from "@/components/masterPages/ItemMaster.vue"
+import PartyDocTranscation from "@/components/Transcations/PartyDocTranscation.vue"
 
 
 export default {
@@ -53,6 +54,7 @@ export default {
     PartyMaster,
     GeneralMaster,
     ItemMaster,
+    PartyDocTranscation
   },
   data: function() {
     return {

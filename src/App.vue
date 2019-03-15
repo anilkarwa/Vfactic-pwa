@@ -9,8 +9,15 @@
 </template>
 <script>
 import 'vuetify/dist/vuetify.min.css'
-import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+import 'bootstrap/dist/js/bootstrap.min.js'
+import "jquery/dist/jquery.js"
+import 'moment/moment.js'
+import 'bootstrap/js/dist/collapse.js'
+import 'eonasdan-bootstrap-datetimepicker-npm/build/js/bootstrap-datetimepicker.min.js'
+import 'eonasdan-bootstrap-datetimepicker-npm/build/css/bootstrap-datetimepicker.min.css'
+import 'bootstrap/dist/css/bootstrap.css'
+
 
 export default {
   
@@ -55,7 +62,7 @@ export default {
   border-radius: 0;
   border-bottom: 1.5px solid #ccc;
   background-color: transparent;
-  width:90%;
+  width:100%;
 }
 
 
@@ -67,7 +74,7 @@ export default {
   border-radius: 0;
   border-bottom: 1.5px solid #ccc;
   background-color: transparent;
-  width:90%;
+  width:100%;
 }
 
  .custom-select:focus{
@@ -182,5 +189,14 @@ display: inline-block;
   pointer-events:auto;
   transform:translateY(0)
   }
+
+.input-group.date .input-group-addon {
+    cursor: pointer;
+    width: 20px;
+    height: 18px;
+    background-image: url("./assets/calendar.jpg");
+    background-position: 50%;
+    background-size:contain;
+ }
 
 </style>
