@@ -1,5 +1,6 @@
 import VueFormGenerator from 'vue-form-generator'
 
+
 const generateSchema = (schemas, model) => {
     console.log('This is GenerateSchema Function', schemas);
     var tempSchema = schemas;
