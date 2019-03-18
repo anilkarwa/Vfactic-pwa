@@ -223,7 +223,7 @@
                               :headers="detailSectionHeader"
                               :items="detailSectionData"
                               select-all
-                              item-key="slno"
+                              item-key="SlNO"
                               class="elevation-1"
                               hide-actions
                             >
@@ -522,13 +522,16 @@ computed: {
           this.headerDynamicFieldModel = pageData.headerFields.dynamicFieldModal.modal[0];
           this.headerDynamicFieldOriginalSchema = pageData.headerFields.dynamicFieldModal.fieldProperties;
           this.headerDynamicFieldSchema.fields = generateSchema(pageData.headerFields.dynamicFieldModal.fieldProperties, this.headerDynamicFieldModel);
-
-          this.detailSectionModal =pageData.detailFields.dynamicFieldModal.modal[0];
+          
+          
+          this.detailSectionModal =JSON.parse(JSON.stringify(pageData.detailFields.dynamicFieldModal.modal[0]));
           this.detailSectionFieldOriginalSchema = pageData.detailFields.dynamicFieldModal.fieldProperties;
           this.detailSectionFieldSchema.fields = generateSchema(pageData.detailFields.dynamicFieldModal.fieldProperties, pageData.detailFields.dynamicFieldModal.modal[0]);
           // reset detail section modal
           this.resetDetailSectionModal(this.detailSectionModal);
           this.generateDetailSectionTableHeader(this.detailSectionModal);
+          this.detailSectionData = pageData.detailFields.dynamicFieldModal.modal;
+
 
           this.footerDynamicFieldModel = pageData.footerFields.dynamicFieldModal.modal[0];
           this.footerDynamicFieldOriginalSchema = pageData.footerFields.dynamicFieldModal.fieldProperties;
@@ -582,6 +585,7 @@ computed: {
         }
       });
       this.selected = [];
+      this.updateAllModalForValueChanges();
     },
     moveRowUpwared(){
       if(this.selected.length > 1){
