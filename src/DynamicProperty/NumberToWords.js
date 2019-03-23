@@ -53,7 +53,7 @@ function AmountInWordsINR(value) {
         //do nothing
     }
     else {
-        alert('wrong Number cannot be converted');
+       // alert('wrong Number cannot be converted');
         return false;
     }
     if (Number(junkVal) == 0) {

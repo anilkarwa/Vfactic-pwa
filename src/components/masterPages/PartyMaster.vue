@@ -438,8 +438,7 @@ export default {
   components:{
     "vue-form-generator": VueFormGenerator.component
   },
-  data: function() {
-    return {
+  data: vm => ({
       headers: [ { text: "Edit", align: "center" } ],
       partyMasterHeadersKey: [],
       partyMasterTableData: [],
@@ -489,8 +488,8 @@ export default {
       text: '',
       dynamicShema:{},
       dynamicModal: {}
-    }
-  },
+    
+  }),
   beforeMount: function() {
     this.loadPatryMasteData();
   },
@@ -776,6 +775,7 @@ export default {
       this.isDynamicFormValid = isValid;
     },
     validateOnclick: function($event) {
+       console.log('Validating', this.$refs);
       var errors = this.$refs.vfg.validate();
     },
 

@@ -35,7 +35,7 @@ const generateSchema = (schemas, model) => {
                 default: p.default?p.useStdDefault:((p.inputType) =="number" ? 0: ""),
                 //if inputDropdown
                 values: p.values,
-                validator:(p.inputType) =="text" ? VueFormGenerator.validators.string:VueFormGenerator.validators.number,
+                validator:(p.inputType) =="text" ? VueFormGenerator.validators.string:VueFormGenerator.validators.double,
                // readonly: function (model){ return model && (model[conditionsOperand[0]] )== p.readOnlyCompareValue}
                disabled: (!p.readonly)? p.readonly:( (p.readOnlyCondition == "") ? p.readonly:(conditionsOperand.length == 1?function (model){ 
                    
@@ -638,7 +638,7 @@ const generateSchema = (schemas, model) => {
                 default: p.default?p.useStdDefault:((p.inputType) =="number" ? 0: ""),
                 dateTimePickerOptions: {dateDisplayFormat: p.dateDisplayFormat},
                 
-                validator:(p.inputType) =="text" ? VueFormGenerator.validators.string:VueFormGenerator.validators.number,
+                validator: VueFormGenerator.validators.date,
                 // readonly: function (model){ return model && (model[conditionsOperand[0]] )== p.readOnlyCompareValue}
                 disabled: (!p.readonly)? p.readonly:( (p.readOnlyCondition == "") ? p.readonly:(conditionsOperand.length == 1?function (model){ 
                     

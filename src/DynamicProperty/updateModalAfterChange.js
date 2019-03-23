@@ -16,7 +16,8 @@ const updateModalAfterChange = (schemas,headerModal,detailModal,footerModal,tota
             if (Formula.substring(0, 1) == '#' || Formula.substring(0, 1) == '(') {
                 var FieldData = returnFormula(Formula,headerModal,detailModal,footerModal,totalModal).split('^');
                  Formula = FieldData[1];
-                 //alert(Formula);
+                // alert(Formula);
+                //alert(JSON.stringify(FieldData));
                  var ouput;
                  try{
                      ouput = eval(Formula);
@@ -24,13 +25,13 @@ const updateModalAfterChange = (schemas,headerModal,detailModal,footerModal,tota
                      ouput =0;
                  }
                  if(section =="header"){
-                     headerModal[p.model]= ouput;
+                     headerModal[p.model]= parseFloat(ouput.toFixed(2));
                  }else if(section == "detail"){
-                     detailModal[p.model] = ouput;
+                     detailModal[p.model] = parseFloat(ouput.toFixed(2));
                  }else if(section == "footer"){
-                     footerModal[p.model] = ouput;
+                     footerModal[p.model] = parseFloat(ouput.toFixed(2));
                  }else if(section == "total"){
-                     totalModal[p.model]= ouput;
+                     totalModal[p.model]= parseFloat(ouput.toFixed(2));
                  }
                 
              } else{
@@ -170,13 +171,13 @@ const updateModalAfterChange = (schemas,headerModal,detailModal,footerModal,tota
                     FieldData = returnFormula(Formula,headerModal,detailModal,footerModal,totalModal).split('^');
                     Formula = FieldData[1];
                     if(section =="header"){
-                        headerModal[p.model]= eval(Formula).toFixed(2);
+                        headerModal[p.model]= parseFloat(eval(Formula).toFixed(2));
                     }else if(section == "detail"){
-                        detailModal[p.model] =eval(Formula).toFixed(2);
+                        detailModal[p.model] = parseFloat(eval(Formula).toFixed(2));
                     }else if(section == "footer"){
-                        footerModal[p.model] = eval(Formula).toFixed(2);
+                        footerModal[p.model] = parseFloat(eval(Formula).toFixed(2));
                     }else if(section == "total"){
-                        totalModal[p.model]= eval(Formula).toFixed(2);
+                        totalModal[p.model]= parseFloat(eval(Formula).toFixed(2));
                     }
                 }
                 else if (formulaSplit[0].trim() == SVTROUNDOFFAMT) {
@@ -184,16 +185,44 @@ const updateModalAfterChange = (schemas,headerModal,detailModal,footerModal,tota
                     FieldData = returnFormula(Formula,headerModal,detailModal,footerModal,totalModal).split('^');
                     Formula = FieldData[1]; var roundOffAmt = eval(Formula).toFixed(0) - eval(Formula).toFixed(2);
                     if(section =="header"){
-                        headerModal[p.model]=roundOffAmt.toFixed(2);
+                        headerModal[p.model]= parseFloat(roundOffAmt.toFixed(2));
                     }else if(section == "detail"){
-                        detailModal[p.model] =roundOffAmt.toFixed(2);
+                        detailModal[p.model] = parseFloat(roundOffAmt.toFixed(2));
                     }else if(section == "footer"){
-                        footerModal[p.model] = roundOffAmt.toFixed(2);
+                        footerModal[p.model] = parseFloat(roundOffAmt.toFixed(2));
                     }else if(section == "total"){
-                        totalModal[p.model]=roundOffAmt.toFixed(2);
+                        totalModal[p.model]= parseFloat(roundOffAmt.toFixed(2));
                     }
-                }
-
+                }else if (formulaSplit[0].toString() == SVTCOLSUMGROUP) {
+                    var i = 0, TotalValue = 0
+                    Formula = Formula.replace(SVTCOLSUMGROUP, '');
+                    Formula = Formula.substr(2) //Remove first character from string
+                    Formula = Formula.substr(0, Formula.length - 1) //Remove last character from string
+                    var formulaValues = Formula.split(",");
+                    var fldName = formulaValues[0].toString().substr(0, formulaValues[0].toString().length - 1);
+                    var fldValue = formulaValues[1].toString().substr(0, formulaValues[1].toString().length - 1);
+                    fldValue = fldValue.substr(1);
+                    detailSectionData.forEach( function(value, i){
+                        var bln = false;
+                        for(var key in value){
+                            if (key == fldValue && value[key] == parseFloat(formulaValues[3])) {
+                                bln = true;
+                            }
+                            if (bln == true && key == fldName) {
+                                TotalValue = TotalValue + parseFloat(value);
+                            }
+                        }
+                    });
+                    if(section =="header"){
+                        headerModal[p.model]= parseFloat(TotalValue.toFixed(2));
+                    }else if(section == "detail"){
+                        detailModal[p.model] = parseFloat(TotalValue.toFixed(2));
+                    }else if(section == "footer"){
+                        footerModal[p.model] = parseFloat(TotalValue.toFixed(2));
+                    }else if(section == "total"){
+                        totalModal[p.model]= parseFloat(TotalValue.toFixed(2));
+                    }
+                }  
               }
             }
 
