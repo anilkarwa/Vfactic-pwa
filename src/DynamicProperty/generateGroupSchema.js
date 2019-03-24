@@ -638,17 +638,19 @@ const generateGroupSchema = (schemas, model) => {
         if(p.type == "date"){
 
             var schema ={
-                type: "dateTimePicker",
+                type: "cleave",
                 model : p.model,
                 label : p.label,
                 min: p.min,
                 help: p.help,
+                placeholder: 'dd/mm/yyyy',
                 featured: p.featured,
-                inputSelectId: p.comboBoxId,
                 default: p.default?p.useStdDefault:((p.inputType) =="number" ? 0: ""),
-                dateTimePickerOptions: {dateDisplayFormat: p.dateDisplayFormat},
-                //if inputDropdown
-                values: p.values,
+                cleaveOptions: {
+                    date: true,
+                    datePattern: ['d', 'm', 'Y'],
+                    delimiter: '/',
+                },
                 validator: VueFormGenerator.validators.date,
                 // readonly: function (model){ return model && (model[conditionsOperand[0]] )== p.readOnlyCompareValue}
                 disabled: (!p.readonly)? p.readonly:( (p.readOnlyCondition == "") ? p.readonly:(conditionsOperand.length == 1?function (model){ 

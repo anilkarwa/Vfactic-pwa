@@ -8,11 +8,14 @@ import BootstrapVue from 'bootstrap-vue'
 import VueFormGenerator from 'vue-form-generator/dist/vfg.js'
 //import 'vue-form-generator/dist/vfg-core.css'
 import fieldInputDropdown from "./CustomFields/fieldInputDropdown.vue";
+import Cleave from 'vue-cleave-component';
+
 Vue.component("fieldInputDropdown", fieldInputDropdown);
 
 Vue.config.productionTip = false
 Vue.use(Vuetify)
 Vue.use(BootstrapVue)
+Vue.use(Cleave)
 Vue.use(VueFormGenerator,{
   validators: {
     firstCustomValidator: (value, field, model) => {

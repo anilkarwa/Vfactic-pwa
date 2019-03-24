@@ -16,7 +16,7 @@ const updateModalAfterChange = (schemas,headerModal,detailModal,footerModal,tota
             if (Formula.substring(0, 1) == '#' || Formula.substring(0, 1) == '(') {
                 var FieldData = returnFormula(Formula,headerModal,detailModal,footerModal,totalModal).split('^');
                  Formula = FieldData[1];
-                // alert(Formula);
+                //  alert(Formula);
                 //alert(JSON.stringify(FieldData));
                  var ouput;
                  try{
@@ -242,16 +242,17 @@ function returnFormula(Formulas,headerModal,detailModal,footerModal,totalModal) 
     var FieldCtrls = '';
     for (var i = 0; i < tokens.length; i++) {
         if (tokens[i] != "" && tokens[i].substring(0, 1) == '#') {
-            FieldCtrls = FieldCtrls + tokens[i].substring(0, tokens[i].length - 1).replace('#','') + ',';
-            if(headerModal.hasOwnProperty(tokens[i].substring(0, tokens[i].length - 1).replace('#','').toUpperCase())){
-                Formulas = Formulas.replace(tokens[i], headerModal[tokens[i].substring(0, tokens[i].length - 1).replace('#','').toUpperCase()]);
-            }else if(detailModal.hasOwnProperty(tokens[i].substring(0, tokens[i].length - 1).replace('#','').toUpperCase())){
-               // console.log('has property='+tokens[i].substring(0, tokens[i].length - 1).replace('#',''));
-                Formulas = Formulas.replace(tokens[i], detailModal[tokens[i].substring(0, tokens[i].length - 1).replace('#','').toUpperCase()]);
-            }else if(footerModal.hasOwnProperty(tokens[i].substring(0, tokens[i].length - 1).replace('#','').toUpperCase())){
-                Formulas = Formulas.replace(tokens[i], footerModal[tokens[i].substring(0, tokens[i].length - 1).replace('#','').toUpperCase()]);
-            }else if(totalModal.hasOwnProperty(tokens[i].substring(0, tokens[i].length - 1).replace('#','').toUpperCase())){
-                Formulas = Formulas.replace(tokens[i], totalModal[tokens[i].substring(0, tokens[i].length - 1).replace('#','').toUpperCase()]);
+            FieldCtrls = FieldCtrls + tokens[i].substring(0, tokens[i].length - 1).replace('#','').toUpperCase() + ',';
+            let fieldProperty =tokens[i].substring(0, tokens[i].length - 1).replace('#','').toUpperCase();
+            if(headerModal.hasOwnProperty(fieldProperty)){
+                Formulas = Formulas.replace(tokens[i], headerModal[fieldProperty]);
+            }else if(detailModal.hasOwnProperty(fieldProperty)){
+               // console.log('has property='+fieldProperty);
+                Formulas = Formulas.replace(tokens[i], detailModal[fieldProperty]);
+            }else if(footerModal.hasOwnProperty(fieldProperty)){
+                Formulas = Formulas.replace(tokens[i], footerModal[fieldProperty]);
+            }else if(totalModal.hasOwnProperty(fieldProperty)){
+                Formulas = Formulas.replace(tokens[i], totalModal[fieldProperty]);
             }
             
         }

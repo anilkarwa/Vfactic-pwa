@@ -553,6 +553,7 @@ import generateGroupSchema from '@/DynamicProperty/generateGroupSchema.js'
 import generateNewModal from '@/DynamicProperty/generateNewModal.js'
 import customeValidaton from '@/DynamicProperty/customeValidation.js'
 import updateModalAfterChange from '@/DynamicProperty/updateModalAfterChange.js'
+import convertDateWithSchema from '@/DynamicProperty/convertDateWithSchema.js';
 
 export default {
 
@@ -840,6 +841,7 @@ export default {
           this.partyDOCNumber = pageData.mainData.printPONO;
           this.dateFormatted = pageData.mainData.PODate;
 
+
           this.searchSupplierResult = [{supplierId:pageData.mainData.supplierId,supplierCode: pageData.mainData.partyName,supplierName:pageData.mainData.partyName,address1:pageData.mainData.partyAddress1,address2:pageData.mainData.partyAddress2,addres3:pageData.mainData.partyAddress3,address4:pageData.mainData.partyAddress4,city: pageData.mainData.city,pincode:pageData.mainData.PinCode,state:pageData.mainData.state,country: pageData.mainData.country }];
           //console.log(JSON.stringify(pageData.headerFields.dynamicFieldModal.fieldProperties));
           if(pageData.headerFields.dynamicFieldModal.modal.length > 0){
@@ -867,6 +869,11 @@ export default {
           this.totalDynamicFieldOriginalSchema = pageData.totalFields.dynamicFieldModal.fieldProperties;
           this.totalDynamicFieldSchema.fields = generateSchema(pageData.totalFields.dynamicFieldModal.fieldProperties, this.headerDynamicFieldModel);
 
+
+
+          convertDateWithSchema(this.headerDynamicFieldOriginalSchema,this.headerDynamicFieldModel, false);
+          convertDateWithSchema(this.footerDynamicFieldOriginalSchema,this.footerDynamicFieldModel,false);
+          convertDateWithSchema(this.totalDynamicFieldOriginalSchema,this.totalDynamicFieldModel,false);
 
         }).catch((err) => {
 
@@ -1045,7 +1052,15 @@ export default {
         partDocFixedFields["PartyPinCode"] = this.supplier.pincode;
         partDocFixedFields["PartyCountry"] = this.supplier.country;
 
-        partDocFixedFields = {...partDocFixedFields,...this.headerDynamicFieldModel,...this.footerDynamicFieldModel,...this.totalDynamicFieldModel};
+        
+        let header =JSON.parse(JSON.stringify(this.headerDynamicFieldModel));
+        let footer =JSON.parse(JSON.stringify(this.footerDynamicFieldModel));
+        let total = JSON.parse(JSON.stringify(this.totalDynamicFieldModel));
+        convertDateWithSchema(this.headerDynamicFieldOriginalSchema,header, true);
+        convertDateWithSchema(this.footerDynamicFieldOriginalSchema, footer,true);
+        convertDateWithSchema(this.totalDynamicFieldOriginalSchema,total,true);
+
+          partDocFixedFields = {...partDocFixedFields,...header,...footer,...total};
         
         const updateParams = {
           docID: localStorage.getItem('menuDocId') || 0, 
@@ -1153,7 +1168,14 @@ export default {
           partDocFixedFields["PartyPinCode"] = this.supplier.pincode;
           partDocFixedFields["PartyCountry"] = this.supplier.country;
 
-          partDocFixedFields = {...partDocFixedFields,...this.headerDynamicFieldModel,...this.footerDynamicFieldModel,...this.totalDynamicFieldModel};
+          let header =JSON.parse(JSON.stringify(this.headerDynamicFieldModel));
+          let footer =JSON.parse(JSON.stringify(this.footerDynamicFieldModel));
+          let total = JSON.parse(JSON.stringify(this.totalDynamicFieldModel));
+          convertDateWithSchema(this.headerDynamicFieldOriginalSchema,header, true);
+          convertDateWithSchema(this.footerDynamicFieldOriginalSchema, footer,true);
+          convertDateWithSchema(this.totalDynamicFieldOriginalSchema,total,true);
+
+          partDocFixedFields = {...partDocFixedFields,...header,...footer,...total};
           
           const updateParams = {
             docID: localStorage.getItem('menuDocId') || 0, 
@@ -1292,7 +1314,7 @@ export default {
     },
     validateOnclickSaveNewRecord: function($event) {
      console.log('Validating', this.$refs);
-      //this.$refs.vfgAddHeader.validate();
+      this.$refs.vfgAddHeader.validate();
       this.$refs.vfAddFooter.validate();
       this.$refs.vfAddTotal.validate();
     },
@@ -1301,7 +1323,7 @@ export default {
     },
     validateOnclickUpdateRecord: function($event) {
      console.log('Validating', this.$refs);
-      //this.$refs.vfEditHeader.validate();
+      this.$refs.vfEditHeader.validate();
       this.$refs.vfEditFooter.validate();
       this.$refs.vfEditTotal.validate();
     },
