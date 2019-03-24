@@ -112,7 +112,7 @@
 
                             </v-flex>
                             <v-flex xs12 sm4 md4>
-                               <vue-form-generator id="Form-generator-css" ref="vfgAddHeader" :schema="headerDynamicFieldSchema" :model="headerDynamicFieldModel" :options="formOptions" @validated="onValidatedAddHeader"  ></vue-form-generator> 
+                               <vue-form-generator id="Form-generator-css" ref="vfAddHeader" :schema="headerDynamicFieldSchema" :model="headerDynamicFieldModel" :options="formOptions" @validated="onValidatedAddHeader"  ></vue-form-generator> 
                             </v-flex>
                           </v-layout>
                         </v-container>
@@ -636,7 +636,9 @@ export default {
     text: '',
     updatedingAnyModal:false,
     selectedID:0,
-    isDynamicFormValid: true,
+    isDynamicHeaderFormValid: true,
+    isDynamicFooterFormValid: true,
+    isDynamicTotalFormValid: true,
     isDetailSectionValid: true,
   
  }),
@@ -795,7 +797,7 @@ export default {
      /* ******************* Main table functions ************************* */
      loadPartDocTableData(){
       const docID =  localStorage.getItem('menuDocId') || 0;
-      this.headers= [ { text: "Edit", align: "center" } ],
+      this.partyDocHeaders= [ { text: "Edit", align: "center" } ],
       this.partyDocHeadersKey = [];
       httpClient({
         method: 'GET',
@@ -1035,7 +1037,7 @@ export default {
     },
     savePartyDocHDRTableData(){
       this.validateOnclickSaveNewRecord();
-      if(this.validateStaticFields() && this.isDynamicFormValid && this.detailSectionData.length > 0){
+      if(this.validateStaticFields() && this.isDynamicHeaderFormValid && this.isDynamicFooterFormValid && this.isDynamicTotalFormValid && this.detailSectionData.length > 0){
 
         let partDocFixedFields ={};
         partDocFixedFields[this.prefix+"NO"] = this.partyDOCNumber;
@@ -1108,7 +1110,7 @@ export default {
 
       if(this.detailSectionModal.hasOwnProperty('ITEMID')){
         if(this.detailSectionModal.ITEMID == 0){ this.isDetailSectionValid = true;}
-        else if((this.detailSectionModal.ITEMID == '' || this.detailSectionModal.ITEMID ==null || this.detailSectionModal.ITEMID == undefined)
+        else if((this.selectedItem == 0 || this.detailSectionModal.ITEMID == '' || this.detailSectionModal.ITEMID ==null || this.detailSectionModal.ITEMID == undefined)
         ||(this.detailSectionModal.ITEMNAME == '' || this.detailSectionModal.ITEMNAME == null || this.detailSectionModal.ITEMNAME == undefined)
         ||(this.detailSectionModal.UOM =='' || this.detailSectionModal.UOM == null || this.detailSectionModal.UOM == undefined) || isValid == false ){
           this.isDetailSectionValid = false;
@@ -1126,24 +1128,24 @@ export default {
     },
     onValidatedAddHeader: function(isValid, error) {
       console.log("Validation add header result: ", isValid, ", Errors:", error);
-       /*if(this.headerDynamicFieldOriginalSchema != null){
+       if(this.headerDynamicFieldOriginalSchema != null){
            customeValidaton(this.headerDynamicFieldOriginalSchema,this.headerDynamicFieldSchema.fields,this.headerDynamicFieldSchema.groups,this.headerDynamicFieldModel);
-       }*/
-      //this.isDynamicFormValid = isValid;
+       }
+      this.isDynamicHeaderFormValid = isValid;
     },
     onValidatedAddFooter: function(isValid, error) {
       console.log("Validation add footer result: ", isValid, ", Errors:", error);
        if(this.footerDynamicFieldOriginalSchema != null){
            customeValidaton(this.footerDynamicFieldOriginalSchema,this.footerDynamicFieldSchema.fields,this.footerDynamicFieldSchema.groups,this.footerDynamicFieldModel);
        }
-      this.isDynamicFormValid = isValid;
+      this.isDynamicFooterFormValid = isValid;
     },
     onValidatedAddTotal: function(isValid, error) {
       console.log("Validation add total result: ", isValid, ", Errors:", error);
        if(this.totalDynamicFieldOriginalSchema != null){
            customeValidaton(this.totalDynamicFieldOriginalSchema,this.totalDynamicFieldSchema.fields,this.totalDynamicFieldSchema.groups,this.totalDynamicFieldModel);
        }
-      this.isDynamicFormValid = isValid;
+      this.isDynamicTotalFormValid = isValid;
     },
 
 
@@ -1154,7 +1156,7 @@ export default {
     updatePartyDoc(){
 
      this.validateOnclickUpdateRecord();
-      if(this.validateStaticFields() && this.isDynamicFormValid && this.detailSectionData.length > 0){
+      if(this.validateStaticFields() && this.isDynamicHeaderFormValid && this.isDynamicFooterFormValid  && this.isDynamicTotalFormValid  && this.detailSectionData.length > 0){
 
           let partDocFixedFields ={};
           partDocFixedFields["SUPPID"]= this.supplier.supplierId;
@@ -1205,21 +1207,21 @@ export default {
        if(this.headerDynamicFieldOriginalSchema != null){
            customeValidaton(this.headerDynamicFieldOriginalSchema,this.headerDynamicFieldSchema.fields,this.headerDynamicFieldSchema.groups,this.headerDynamicFieldModel);
        }
-      this.isDynamicFormValid = isValid;
+      this.isDynamicHeaderFormValid = isValid;
     },
     onValidatedFooter: function(isValid, error) {
       console.log("Validation result: ", isValid, ", Errors:", error);
        if(this.footerDynamicFieldOriginalSchema != null){
            customeValidaton(this.footerDynamicFieldOriginalSchema,this.footerDynamicFieldSchema.fields,this.footerDynamicFieldSchema.groups,this.footerDynamicFieldModel);
        }
-      this.isDynamicFormValid = isValid;
+      this.isDynamicFooterFormValid = isValid;
     },
     onValidatedTotal: function(isValid, error) {
       console.log("Validation result: ", isValid, ", Errors:", error);
        if(this.totalDynamicFieldOriginalSchema != null){
            customeValidaton(this.totalDynamicFieldOriginalSchema,this.totalDynamicFieldSchema.fields,this.totalDynamicFieldSchema.groups,this.totalDynamicFieldModel);
        }
-      this.isDynamicFormValid = isValid;
+      this.isDynamicTotalFormValid = isValid;
     },
     onValidatedDetailSection:function(isValid,error){
       if(this.detailSectionFieldOriginalSchema != null){
@@ -1272,6 +1274,7 @@ export default {
       return finalQuery;
     },
     resetDetailSectionModal(model){
+      this.selectedItem= 0;
        if(model){
         for (var property in model) {
           if( typeof model[property] === "number"){
@@ -1314,7 +1317,7 @@ export default {
     },
     validateOnclickSaveNewRecord: function($event) {
      console.log('Validating', this.$refs);
-      this.$refs.vfgAddHeader.validate();
+      this.$refs.vfAddHeader.validate();
       this.$refs.vfAddFooter.validate();
       this.$refs.vfAddTotal.validate();
     },
