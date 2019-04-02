@@ -4,7 +4,7 @@
     <v-toolbar color="blue darken-1" dark fixed app>
       <v-toolbar-title>VfactIC</v-toolbar-title>
       <v-spacer></v-spacer>
-      <router-link to = "/"><v-icon>home</v-icon></router-link>
+      <router-link to = "/"><span class="white--text">Back to Company Selection</span> </router-link>
     </v-toolbar>
     <v-content>
       <v-container fluid fill-height>
@@ -87,6 +87,8 @@ export default {
           console.log('Result', result.data);
           if(result.data.userId !== 0) {
             localStorage.setItem('userId', result.data.userId);
+            localStorage.setItem('userName',result.data.name);
+            localStorage.setItem('financialYear',result.data.financialYear);
             this.$router.push({ path: 'home' })
           } else {
             this.snackbarColor = 'red',

@@ -39,7 +39,7 @@
       </v-container>
     </v-content>
     <v-footer color="blue darken-1" app inset>
-      <span class="white--text">NitinAgarwal &copy; 2019</span>
+      <span class="white--text">Softvent &copy; 2019</span>
     </v-footer>
     <!-- START: Code for change database model -->
     <v-dialog v-model="chnageDataBaseModel" persistent max-width="600px">
@@ -193,6 +193,7 @@ export default {
         console.log('Response from server', response);
         if(response.status === 200) {
           localStorage.setItem('dataBaseName', DatabaseName);
+          localStorage.setItem('selectedCompanyName', details.dbDisplayName);
           this.$router.push({ path: 'login' })
         }
       })

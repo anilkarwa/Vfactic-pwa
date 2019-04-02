@@ -198,5 +198,9 @@ display: inline-block;
     background-position: 50%;
     background-size:contain;
  }
+ .spaceFromTop{
+   position: relative;
+   top:50px;
+ }
 
 </style>

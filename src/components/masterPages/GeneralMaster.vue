@@ -6,7 +6,12 @@
         </div>
        Add New Record
       <!-- START: Code for Supplier Group Master Table data -->
-      <v-data-table :headers="headers" :items="generalMasterTableData" class="elevation-1">
+      <v-card>
+      <v-card-title> 
+        <v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer>
+        <v-text-field  v-model="tableSearch" append-icon="search"  label="Search" single-line  hide-details  ></v-text-field>
+      </v-card-title>
+      <v-data-table :headers="headers" :search="tableSearch" :items="generalMasterTableData" class="elevation-1">
         <template slot="items" slot-scope="props">
           <td class="justify-center layout px-0">
             <v-icon small class="mr-2" @click="editGeneralMasterData(props.item)">edit</v-icon>
@@ -20,6 +25,7 @@
           <v-btn color="primary">Reset</v-btn>
         </template>
       </v-data-table>
+      </v-card>
       <!-- END: Code for Supplier Group Master Table data -->
       <!-- START: dialog box model code -->
       <v-dialog
@@ -29,21 +35,22 @@
         transition="dialog-bottom-transition"
       >
         <v-card>
-          <v-toolbar dark color="primary">
+          <v-toolbar fixed dark color="primary">
             <v-btn icon dark @click="generalMasterModel = false">
               <v-icon>close</v-icon>
             </v-btn>
-            <v-toolbar-title>Edit Group Master</v-toolbar-title>
+            <v-toolbar-title>Edit Information</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-toolbar-items>
               <v-btn dark flat @click="updateGeneralMasterData()">Save</v-btn>
             </v-toolbar-items>
           </v-toolbar>
+           <v-container class="spaceFromTop" fluid grid-list-md >
           <v-layout row wrap>
             <v-flex xs12>
               <v-expansion-panel popout>
                 <v-expansion-panel-content>
-                  <div slot="header">Group Master Details</div>
+                  <div slot="header">Details</div>
                   <v-card>
                     <v-card-text>
                       <v-container fluid grid-list-xl>
@@ -127,6 +134,7 @@
               </v-expansion-panel>
             </v-flex>
           </v-layout>
+           </v-container>
         </v-card>
       </v-dialog>
       <!-- END: dialog box model code -->
@@ -164,16 +172,17 @@
         transition="dialog-bottom-transition"
       >
         <v-card>
-          <v-toolbar dark color="primary">
+          <v-toolbar fixed dark color="primary">
             <v-btn icon dark @click="addGeneralMasterModel = false">
               <v-icon>close</v-icon>
             </v-btn>
-            <v-toolbar-title>Add Group Master</v-toolbar-title>
+            <v-toolbar-title>Add Record</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-toolbar-items>
               <v-btn dark flat @click="addItemRequest()">Add</v-btn>
             </v-toolbar-items>
           </v-toolbar>
+           <v-container class="spaceFromTop" fluid grid-list-md >
           <v-layout row wrap>
             <v-flex xs12>
               <v-expansion-panel popout>
@@ -263,6 +272,7 @@
               </v-expansion-panel>
             </v-flex>
           </v-layout>
+           </v-container>
         </v-card>
       </v-dialog>
       <!-- END: dialog box model code For Adding the new Item-->
@@ -291,6 +301,7 @@ import generateSchema from '@/DynamicProperty/generateScheme.js'
 import generateGroupSchema from '@/DynamicProperty/generateGroupSchema.js'
 import generateNewModal from '@/DynamicProperty/generateNewModal.js'
 import customeValidaton from '@/DynamicProperty/customeValidation.js'
+import updateModalAfterChangeMaster from '@/DynamicProperty/updateModalAfterChangeMaster.js';
 
 
 export default {
@@ -300,6 +311,7 @@ export default {
       generalMasterHeadersKey: [],
       generalMasterTableData: [],
       preFix: null,
+      tableSearch: '',
       generalMasterModel: false,
       editItems: {},
       addItems: {},
@@ -341,6 +353,21 @@ export default {
   },
   beforeMount: function() {
     this.loadGeneralMaster();
+  },
+  watch:{
+    dynamicFieldModel:{
+     handler(val, oldVal){
+        this.updateEditModalForValueChanges();
+        },
+    deep: true
+   },
+   addDynamicFieldModel:{
+     handler(val, oldVal){
+        this.updateAddModalForValueChanges();
+        },
+    deep: true
+   }
+
   },
   methods: {
     showSnackBar(type,message){
@@ -548,6 +575,12 @@ export default {
     validateOnclick: function($event) {
       var errors = this.$refs.vfg.validate();
     },
+    updateEditModalForValueChanges(){
+      updateModalAfterChangeMaster(this.dynamicShema,this.dynamicFieldModel);
+    },
+    updateAddModalForValueChanges(){
+      updateModalAfterChangeMaster(this.dynamicShema,this.addDynamicFieldModel);
+    }
   }
 }
 </script>

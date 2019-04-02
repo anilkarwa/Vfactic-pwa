@@ -6,7 +6,12 @@
         </div>
        Add New Record
     <!-- START: Code for Data table -->
-        <v-data-table :headers="partyDocHeaders" :items="partyDocTableData" class="elevation-1">
+    <v-card>
+      <v-card-title> 
+        <v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer>
+        <v-text-field  v-model="tableSearch" append-icon="search"  label="Search" single-line  hide-details  ></v-text-field>
+      </v-card-title>
+        <v-data-table :headers="partyDocHeaders" :search="tableSearch" :items="partyDocTableData" class="elevation-1">
           <template slot="items" slot-scope="props">
             <td class="justify-center layout px-0">
               <v-icon small class="mr-2" @click="editSelectedPartyDocTranscation(props.item)">edit</v-icon>
@@ -19,11 +24,12 @@
             <v-btn color="primary">Reset</v-btn>
           </template>
         </v-data-table>
+      </v-card>
         <!-- END: Code for Data table -->
        <!-- Add PartyDoc Transcation Dialog -->
           <v-dialog  v-model="addPartyDocModal"   fullscreen  hide-overlay  transition="dialog-bottom-transition" >
            <v-card>
-              <v-toolbar dark color="primary">
+              <v-toolbar fixed dark color="primary">
                 <v-btn icon dark @click="addPartyDocModal = false">
                   <v-icon>close</v-icon>
                 </v-btn>
@@ -33,7 +39,7 @@
                   <v-btn dark flat @click="savePartyDocHDRTableData()">Save</v-btn>
                 </v-toolbar-items>
               </v-toolbar>
-              <v-container fluid grid-list-md >
+              <v-container class="spaceFromTop" fluid grid-list-md >
                 <v-layout row wrap>
                 <v-flex xs12 sm12 md12>
                   <v-expansion-panel expand>
@@ -130,7 +136,7 @@
                          <v-container fluid grid-list-xl>
                           <div class="actionBlock">
                               <!-- add new row action -->
-                                <v-dialog v-model="detailModal" persistent max-width="450px">
+                                <v-dialog v-model="detailModal" scrollable persistent max-width="450px">
                                   <template v-slot:activator="{ on }">
                                     <!-- <v-btn color="primary" dark v-on="on">Open Dialog</v-btn> -->
                                     <v-btn fab dark small color="indigo" v-on="on"> <v-icon dark>add</v-icon> </v-btn>
@@ -194,7 +200,7 @@
                                     <v-card-actions>
                                       <v-spacer></v-spacer>
                                       <v-btn color="blue darken-1" flat @click="detailModal = false">Close</v-btn>
-                                      <v-btn color="blue darken-1" flat @click="validateOnclickDetailSaveNewRecord(); saveDetailData()">Save</v-btn>
+                                      <v-btn color="blue darken-1" flat @click="validateOnclickDetailSaveNewRecord(); saveDetailData(true)">Save</v-btn>
                                     </v-card-actions>
                                   </v-card>
                                 </v-dialog>
@@ -208,12 +214,12 @@
                                         <v-icon>close</v-icon>
                                       </v-btn>
                                     </template>
-                                    <!-- <v-btn fab  dark  small color="green" @click="moveRowUpwared()">
+                                     <v-btn fab  dark  small color="green" @click="moveRowUpwared()">
                                       <v-icon>arrow_upward</v-icon>
                                     </v-btn>
                                     <v-btn  fab  dark  small color="indigo" @click="moveRowDownwared()" >
                                       <v-icon>arrow_downward</v-icon>
-                                    </v-btn> -->
+                                    </v-btn> 
                                     <v-btn fab  dark small color="red" @click="removeDetailRecord()">
                                       <v-icon>delete</v-icon>
                                     </v-btn>
@@ -233,6 +239,7 @@
                               <template v-slot:headers="props">
                                 <tr>
                                   <th></th>
+                                  <th>Edit</th>
                                   <th
                                     v-for="header in props.headers"
                                     :key="header.text"
@@ -243,7 +250,8 @@
                               </template>
                               <template v-slot:items="props">
                                 <tr :active="props.selected" @click="props.selected = !props.selected">
-                                  <td> <v-checkbox :input-value="props.selected" primary  hide-details ></v-checkbox>  </td>
+                                  <td> <v-checkbox :input-value="props.selected"   primary  hide-details ></v-checkbox>  </td>
+                                  <td> <v-icon samll class="mr-2" @click="editDetailRow(props.item, true)">edit</v-icon></td>
                                   <template v-for="header in Object.keys(detailSectionModal)">
                                   <td class="text-xs-left" :key="header" v-if="header !='ITEMID' && header !='UOMID' && header !='ItemSlNO' " >{{ props.item[header] }}</td>
                                   </template>
@@ -286,7 +294,7 @@
            <!-- Edit PartyDoc Transcation Dialog -->
           <v-dialog  v-model="ediPartyDocModal"   fullscreen  hide-overlay  transition="dialog-bottom-transition" >
            <v-card>
-              <v-toolbar dark color="primary">
+              <v-toolbar fixed dark color="primary">
                 <v-btn icon dark @click="ediPartyDocModal = false">
                   <v-icon>close</v-icon>
                 </v-btn>
@@ -296,7 +304,7 @@
                   <v-btn dark flat @click="updatePartyDoc()">Save</v-btn>
                 </v-toolbar-items>
               </v-toolbar>
-              <v-container fluid grid-list-md >
+              <v-container  class="spaceFromTop" fluid grid-list-md >
                 <v-layout row wrap>
                 <v-flex xs12 sm12 md12>
                   <v-expansion-panel v-model="panel" expand >
@@ -380,7 +388,7 @@
                        <v-container fluid grid-list-xl>
                           <div class="actionBlock">
                               <!-- add new row action -->
-                                <v-dialog v-model="detailModal" persistent max-width="450px">
+                                <v-dialog v-model="editDetailModal" scrollable persistent max-width="450px">
                                   <template v-slot:activator="{ on }">
                                     <!-- <v-btn color="primary" dark v-on="on">Open Dialog</v-btn> -->
                                     <v-btn fab dark small color="indigo" v-on="on"> <v-icon dark>add</v-icon> </v-btn>
@@ -443,8 +451,8 @@
                                     </v-card-text>
                                     <v-card-actions>
                                       <v-spacer></v-spacer>
-                                      <v-btn color="blue darken-1" flat @click="detailModal = false">Close</v-btn>
-                                      <v-btn color="blue darken-1" flat @click="validateOnclickDetailUpdateRecord();saveDetailData()">Save</v-btn>
+                                      <v-btn color="blue darken-1" flat @click="editDetailModal = false">Close</v-btn>
+                                      <v-btn color="blue darken-1" flat @click="validateOnclickDetailUpdateRecord();saveDetailData(false)">Save</v-btn>
                                     </v-card-actions>
                                   </v-card>
                                 </v-dialog>
@@ -458,12 +466,12 @@
                                         <v-icon>close</v-icon>
                                       </v-btn>
                                     </template>
-                                    <!-- <v-btn fab  dark  small color="green" @click="moveRowUpwared()">
+                                     <v-btn fab  dark  small color="green" @click="moveRowUpwared()">
                                       <v-icon>arrow_upward</v-icon>
                                     </v-btn>
                                     <v-btn  fab  dark  small color="indigo" @click="moveRowDownwared()" >
                                       <v-icon>arrow_downward</v-icon>
-                                    </v-btn> -->
+                                    </v-btn> 
                                     <v-btn fab  dark small color="red" @click="removeDetailRecord()">
                                       <v-icon>delete</v-icon>
                                     </v-btn>
@@ -483,6 +491,7 @@
                               <template v-slot:headers="props">
                                 <tr>
                                   <th></th>
+                                  <th>Edit</th>
                                   <th
                                     v-for="header in props.headers"
                                     :key="header.text"
@@ -493,7 +502,9 @@
                               </template>
                               <template v-slot:items="props">
                                 <tr :active="props.selected" @click="props.selected = !props.selected">
-                                  <td> <v-checkbox :input-value="props.selected" primary  hide-details ></v-checkbox>  </td>
+                                  <td> <v-checkbox :input-value="props.selected"  primary  hide-details ></v-checkbox></td>
+                                 <td> <v-icon small class="mr-2" @click="editDetailRow(props.item, false)">edit</v-icon></td>
+                                    
                                   <template v-for="header in Object.keys(detailSectionModal)">
                                   <td class="text-xs-left" :key="header" v-if="header !='ITEMID' && header !='UOMID' && header !='ItemSlNO'" >{{ props.item[header] }}</td>
                                   </template>
@@ -558,6 +569,7 @@ import convertDateWithSchema from '@/DynamicProperty/convertDateWithSchema.js';
 export default {
 
  data : vm => ({
+   tableSearch: '',
    partyDOCID: 0,
    partyDOCNumber: 0,
    prefix: '',
@@ -578,6 +590,7 @@ export default {
    addSearchSupplier:null,
    searchItemResult: [],
    detailModal: false,
+   editDetailModal: false,
    datePickerModal: false,
    addPartyDocModal: false,
    ediPartyDocModal:false,
@@ -640,6 +653,7 @@ export default {
     isDynamicFooterFormValid: true,
     isDynamicTotalFormValid: true,
     isDetailSectionValid: true,
+    isDetailRowEditing : false,
   
  }),
 
@@ -705,6 +719,10 @@ export default {
     deep: true
    },
   searchItems(value){
+    if(this.selectedSupplier == 0){
+      this.showSnackBar('error','Please select supplier first');
+      return false;
+    }
     if(value != undefined && value != null){
     httpClient({
         method: 'GET',
@@ -719,6 +737,10 @@ export default {
     }
   },
   addSearchItems(value){
+    if(this.selectedSupplier == 0){
+      this.showSnackBar('error','Please select supplier first');
+      return false;
+    }
     if(value != undefined && value != null){
     httpClient({
         method: 'GET',
@@ -765,6 +787,7 @@ export default {
     if(supplierData != undefined && supplierData != null){
       this.supplier= supplierData;
     } else{
+      this.selectedSupplier =0;
       this.supplier = {
         supplierId:0,
         supplierCode:'',
@@ -789,6 +812,13 @@ export default {
       this.detailSectionModal.ITEMNAME= itemData.itemName;
       this.detailSectionModal.UOMID = itemData.UOMID;
       this.detailSectionModal.UOM= itemData.UOM;
+    } else{
+      this.selectedItem = 0;
+      if(this.detailSectionModal.hasOwnProperty('ITEMNAME')){
+        this.detailSectionModal.ITEMNAME = '';
+        this.detailSectionModal.UOMID = 0;
+        this.detailSectionModal.UOM = '';
+      }
     }
   },
  },
@@ -972,30 +1002,70 @@ export default {
           }
         }
      },
-     saveDetailData(){
-     this.detailSectionModal.SlNO = this.detailSectionData.length + 1;
-     this.detailSectionModal.ItemSlNO = this.detailSectionData.length + 1;
+     saveDetailData(isSaveNewRecord){
+       if(!this.isDetailRowEditing){
+         this.detailSectionModal.SlNO = this.detailSectionData.length + 1;
+        this.detailSectionModal.ItemSlNO = this.detailSectionData.length + 1;
+       }
+     
      let data = JSON.parse(JSON.stringify(this.detailSectionModal));
      let that = this;
      setTimeout(function(){
       if(that.isDetailSectionValid){
-           that.detailModal = false;
-           that.detailSectionData.push(data);
+            if(isSaveNewRecord){
+              that.detailModal = false;
+            } else{ 
+              that.editDetailModal = false;
+            }
+            if(!that.isDetailRowEditing){
+              that.detailSectionData.push(data);
+            } else{
+              that.isDetailRowEditing = false;
+              that.selected = [];
+              that.detailSectionData =JSON.parse(JSON.stringify(that.detailSectionData));
+            }
+           
            that.resetDetailSectionModal(that.detailSectionModal);
           } else{
           that.showSnackBar('error','Please fill all mandatory fields');
           }
-    }, 500);
-     
-     
+    }, 500);     
+    },
+    editDetailRow(row, isSaveNewRecord){
+      this.isDetailRowEditing = true;
+      this.detailSectionModal = row;
+      this.selectedItem = row.ITEMID;
+      this.searchItemResult = [
+        {
+          itemId: row.ITEMID,
+          itemCode:row.ITEMNAME,
+          itemName:row.ITEMNAME,
+          UOMID:row.UOMID,
+          UOM:row.UOM
+        }];
+
+      if(isSaveNewRecord){
+        this.detailModal = true;
+      } else{
+        this.editDetailModal = true;
+      }
     },
     removeDetailRecord(){
+      if(this.selected.length == 0){
+        alert('select a row');
+        return false;
+      }
       this.selected.forEach(element => {
-        var item = this.detailSectionData.findIndex(x =>  x.slno == element.slno);
+        var item = this.detailSectionData.findIndex(x =>  x.SlNO == element.SlNO);
         if(item>=0){
           this.detailSectionData.splice(item,1);
         }
       });
+      this.detailSectionData.forEach(function (value, i) {
+         value.SlNO = i+1;
+         value.ItemSlNO = i+1;
+      });
+
       this.selected = [];
       this.updateAllModalForValueChanges();
     },
@@ -1008,14 +1078,21 @@ export default {
         alert('select a row');
         return false;
       }
-      let index = this.detailSectionData.findIndex(x => x.slno == this.selected[0].slno);
+      let index = this.detailSectionData.findIndex(x => x.SlNO == this.selected[0].SlNO);
       if(index >=0 && this.detailSectionData.length > 0){
         let temp = this.detailSectionData[index-1];
-        console.log('temp='+JSON.stringify(temp));
-        this.detailSectionData[index-1] = this.detailSectionData[index];
+        let temp1 = this.detailSectionData[index];
+        console.log('row uptemp='+JSON.stringify(temp));
+        this.detailSectionData[index-1] = temp1;
         this.detailSectionData[index]= temp;
       }
-      console.log('detail'+JSON.stringify(this.detailSectionData));
+       this.detailSectionData.forEach(function (value, i) {
+         value.SlNO = i+1;
+         value.ItemSlNO = i+1;
+      });
+      let tempData = JSON.parse(JSON.stringify(this.detailSectionData));
+      this.detailSectionData = [];
+      this.detailSectionData = tempData;
       this.selected = [];
 
     },
@@ -1034,6 +1111,15 @@ export default {
           this.detailSectionData[index+1] = this.detailSectionData[index];
           this.detailSectionData[index]= temp;
        }
+      this.detailSectionData.forEach(function (value, i) {
+         value.SlNO = i+1;
+         value.ItemSlNO = i+1;
+      });
+      console.log('detail'+JSON.stringify(this.detailSectionData));
+      let tempData = JSON.parse(JSON.stringify(this.detailSectionData));
+      this.detailSectionData = [];
+      this.detailSectionData = tempData;
+      this.selected = [];
     },
     savePartyDocHDRTableData(){
       this.validateOnclickSaveNewRecord();
@@ -1108,15 +1194,16 @@ export default {
            customeValidaton(this.detailSectionFieldOriginalSchema,this.detailSectionFieldSchema.fields,this.detailSectionFieldSchema.groups,this.detailSectionModal);
        }
 
-      if(this.detailSectionModal.hasOwnProperty('ITEMID')){
-        if(this.detailSectionModal.ITEMID == 0){ this.isDetailSectionValid = true;}
-        else if((this.selectedItem == 0 || this.detailSectionModal.ITEMID == '' || this.detailSectionModal.ITEMID ==null || this.detailSectionModal.ITEMID == undefined)
+       if(this.detailSectionModal.hasOwnProperty('SlNO')){
+        if(this.detailSectionModal.SlNO == 0   && !this.detailModal){ this.isDetailSectionValid = true;}
+        else if((this.detailSectionModal.ITEMID == 0 ||this.detailSectionModal.ITEMID == '' || this.detailSectionModal.ITEMID ==null || this.detailSectionModal.ITEMID == undefined)
         ||(this.detailSectionModal.ITEMNAME == '' || this.detailSectionModal.ITEMNAME == null || this.detailSectionModal.ITEMNAME == undefined)
         ||(this.detailSectionModal.UOM =='' || this.detailSectionModal.UOM == null || this.detailSectionModal.UOM == undefined) || isValid == false ){
           this.isDetailSectionValid = false;
-        } else{ this.isDetailSectionValid = true;}
-        
-      } else{
+        } else{
+          this.isDetailSectionValid = true;
+        }
+      }  else{
         if(this.detailSectionData.length == 0){
           this.isDetailSectionValid = false;
         }else{
@@ -1224,12 +1311,13 @@ export default {
       this.isDynamicTotalFormValid = isValid;
     },
     onValidatedDetailSection:function(isValid,error){
+      console.log('detail section validation='+isValid);
       if(this.detailSectionFieldOriginalSchema != null){
            customeValidaton(this.detailSectionFieldOriginalSchema,this.detailSectionFieldSchema.fields,this.detailSectionFieldSchema.groups,this.detailSectionModal);
        }
-      if(this.detailSectionModal.hasOwnProperty('ITEMID')){
-        if(this.detailSectionModal.ITEMID == 0){ this.isDetailSectionValid = true;}
-        else if((this.detailSectionModal.ITEMID == '' || this.detailSectionModal.ITEMID ==null || this.detailSectionModal.ITEMID == undefined)
+      if(this.detailSectionModal.hasOwnProperty('SlNO')){
+        if(this.detailSectionModal.SlNO == 0   && !this.editDetailModal){ this.isDetailSectionValid = true;}
+        else if((this.detailSectionModal.ITEMID == 0 ||this.detailSectionModal.ITEMID == '' || this.detailSectionModal.ITEMID ==null || this.detailSectionModal.ITEMID == undefined)
         ||(this.detailSectionModal.ITEMNAME == '' || this.detailSectionModal.ITEMNAME == null || this.detailSectionModal.ITEMNAME == undefined)
         ||(this.detailSectionModal.UOM =='' || this.detailSectionModal.UOM == null || this.detailSectionModal.UOM == undefined) || isValid == false ){
           this.isDetailSectionValid = false;
@@ -1237,7 +1325,11 @@ export default {
           this.isDetailSectionValid = true;
         }
       } else{
-        this.isDetailSectionValid = true;
+        if(this.detailSectionData.length == 0){
+          this.isDetailSectionValid = false;
+        }else{
+          this.isDetailSectionValid = true;
+        }
       }
       return this.isDetailSectionValid;
     },

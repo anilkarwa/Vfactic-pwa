@@ -6,7 +6,12 @@
         </div>
        Add New Record
       <!-- START: table -->
-      <v-data-table :headers="headers" :items="itemMasterDataTable" class="elevation-1">
+      <v-card>
+      <v-card-title> 
+        <v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer>
+        <v-text-field  v-model="tableSearch" append-icon="search"  label="Search" single-line  hide-details  ></v-text-field>
+      </v-card-title>
+      <v-data-table :headers="headers" :search="tableSearch" :items="itemMasterDataTable" class="elevation-1">
         <template slot="items" slot-scope="props">
           <td class="justify-center layout px-0">
             <v-icon small class="mr-2" @click="editItemMasterData(props.item)">edit</v-icon>
@@ -20,6 +25,7 @@
           <v-btn color="primary">Reset</v-btn>
         </template>
       </v-data-table>
+      </v-card>
       <!-- END: table -->
       <!-- START: dialog box model code -->
       <v-dialog
@@ -29,16 +35,17 @@
         transition="dialog-bottom-transition"
       >
         <v-card>
-          <v-toolbar dark color="primary">
+          <v-toolbar fixed dark color="primary">
             <v-btn icon dark @click="itemMasterModel = false">
               <v-icon>close</v-icon>
             </v-btn>
-            <v-toolbar-title>Settings</v-toolbar-title>
+            <v-toolbar-title>Edit Information</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-toolbar-items>
               <v-btn dark flat @click="updateItemMasterData()">Save</v-btn>
             </v-toolbar-items>
           </v-toolbar>
+           <v-container class="spaceFromTop" fluid grid-list-md >
           <v-layout row wrap>
             <v-flex xs12>
               <v-expansion-panel popout>
@@ -178,6 +185,7 @@
               </v-expansion-panel>
             </v-flex>
           </v-layout>
+           </v-container>
         </v-card>
       </v-dialog>
       <!-- END: dialog box model code -->
@@ -189,21 +197,22 @@
         transition="dialog-bottom-transition"
       >
         <v-card>
-          <v-toolbar dark color="primary">
+          <v-toolbar fixed dark color="primary">
             <v-btn icon dark @click="addItemMasterModel = false">
               <v-icon>close</v-icon>
             </v-btn>
-            <v-toolbar-title>Settings</v-toolbar-title>
+            <v-toolbar-title>Add Record</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-toolbar-items>
               <v-btn dark flat @click="addItemRequest()">ADD</v-btn>
             </v-toolbar-items>
           </v-toolbar>
+           <v-container class="spaceFromTop" fluid grid-list-md >
           <v-layout row wrap>
             <v-flex xs12>
               <v-expansion-panel popout>
                 <v-expansion-panel-content>
-                  <div slot="header">ADD Item Master Details</div>
+                  <div slot="header"> Item Master Details</div>
                   <v-card>
                     <v-card-text>
                       <!-- START: Supplier detail form code -->
@@ -338,6 +347,7 @@
               </v-expansion-panel>
             </v-flex>
           </v-layout>
+           </v-container>
         </v-card>
       </v-dialog>
       <!-- END: dialog box model code for adding new Item in Item Master -->
@@ -366,6 +376,7 @@ import DynamicFieldSchema from '@/DynamicProperty/generateScheme.js'
 import generateGroupSchema from '@/DynamicProperty/generateGroupSchema.js'
 import generateNewModal from '@/DynamicProperty/generateNewModal.js'
 import customeValidaton from '@/DynamicProperty/customeValidation.js'
+import updateModalAfterChangeMaster from '@/DynamicProperty/updateModalAfterChangeMaster.js';
 
 export default {
   data: function() {
@@ -378,6 +389,7 @@ export default {
       addItems: {},
       staticFields: [],
       preFix: null,
+      tableSearch:'',
       UOMList: [],
       itemGroupList: [],
       itemTypeList: [],
@@ -417,6 +429,18 @@ export default {
   beforeMount: function() {
     this.loadItemMaster();
   },
+   dynamicFieldModel:{
+     handler(val, oldVal){
+        this.updateEditModalForValueChanges();
+        },
+    deep: true
+   },
+   addDynamicFieldModel:{
+     handler(val, oldVal){
+        this.updateAddModalForValueChanges();
+        },
+    deep: true
+   },
   methods: {
     showSnackBar(type,message){
       this.snackbar = true;
@@ -623,23 +647,23 @@ export default {
         dynamicFields: this.addDynamicFieldModel
       }
       console.log('postParams', JSON.stringify(postParams));
-   if (this.addValidation() && this.isDynamicFormValid) {
-      httpClient({
-        method: 'POST',
-        url: `${process.env.VUE_APP_API_BASE}ItemMaster`,
-        data: postParams
-      }).then((result) => {
-        console.log('Result', result);
-          this.showSnackBar('success',result.data);
-          this.addItemMasterModel = false;
-          this.loadItemMaster();
-      }).catch((err) => {
+      if (this.addValidation() && this.isDynamicFormValid) {
+          httpClient({
+            method: 'POST',
+            url: `${process.env.VUE_APP_API_BASE}ItemMaster`,
+            data: postParams
+          }).then((result) => {
+            console.log('Result', result);
+              this.showSnackBar('success',result.data);
+              this.addItemMasterModel = false;
+              this.loadItemMaster();
+          }).catch((err) => {
 
-        this.showSnackBar('error',err.response.data);
-      });
-      } else{
-        this.showSnackBar('error','Please fill all mandatory field.')
-      }
+            this.showSnackBar('error',err.response.data);
+          });
+          } else{
+            this.showSnackBar('error','Please fill all mandatory field.')
+          }
     },
      onValidatedAdd: function(isValid, errors) {
        if(this.dynamicShema != null){
@@ -658,6 +682,12 @@ export default {
      validateOnclick: function($event) {
       var errors = this.$refs.vfg.validate();
     },
+    updateEditModalForValueChanges(){
+      updateModalAfterChangeMaster(this.dynamicShema,this.dynamicFieldModel);
+    },
+    updateAddModalForValueChanges(){
+      updateModalAfterChangeMaster(this.dynamicShema,this.addDynamicFieldModel);
+    }
   }
 }
 </script>

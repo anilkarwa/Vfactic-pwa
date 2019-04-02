@@ -8,23 +8,7 @@ const generateGroupSchema = (schemas, model) => {
     tempSchema.forEach(p => {
         var groupSchema ={};
         var schema = {};
-        //  var conditionsOperands = p.readOnlyCondition.replace('#','').replace('#','');
-        var conditionsOperand = p.readOnlyCondition.split(" ");
-        for(var i=0 ; i< conditionsOperand.length;i++){
-            conditionsOperand[i] = removeHash(conditionsOperand[i]);
-        }
-
-        //  var conditionsOperands = p.readOnlyCondition.replace('#','').replace('#','');
-        var requiredconditionsOperand = p.requiredCondtion.split(" ");
-        for(var i=0 ; i< requiredconditionsOperand.length;i++){
-            requiredconditionsOperand[i] = removeHash(requiredconditionsOperand[i]);
-        }
-         //  var conditionsOperands = p.readOnlyCondition.replace('#','').replace('#','');
-         var hideconditionsOperand = p.visibleCondition.split(" ");
-         for(var i=0 ; i< hideconditionsOperand.length;i++){
-            hideconditionsOperand[i] = removeHash(hideconditionsOperand[i]);
-         }
- 
+       
          groupSchema["legend"]= p.groupLegendName;
 
         if(p.type == "input" && p.groupLegendName != ""){
@@ -44,292 +28,78 @@ const generateGroupSchema = (schemas, model) => {
                 values : p.values,
                 validator: (p.inputType) =="text" ? VueFormGenerator.validators.string:VueFormGenerator.validators.double,
                // readonly: function (model){ return model && (model[conditionsOperand[0]] )== p.readOnlyCompareValue}
-               disabled: (!p.readonly)? p.readonly:( (p.readOnlyCondition == "") ? p.readonly:(conditionsOperand.length == 1?function (model){ 
-                   
-                    switch(p.readOnlyOperator){
-                        case "=" :  return model && ((model[conditionsOperand[0]] ) == p.readOnlyCompareValue);
-                                    break;
-                        case "<" :  return model && (model[conditionsOperand[0]] ) < p.readOnlyCompareValue;
-                                    break;
-                        case ">" :  return model && (model[conditionsOperand[0]] ) > p.readOnlyCompareValue;
-                                    break;
-                        case "<=" :  return model && (model[conditionsOperand[0]] ) <= p.readOnlyCompareValue;
-                                     break;
-                        case ">=" :  return model && (model[conditionsOperand[0]] ) >= p.readOnlyCompareValue;
-                                     break;
-                        case "<>" :  return model && (model[conditionsOperand[0]] ) != p.readOnlyCompareValue;
-                                     break;
-                     }
-                    
-                } : 
-                function (model){ 
-                    if(conditionsOperand.length == 3) {
-
-                        switch(conditionsOperand[1]){
-                            case "+" : 
-                                        switch(p.readOnlyOperator){
-                                            case "=" : return model && (model[conditionsOperand[0]] + model[conditionsOperand[2]] )== p.readOnlyCompareValue;
-                                                        break;
-                                            case "<" :  return model && (model[conditionsOperand[0]] + model[conditionsOperand[2]] ) < p.readOnlyCompareValue;
-                                                        break;
-                                            case ">" :  return model && (model[conditionsOperand[0]] + model[conditionsOperand[2]] ) > p.readOnlyCompareValue;
-                                                        break;
-                                            case "<=" :  return model && (model[conditionsOperand[0]] + model[conditionsOperand[2]] ) <= p.readOnlyCompareValue;
-                                                        break;
-                                            case ">=" :  return model && (model[conditionsOperand[0]] + model[conditionsOperand[2]] ) >= p.readOnlyCompareValue;
-                                                        break;
-                                            case "<>" :  return model && (model[conditionsOperand[0]] + model[conditionsOperand[2]] ) != p.readOnlyCompareValue;
-                                                        break;
-                                        }
-
-                                        break;
-                            case "-" : 
-                                        switch(p.readOnlyOperator){
-                                            case "=" : return model && (model[conditionsOperand[0]] - model[conditionsOperand[2]] )== p.readOnlyCompareValue;
-                                                        break;
-                                            case "<" :  return model && (model[conditionsOperand[0]] - model[conditionsOperand[2]] ) < p.readOnlyCompareValue;
-                                                        break;
-                                            case ">" :  return model && (model[conditionsOperand[0]] - model[conditionsOperand[2]]   ) > p.readOnlyCompareValue;
-                                                        break;
-                                            case "<=" :  return model && (model[conditionsOperand[0]] - model[conditionsOperand[2]]  ) <= p.readOnlyCompareValue;
-                                                        break;
-                                            case ">=" :  return model && (model[conditionsOperand[0]] - model[conditionsOperand[2]]  ) >= p.readOnlyCompareValue;
-                                                        break;
-                                            case "<>" :  return model && (model[conditionsOperand[0]] - model[conditionsOperand[2]] ) != p.readOnlyCompareValue;
-                                                        break;
-                                        }
-
-                                        break;
-                            case "/" :  
-                                        
-                                            switch(p.readOnlyOperator){
-                                                case "=" : return model && (model[conditionsOperand[0]] / model[conditionsOperand[2]] )== p.readOnlyCompareValue;
-                                                            break;
-                                                case "<" :  return model && (model[conditionsOperand[0]] / model[conditionsOperand[2]] ) < p.readOnlyCompareValue;
-                                                            break;
-                                                case ">" :  return model && (model[conditionsOperand[0]] / model[conditionsOperand[2]]   ) > p.readOnlyCompareValue;
-                                                            break;
-                                                case "<=" :  return model && (model[conditionsOperand[0]] / model[conditionsOperand[2]]  ) <= p.readOnlyCompareValue;
-                                                            break;
-                                                case ">=" :  return model && (model[conditionsOperand[0]] / model[conditionsOperand[2]]  ) >= p.readOnlyCompareValue;
-                                                            break;
-                                                case "<>" :  return model && (model[conditionsOperand[0]] / model[conditionsOperand[2]] ) != p.readOnlyCompareValue;
-                                                            break;
-                                            }
-                                        break;
-                            case "*" : 
-                                            switch(p.readOnlyOperator){
-                                                case "=" : return model && (model[conditionsOperand[0]] * model[conditionsOperand[2]] )== p.readOnlyCompareValue;
-                                                            break;
-                                                case "<" :  return model && (model[conditionsOperand[0]] * model[conditionsOperand[2]] ) < p.readOnlyCompareValue;
-                                                            break;
-                                                case ">" :  return model && (model[conditionsOperand[0]] * model[conditionsOperand[2]]   ) > p.readOnlyCompareValue;
-                                                            break;
-                                                case "<=" :  return model && (model[conditionsOperand[0]] * model[conditionsOperand[2]]  ) <= p.readOnlyCompareValue;
-                                                            break;
-                                                case ">=" :  return model && (model[conditionsOperand[0]] * model[conditionsOperand[2]]  ) >= p.readOnlyCompareValue;
-                                                            break;
-                                                case "<>" :  return model && (model[conditionsOperand[0]] * model[conditionsOperand[2]] ) != p.readOnlyCompareValue;
-                                                        break;
-                                            }
-                                         break;
-
-                         }
-
-                    } else if(conditionsOperand.length == 5){
-
-                    } 
-                    
-                })),
+               disabled: (!p.readonly)? p.readonly:( (p.readOnlyCondition == "") ? p.readonly:function(model){
+                        var readOnlyCondition = (p.readOnlyCondition).trim();
+                        if(readOnlyCondition != ''){
+                            if (readOnlyCondition.substring(0, 1) == '#' || readOnlyCondition.substring(0, 1) == '(') {
+                                var FieldData = returnFormula(readOnlyCondition,model).split('^');
+                                readOnlyCondition = FieldData[1];
+                            // console.log(readOnlyCondition);
+                                
+                                switch(p.readOnlyOperator.trim()){
+                                    case "=" :  return model && ((readOnlyCondition) == p.readOnlyCompareValue.trim());
+                                                break;
+                                    case "<" :  return model && (readOnlyCondition) < p.readOnlyCompareValue.trim();
+                                                break;
+                                    case ">" :  return model && (readOnlyCondition) > p.readOnlyCompareValue.trim();
+                                                break;
+                                    case "<=" :  return model && (readOnlyCondition ) <= p.readOnlyCompareValue.trim();
+                                                break;
+                                    case ">=" :  return model && (readOnlyCondition) >= p.readOnlyCompareValue.trim();
+                                                break;
+                                    case "<>" :  return model && (readOnlyCondition ) != p.readOnlyCompareValue.trim();
+                                                break;
+                                } 
+                                
+                            } 
+                        }
+                    }),
                 // required: function (model){ return model && (model[conditionsOperand[0]] )== p.readOnlyCompareValue}
                 required: (!p.required)?p.required:( p.requiredCondtion == ""? p.required:false),
-                visible:(!p.visible)?!p.visible:( p.visibleCondition == ""? !p.visible:(hideconditionsOperand.length == 1?function (model){ 
-                   
-                    switch(p.visiableOperator){
-                        case "=" : if( model && (model[hideconditionsOperand[0]] )== p.visialbeCompareValue){
-                                        if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                        return false;
-                                   } else{ return true;}
-                                    break;
-                        case "<" :  if( model && (model[hideconditionsOperand[0]] ) < p.visialbeCompareValue){
-                                        if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                        return false;
-                                     }else{ return true;}
-                                    break;
-                        case ">" : if( model && (model[hideconditionsOperand[0]] ) > p.visialbeCompareValue){
-                                        if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                        return false;
-                                     }else{ return true;}
-                                    break;
-                        case "<=" :  if( model && (model[hideconditionsOperand[0]] ) <= p.visialbeCompareValue){
-                                        if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                        return false;
-                                     }else{ return true;}
+                visible:(!p.visible)?!p.visible:( p.visibleCondition == ""? !p.visible:function(model){
+                    var visibleCondition = (p.visibleCondition).trim();
+                    if(visibleCondition != ''){
+                        if (visibleCondition.substring(0, 1) == '#' || visibleCondition.substring(0, 1) == '(') {
+                            var FieldData = returnFormula(visibleCondition,model).split('^');
+                            visibleCondition = FieldData[1];
+                           // console.log(visibleCondition);
+                            
+                           switch(p.visiableOperator.trim()){
+                            case "=" : if( model && (visibleCondition) == p.visialbeCompareValue.trim()){
+                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
+                                            return false;
+                                       } else{ return true;}
                                         break;
-                        case ">=" :  if( model && (model[hideconditionsOperand[0]] )>= p.visialbeCompareValue){
-                                        if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                        return false;
-                                     }else{ return true;}
-                                     break;
-                        case "<>" :  if( model && (model[hideconditionsOperand[0]] )!= p.visialbeCompareValue){
-                                        if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                        return false;
-                                     }else{ return true;}
+                            case "<" :  if( model && (visibleCondition ) < p.visialbeCompareValue.trim()){
+                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
+                                            return false;
+                                         }else{ return true;}
                                         break;
-                        }
-                    
-                    } : 
-                    function (model){ 
-                        if(hideconditionsOperand.length == 3) {
-    
-                            switch(hideconditionsOperand[1]){
-                                case "+" : 
-                                        switch(p.visiableOperator){
-                                            case "=" : if( model && (model[hideconditionsOperand[0]] )== p.visialbeCompareValue){
-                                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                            return false;
-                                                    } else{ return true;}
-                                                        break;
-                                            case "<" :  if( model && (model[hideconditionsOperand[0]] ) < p.visialbeCompareValue){
-                                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                            return false;
-                                                        }else{ return true;}
-                                                        break;
-                                            case ">" : if( model && (model[hideconditionsOperand[0]] ) > p.visialbeCompareValue){
-                                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                            return false;
-                                                        }else{ return true;}
-                                                        break;
-                                            case "<=" :  if( model && (model[hideconditionsOperand[0]] ) <= p.visialbeCompareValue){
-                                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                            return false;
-                                                        }else{ return true;}
-                                                            break;
-                                            case ">=" :  if( model && (model[hideconditionsOperand[0]] ) >= p.visialbeCompareValue){
-                                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                            return false;
-                                                        }else{ return true;}
-                                                        break;
-                                            case "<>" :  if( model && (model[hideconditionsOperand[0]] ) != p.visialbeCompareValue){
-                                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                            return false;
-                                                        }else{ return true;}
-                                                            break;
-                                            }
-    
+                            case ">" : if( model && (visibleCondition) > p.visialbeCompareValue.trim()){
+                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
+                                            return false;
+                                         }else{ return true;}
+                                        break;
+                            case "<=" :  if( model && (visibleCondition) <= p.visialbeCompareValue.trim()){
+                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
+                                            return false;
+                                         }else{ return true;}
                                             break;
-                                case "-" : 
-                                            switch(p.visiableOperator){
-                                                case "=" : if( model && (model[hideconditionsOperand[0]] )== p.visialbeCompareValue){
-                                                                if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                                return false;
-                                                        } else{ return true;}
-                                                            break;
-                                                case "<" :  if( model && (model[hideconditionsOperand[0]] ) < p.visialbeCompareValue){
-                                                                if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                                return false;
-                                                            }else{ return true;}
-                                                            break;
-                                                case ">" : if( model && (model[hideconditionsOperand[0]] ) > p.visialbeCompareValue){
-                                                                if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                                return false;
-                                                            }else{ return true;}
-                                                            break;
-                                                case "<=" :  if( model && (model[hideconditionsOperand[0]] ) <= p.visialbeCompareValue){
-                                                                if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                                return false;
-                                                            }else{ return true;}
-                                                                break;
-                                                case ">=" :  if( model && (model[hideconditionsOperand[0]] ) >= p.visialbeCompareValue){
-                                                                if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                                return false;
-                                                            }else{ return true;}
-                                                            break;
-                                                case "<>" :  if( model && (model[hideconditionsOperand[0]] ) != p.visialbeCompareValue){
-                                                                if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                                return false;
-                                                            }else{ return true;}
-                                                                break;
-                                            }
-    
+                            case ">=" :  if( model && (visibleCondition)>= p.visialbeCompareValue.trim()){
+                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
+                                            return false;
+                                         }else{ return true;}
+                                         break;
+                            case "<>" :  if( model && (visibleCondition)!= p.visialbeCompareValue.trim()){
+                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
+                                            return false;
+                                         }else{ return true;}
                                             break;
-                                case "/" :  
-                                            
-                                            switch(p.visiableOperator){
-                                                case "=" : if( model && (model[hideconditionsOperand[0]] )== p.visialbeCompareValue){
-                                                                if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                                return false;
-                                                        } else{ return true;}
-                                                            break;
-                                                case "<" :  if( model && (model[hideconditionsOperand[0]] ) < p.visialbeCompareValue){
-                                                                if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                                return false;
-                                                            }else{ return true;}
-                                                            break;
-                                                case ">" : if( model && (model[hideconditionsOperand[0]] ) < p.visialbeCompareValue){
-                                                                if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                                return false;
-                                                            }else{ return true;}
-                                                            break;
-                                                case "<=" :  if( model && (model[hideconditionsOperand[0]] ) <= p.visialbeCompareValue){
-                                                                if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                                return false;
-                                                            }else{ return true;}
-                                                                break;
-                                                case ">=" :  if( model && (model[hideconditionsOperand[0]] ) >= p.visialbeCompareValue){
-                                                                if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                                return false;
-                                                            }else{ return true;}
-                                                            break;
-                                                case "<>" :  if( model && (model[hideconditionsOperand[0]] ) != p.visialbeCompareValue){
-                                                                if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                                return false;
-                                                            }else{ return true;}
-                                                                break;
-                                            }
-                                            break;
-                                case "*" : 
-                                            switch(p.visiableOperator){
-                                                case "=" : if( model && (model[hideconditionsOperand[0]] )== p.visialbeCompareValue){
-                                                                if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                                return false;
-                                                        } else{ return true;}
-                                                            break;
-                                                case "<" :  if( model && (model[hideconditionsOperand[0]] ) < p.visialbeCompareValue){
-                                                                if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                                return false;
-                                                            }else{ return true;}
-                                                            break;
-                                                case ">" : if( model && (model[hideconditionsOperand[0]] ) < p.visialbeCompareValue){
-                                                                if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                                return false;
-                                                            }else{ return true;}
-                                                            break;
-                                                case "<=" :  if( model && (model[hideconditionsOperand[0]] ) <= p.visialbeCompareValue){
-                                                                if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                                return false;
-                                                            }else{ return true;}
-                                                                break;
-                                                case ">=" :  if( model && (model[hideconditionsOperand[0]] ) >= p.visialbeCompareValue){
-                                                                if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                                return false;
-                                                            }else{ return true;}
-                                                            break;
-                                                case "<>" :  if( model && (model[hideconditionsOperand[0]] )!= p.visialbeCompareValue){
-                                                                if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                                return false;
-                                                            }else{ return true;}
-                                                                break;
-                                            }
-                                            break;
-    
                             }
-    
-                        } else if(conditionsOperand.length == 5){
-    
-                        } 
-                        
-                })),
+                            
+                         } 
+                    }
+                }),
 
             }
             groupSchema["fields"] = new Array(schema);
@@ -346,292 +116,78 @@ const generateGroupSchema = (schemas, model) => {
                 featured: p.featured,
                 default: p.default?p.useStdDefault:"",
                 validator:  VueFormGenerator.validators.required,
-                disabled: (!p.readonly)? p.readonly:( (p.readOnlyCondition == "") ? p.readonly:(conditionsOperand.length == 1?function (model){ 
-                   
-                    switch(p.readOnlyOperator){
-                        case "=" :  return model && ((model[conditionsOperand[0]] ) == p.readOnlyCompareValue);
-                                    break;
-                        case "<" :  return model && (model[conditionsOperand[0]] ) < p.readOnlyCompareValue;
-                                    break;
-                        case ">" :  return model && (model[conditionsOperand[0]] ) > p.readOnlyCompareValue;
-                                    break;
-                        case "<=" :  return model && (model[conditionsOperand[0]] ) <= p.readOnlyCompareValue;
-                                     break;
-                        case ">=" :  return model && (model[conditionsOperand[0]] ) >= p.readOnlyCompareValue;
-                                     break;
-                        case "<>" :  return model && (model[conditionsOperand[0]] ) != p.readOnlyCompareValue;
-                                     break;
-                     }
-                    
-                } : 
-                function (model){ 
-                    if(conditionsOperand.length == 3) {
-
-                        switch(conditionsOperand[1]){
-                            case "+" : 
-                                        switch(p.readOnlyOperator){
-                                            case "=" : return model && (model[conditionsOperand[0]] + model[conditionsOperand[2]] )== p.readOnlyCompareValue;
-                                                        break;
-                                            case "<" :  return model && (model[conditionsOperand[0]] + model[conditionsOperand[2]] ) < p.readOnlyCompareValue;
-                                                        break;
-                                            case ">" :  return model && (model[conditionsOperand[0]] + model[conditionsOperand[2]] ) > p.readOnlyCompareValue;
-                                                        break;
-                                            case "<=" :  return model && (model[conditionsOperand[0]] + model[conditionsOperand[2]] ) <= p.readOnlyCompareValue;
-                                                        break;
-                                            case ">=" :  return model && (model[conditionsOperand[0]] + model[conditionsOperand[2]] ) >= p.readOnlyCompareValue;
-                                                        break;
-                                            case "<>" :  return model && (model[conditionsOperand[0]] + model[conditionsOperand[2]] ) != p.readOnlyCompareValue;
-                                                        break;
-                                        }
-
-                                        break;
-                            case "-" : 
-                                        switch(p.readOnlyOperator){
-                                            case "=" : return model && (model[conditionsOperand[0]] - model[conditionsOperand[2]] )== p.readOnlyCompareValue;
-                                                        break;
-                                            case "<" :  return model && (model[conditionsOperand[0]] - model[conditionsOperand[2]] ) < p.readOnlyCompareValue;
-                                                        break;
-                                            case ">" :  return model && (model[conditionsOperand[0]] - model[conditionsOperand[2]]   ) > p.readOnlyCompareValue;
-                                                        break;
-                                            case "<=" :  return model && (model[conditionsOperand[0]] - model[conditionsOperand[2]]  ) <= p.readOnlyCompareValue;
-                                                        break;
-                                            case ">=" :  return model && (model[conditionsOperand[0]] - model[conditionsOperand[2]]  ) >= p.readOnlyCompareValue;
-                                                        break;
-                                            case "<>" :  return model && (model[conditionsOperand[0]] - model[conditionsOperand[2]] ) != p.readOnlyCompareValue;
-                                                        break;
-                                        }
-
-                                        break;
-                            case "/" :  
-                                        
-                                            switch(p.readOnlyOperator){
-                                                case "=" : return model && (model[conditionsOperand[0]] / model[conditionsOperand[2]] )== p.readOnlyCompareValue;
-                                                            break;
-                                                case "<" :  return model && (model[conditionsOperand[0]] / model[conditionsOperand[2]] ) < p.readOnlyCompareValue;
-                                                            break;
-                                                case ">" :  return model && (model[conditionsOperand[0]] / model[conditionsOperand[2]]   ) > p.readOnlyCompareValue;
-                                                            break;
-                                                case "<=" :  return model && (model[conditionsOperand[0]] / model[conditionsOperand[2]]  ) <= p.readOnlyCompareValue;
-                                                            break;
-                                                case ">=" :  return model && (model[conditionsOperand[0]] / model[conditionsOperand[2]]  ) >= p.readOnlyCompareValue;
-                                                            break;
-                                                case "<>" :  return model && (model[conditionsOperand[0]] / model[conditionsOperand[2]] ) != p.readOnlyCompareValue;
-                                                            break;
-                                            }
-                                        break;
-                            case "*" : 
-                                            switch(p.readOnlyOperator){
-                                                case "=" : return model && (model[conditionsOperand[0]] * model[conditionsOperand[2]] )== p.readOnlyCompareValue;
-                                                            break;
-                                                case "<" :  return model && (model[conditionsOperand[0]] * model[conditionsOperand[2]] ) < p.readOnlyCompareValue;
-                                                            break;
-                                                case ">" :  return model && (model[conditionsOperand[0]] * model[conditionsOperand[2]]   ) > p.readOnlyCompareValue;
-                                                            break;
-                                                case "<=" :  return model && (model[conditionsOperand[0]] * model[conditionsOperand[2]]  ) <= p.readOnlyCompareValue;
-                                                            break;
-                                                case ">=" :  return model && (model[conditionsOperand[0]] * model[conditionsOperand[2]]  ) >= p.readOnlyCompareValue;
-                                                            break;
-                                                case "<>" :  return model && (model[conditionsOperand[0]] * model[conditionsOperand[2]] ) != p.readOnlyCompareValue;
-                                                        break;
-                                            }
-                                         break;
-
-                         }
-
-                    } else if(conditionsOperand.length == 5){
-
-                    } 
-                    
-                })),
+                disabled: (!p.readonly)? p.readonly:( (p.readOnlyCondition == "") ? p.readonly:function(model){
+                    var readOnlyCondition = (p.readOnlyCondition).trim();
+                    if(readOnlyCondition != ''){
+                        if (readOnlyCondition.substring(0, 1) == '#' || readOnlyCondition.substring(0, 1) == '(') {
+                            var FieldData = returnFormula(readOnlyCondition,model).split('^');
+                            readOnlyCondition = FieldData[1];
+                           // console.log(readOnlyCondition);
+                            
+                            switch(p.readOnlyOperator.trim()){
+                                case "=" :  return model && ((readOnlyCondition) == p.readOnlyCompareValue.trim());
+                                            break;
+                                case "<" :  return model && (readOnlyCondition) < p.readOnlyCompareValue.trim();
+                                            break;
+                                case ">" :  return model && (readOnlyCondition) > p.readOnlyCompareValue.trim();
+                                            break;
+                                case "<=" :  return model && (readOnlyCondition ) <= p.readOnlyCompareValue.trim();
+                                             break;
+                                case ">=" :  return model && (readOnlyCondition) >= p.readOnlyCompareValue.trim();
+                                             break;
+                                case "<>" :  return model && (readOnlyCondition ) != p.readOnlyCompareValue.trim();
+                                             break;
+                             } 
+                            
+                         } 
+                    }
+                }),
                 // required: function (model){ return model && (model[conditionsOperand[0]] )== p.readOnlyCompareValue}
                 required: (!p.required)?p.required:( p.requiredCondtion == ""? p.required:false),
-                visible:(!p.visible)?!p.visible:( p.visibleCondition == ""? !p.visible:(hideconditionsOperand.length == 1?function (model){ 
-                   
-                    switch(p.visiableOperator){
-                        case "=" : if( model && (model[hideconditionsOperand[0]] )== p.visialbeCompareValue){
-                                        if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                        return false;
-                                   } else{ return true;}
-                                    break;
-                        case "<" :  if( model && (model[hideconditionsOperand[0]] ) < p.visialbeCompareValue){
-                                        if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                        return false;
-                                     }else{ return true;}
-                                    break;
-                        case ">" : if( model && (model[hideconditionsOperand[0]] ) > p.visialbeCompareValue){
-                                        if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                        return false;
-                                     }else{ return true;}
-                                    break;
-                        case "<=" :  if( model && (model[hideconditionsOperand[0]] ) <= p.visialbeCompareValue){
-                                        if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                        return false;
-                                     }else{ return true;}
+                visible:(!p.visible)?!p.visible:( p.visibleCondition == ""? !p.visible:function(model){
+                    var visibleCondition = (p.visibleCondition).trim();
+                    if(visibleCondition != ''){
+                        if (visibleCondition.substring(0, 1) == '#' || visibleCondition.substring(0, 1) == '(') {
+                            var FieldData = returnFormula(visibleCondition,model).split('^');
+                            visibleCondition = FieldData[1];
+                           // console.log(visibleCondition);
+                            
+                           switch(p.visiableOperator.trim()){
+                            case "=" : if( model && (visibleCondition) == p.visialbeCompareValue.trim()){
+                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
+                                            return false;
+                                       } else{ return true;}
                                         break;
-                        case ">=" :  if( model && (model[hideconditionsOperand[0]] )>= p.visialbeCompareValue){
-                                        if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                        return false;
-                                     }else{ return true;}
-                                     break;
-                        case "<>" :  if( model && (model[hideconditionsOperand[0]] )!= p.visialbeCompareValue){
-                                        if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                        return false;
-                                     }else{ return true;}
+                            case "<" :  if( model && (visibleCondition ) < p.visialbeCompareValue.trim()){
+                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
+                                            return false;
+                                         }else{ return true;}
                                         break;
-                        }
-                    
-                    } : 
-                    function (model){ 
-                        if(hideconditionsOperand.length == 3) {
-    
-                            switch(hideconditionsOperand[1]){
-                                case "+" : 
-                                        switch(p.visiableOperator){
-                                            case "=" : if( model && (model[hideconditionsOperand[0]] )== p.visialbeCompareValue){
-                                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                            return false;
-                                                    } else{ return true;}
-                                                        break;
-                                            case "<" :  if( model && (model[hideconditionsOperand[0]] ) < p.visialbeCompareValue){
-                                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                            return false;
-                                                        }else{ return true;}
-                                                        break;
-                                            case ">" : if( model && (model[hideconditionsOperand[0]] ) > p.visialbeCompareValue){
-                                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                            return false;
-                                                        }else{ return true;}
-                                                        break;
-                                            case "<=" :  if( model && (model[hideconditionsOperand[0]] ) <= p.visialbeCompareValue){
-                                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                            return false;
-                                                        }else{ return true;}
-                                                            break;
-                                            case ">=" :  if( model && (model[hideconditionsOperand[0]] ) >= p.visialbeCompareValue){
-                                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                            return false;
-                                                        }else{ return true;}
-                                                        break;
-                                            case "<>" :  if( model && (model[hideconditionsOperand[0]] ) != p.visialbeCompareValue){
-                                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                            return false;
-                                                        }else{ return true;}
-                                                            break;
-                                            }
-    
+                            case ">" : if( model && (visibleCondition) > p.visialbeCompareValue.trim()){
+                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
+                                            return false;
+                                         }else{ return true;}
+                                        break;
+                            case "<=" :  if( model && (visibleCondition) <= p.visialbeCompareValue.trim()){
+                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
+                                            return false;
+                                         }else{ return true;}
                                             break;
-                                case "-" : 
-                                            switch(p.visiableOperator){
-                                                case "=" : if( model && (model[hideconditionsOperand[0]] )== p.visialbeCompareValue){
-                                                                if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                                return false;
-                                                        } else{ return true;}
-                                                            break;
-                                                case "<" :  if( model && (model[hideconditionsOperand[0]] ) < p.visialbeCompareValue){
-                                                                if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                                return false;
-                                                            }else{ return true;}
-                                                            break;
-                                                case ">" : if( model && (model[hideconditionsOperand[0]] ) > p.visialbeCompareValue){
-                                                                if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                                return false;
-                                                            }else{ return true;}
-                                                            break;
-                                                case "<=" :  if( model && (model[hideconditionsOperand[0]] ) <= p.visialbeCompareValue){
-                                                                if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                                return false;
-                                                            }else{ return true;}
-                                                                break;
-                                                case ">=" :  if( model && (model[hideconditionsOperand[0]] ) >= p.visialbeCompareValue){
-                                                                if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                                return false;
-                                                            }else{ return true;}
-                                                            break;
-                                                case "<>" :  if( model && (model[hideconditionsOperand[0]] ) != p.visialbeCompareValue){
-                                                                if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                                return false;
-                                                            }else{ return true;}
-                                                                break;
-                                            }
-    
+                            case ">=" :  if( model && (visibleCondition)>= p.visialbeCompareValue.trim()){
+                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
+                                            return false;
+                                         }else{ return true;}
+                                         break;
+                            case "<>" :  if( model && (visibleCondition)!= p.visialbeCompareValue.trim()){
+                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
+                                            return false;
+                                         }else{ return true;}
                                             break;
-                                case "/" :  
-                                            
-                                            switch(p.visiableOperator){
-                                                case "=" : if( model && (model[hideconditionsOperand[0]] )== p.visialbeCompareValue){
-                                                                if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                                return false;
-                                                        } else{ return true;}
-                                                            break;
-                                                case "<" :  if( model && (model[hideconditionsOperand[0]] ) < p.visialbeCompareValue){
-                                                                if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                                return false;
-                                                            }else{ return true;}
-                                                            break;
-                                                case ">" : if( model && (model[hideconditionsOperand[0]] ) < p.visialbeCompareValue){
-                                                                if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                                return false;
-                                                            }else{ return true;}
-                                                            break;
-                                                case "<=" :  if( model && (model[hideconditionsOperand[0]] ) <= p.visialbeCompareValue){
-                                                                if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                                return false;
-                                                            }else{ return true;}
-                                                                break;
-                                                case ">=" :  if( model && (model[hideconditionsOperand[0]] ) >= p.visialbeCompareValue){
-                                                                if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                                return false;
-                                                            }else{ return true;}
-                                                            break;
-                                                case "<>" :  if( model && (model[hideconditionsOperand[0]] ) != p.visialbeCompareValue){
-                                                                if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                                return false;
-                                                            }else{ return true;}
-                                                                break;
-                                            }
-                                            break;
-                                case "*" : 
-                                            switch(p.visiableOperator){
-                                                case "=" : if( model && (model[hideconditionsOperand[0]] )== p.visialbeCompareValue){
-                                                                if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                                return false;
-                                                        } else{ return true;}
-                                                            break;
-                                                case "<" :  if( model && (model[hideconditionsOperand[0]] ) < p.visialbeCompareValue){
-                                                                if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                                return false;
-                                                            }else{ return true;}
-                                                            break;
-                                                case ">" : if( model && (model[hideconditionsOperand[0]] ) < p.visialbeCompareValue){
-                                                                if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                                return false;
-                                                            }else{ return true;}
-                                                            break;
-                                                case "<=" :  if( model && (model[hideconditionsOperand[0]] ) <= p.visialbeCompareValue){
-                                                                if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                                return false;
-                                                            }else{ return true;}
-                                                                break;
-                                                case ">=" :  if( model && (model[hideconditionsOperand[0]] ) >= p.visialbeCompareValue){
-                                                                if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                                return false;
-                                                            }else{ return true;}
-                                                            break;
-                                                case "<>" :  if( model && (model[hideconditionsOperand[0]] )!= p.visialbeCompareValue){
-                                                                if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                                return false;
-                                                            }else{ return true;}
-                                                                break;
-                                            }
-                                            break;
-    
                             }
-    
-                        } else if(conditionsOperand.length == 5){
-    
-                        } 
-                        
-                })),
+                            
+                         } 
+                    }
+                }),
             }
             groupSchema["fields"] = new Array(schema);
         }
@@ -653,292 +209,78 @@ const generateGroupSchema = (schemas, model) => {
                 },
                 validator: VueFormGenerator.validators.date,
                 // readonly: function (model){ return model && (model[conditionsOperand[0]] )== p.readOnlyCompareValue}
-                disabled: (!p.readonly)? p.readonly:( (p.readOnlyCondition == "") ? p.readonly:(conditionsOperand.length == 1?function (model){ 
-                    
-                    switch(p.readOnlyOperator){
-                        case "=" :  return model && ((model[conditionsOperand[0]] ) == p.readOnlyCompareValue);
-                                    break;
-                        case "<" :  return model && (model[conditionsOperand[0]] ) < p.readOnlyCompareValue;
-                                    break;
-                        case ">" :  return model && (model[conditionsOperand[0]] ) > p.readOnlyCompareValue;
-                                    break;
-                        case "<=" :  return model && (model[conditionsOperand[0]] ) <= p.readOnlyCompareValue;
-                                        break;
-                        case ">=" :  return model && (model[conditionsOperand[0]] ) >= p.readOnlyCompareValue;
-                                        break;
-                        case "<>" :  return model && (model[conditionsOperand[0]] ) != p.readOnlyCompareValue;
-                                        break;
-                        }
-                    
-                } : 
-                function (model){ 
-                    if(conditionsOperand.length == 3) {
-    
-                        switch(conditionsOperand[1]){
-                            case "+" : 
-                                        switch(p.readOnlyOperator){
-                                            case "=" : return model && (model[conditionsOperand[0]] + model[conditionsOperand[2]] )== p.readOnlyCompareValue;
-                                                        break;
-                                            case "<" :  return model && (model[conditionsOperand[0]] + model[conditionsOperand[2]] ) < p.readOnlyCompareValue;
-                                                        break;
-                                            case ">" :  return model && (model[conditionsOperand[0]] + model[conditionsOperand[2]] ) > p.readOnlyCompareValue;
-                                                        break;
-                                            case "<=" :  return model && (model[conditionsOperand[0]] + model[conditionsOperand[2]] ) <= p.readOnlyCompareValue;
-                                                        break;
-                                            case ">=" :  return model && (model[conditionsOperand[0]] + model[conditionsOperand[2]] ) >= p.readOnlyCompareValue;
-                                                        break;
-                                            case "<>" :  return model && (model[conditionsOperand[0]] + model[conditionsOperand[2]] ) != p.readOnlyCompareValue;
-                                                        break;
-                                        }
-    
-                                        break;
-                            case "-" : 
-                                        switch(p.readOnlyOperator){
-                                            case "=" : return model && (model[conditionsOperand[0]] - model[conditionsOperand[2]] )== p.readOnlyCompareValue;
-                                                        break;
-                                            case "<" :  return model && (model[conditionsOperand[0]] - model[conditionsOperand[2]] ) < p.readOnlyCompareValue;
-                                                        break;
-                                            case ">" :  return model && (model[conditionsOperand[0]] - model[conditionsOperand[2]]   ) > p.readOnlyCompareValue;
-                                                        break;
-                                            case "<=" :  return model && (model[conditionsOperand[0]] - model[conditionsOperand[2]]  ) <= p.readOnlyCompareValue;
-                                                        break;
-                                            case ">=" :  return model && (model[conditionsOperand[0]] - model[conditionsOperand[2]]  ) >= p.readOnlyCompareValue;
-                                                        break;
-                                            case "<>" :  return model && (model[conditionsOperand[0]] - model[conditionsOperand[2]] ) != p.readOnlyCompareValue;
-                                                        break;
-                                        }
-    
-                                        break;
-                            case "/" :  
-                                        
-                                            switch(p.readOnlyOperator){
-                                                case "=" : return model && (model[conditionsOperand[0]] / model[conditionsOperand[2]] )== p.readOnlyCompareValue;
-                                                            break;
-                                                case "<" :  return model && (model[conditionsOperand[0]] / model[conditionsOperand[2]] ) < p.readOnlyCompareValue;
-                                                            break;
-                                                case ">" :  return model && (model[conditionsOperand[0]] / model[conditionsOperand[2]]   ) > p.readOnlyCompareValue;
-                                                            break;
-                                                case "<=" :  return model && (model[conditionsOperand[0]] / model[conditionsOperand[2]]  ) <= p.readOnlyCompareValue;
-                                                            break;
-                                                case ">=" :  return model && (model[conditionsOperand[0]] / model[conditionsOperand[2]]  ) >= p.readOnlyCompareValue;
-                                                            break;
-                                                case "<>" :  return model && (model[conditionsOperand[0]] / model[conditionsOperand[2]] ) != p.readOnlyCompareValue;
-                                                            break;
-                                            }
-                                        break;
-                            case "*" : 
-                                            switch(p.readOnlyOperator){
-                                                case "=" : return model && (model[conditionsOperand[0]] * model[conditionsOperand[2]] )== p.readOnlyCompareValue;
-                                                            break;
-                                                case "<" :  return model && (model[conditionsOperand[0]] * model[conditionsOperand[2]] ) < p.readOnlyCompareValue;
-                                                            break;
-                                                case ">" :  return model && (model[conditionsOperand[0]] * model[conditionsOperand[2]]   ) > p.readOnlyCompareValue;
-                                                            break;
-                                                case "<=" :  return model && (model[conditionsOperand[0]] * model[conditionsOperand[2]]  ) <= p.readOnlyCompareValue;
-                                                            break;
-                                                case ">=" :  return model && (model[conditionsOperand[0]] * model[conditionsOperand[2]]  ) >= p.readOnlyCompareValue;
-                                                            break;
-                                                case "<>" :  return model && (model[conditionsOperand[0]] * model[conditionsOperand[2]] ) != p.readOnlyCompareValue;
-                                                        break;
-                                            }
+                disabled: (!p.readonly)? p.readonly:( (p.readOnlyCondition == "") ? p.readonly:function(model){
+                    var readOnlyCondition = (p.readOnlyCondition).trim();
+                    if(readOnlyCondition != ''){
+                        if (readOnlyCondition.substring(0, 1) == '#' || readOnlyCondition.substring(0, 1) == '(') {
+                            var FieldData = returnFormula(readOnlyCondition,model).split('^');
+                            readOnlyCondition = FieldData[1];
+                           // console.log(readOnlyCondition);
+                            
+                            switch(p.readOnlyOperator.trim()){
+                                case "=" :  return model && ((readOnlyCondition) == p.readOnlyCompareValue.trim());
                                             break;
-    
-                            }
-    
-                    } else if(conditionsOperand.length == 5){
-    
-                    } 
-                    
-                })),
+                                case "<" :  return model && (readOnlyCondition) < p.readOnlyCompareValue.trim();
+                                            break;
+                                case ">" :  return model && (readOnlyCondition) > p.readOnlyCompareValue.trim();
+                                            break;
+                                case "<=" :  return model && (readOnlyCondition ) <= p.readOnlyCompareValue.trim();
+                                             break;
+                                case ">=" :  return model && (readOnlyCondition) >= p.readOnlyCompareValue.trim();
+                                             break;
+                                case "<>" :  return model && (readOnlyCondition ) != p.readOnlyCompareValue.trim();
+                                             break;
+                             } 
+                            
+                         } 
+                    }
+                }),
                 // required: function (model){ return model && (model[conditionsOperand[0]] )== p.readOnlyCompareValue}
                 required: (!p.required)?p.required:( p.requiredCondtion == ""? p.required:false),
-                visible:(!p.visible)?!p.visible:( p.visibleCondition == ""? !p.visible:(hideconditionsOperand.length == 1?function (model){ 
-                    
-                switch(p.visiableOperator){
-                    case "=" : if( model && (model[hideconditionsOperand[0]] )== p.visialbeCompareValue){
-                                    if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                    return false;
-                                } else{ return true;}
-                                break;
-                    case "<" :  if( model && (model[hideconditionsOperand[0]] ) < p.visialbeCompareValue){
-                                    if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                    return false;
-                                    }else{ return true;}
-                                break;
-                    case ">" : if( model && (model[hideconditionsOperand[0]] ) > p.visialbeCompareValue){
-                                    if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                    return false;
-                                    }else{ return true;}
-                                break;
-                    case "<=" :  if( model && (model[hideconditionsOperand[0]] ) <= p.visialbeCompareValue){
-                                    if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                    return false;
-                                    }else{ return true;}
-                                    break;
-                    case ">=" :  if( model && (model[hideconditionsOperand[0]] )>= p.visialbeCompareValue){
-                                        if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                    return false;
-                                    }else{ return true;}
-                                    break;
-                    case "<>" :  if( model && (model[hideconditionsOperand[0]] )!= p.visialbeCompareValue){
-                                        if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                    return false;
-                                    }else{ return true;}
-                                    break;
+                visible:(!p.visible)?!p.visible:( p.visibleCondition == ""? !p.visible:function(model){
+                    var visibleCondition = (p.visibleCondition).trim();
+                    if(visibleCondition != ''){
+                        if (visibleCondition.substring(0, 1) == '#' || visibleCondition.substring(0, 1) == '(') {
+                            var FieldData = returnFormula(visibleCondition,model).split('^');
+                            visibleCondition = FieldData[1];
+                           // console.log(visibleCondition);
+                            
+                           switch(p.visiableOperator.trim()){
+                            case "=" : if( model && (visibleCondition) == p.visialbeCompareValue.trim()){
+                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
+                                            return false;
+                                       } else{ return true;}
+                                        break;
+                            case "<" :  if( model && (visibleCondition ) < p.visialbeCompareValue.trim()){
+                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
+                                            return false;
+                                         }else{ return true;}
+                                        break;
+                            case ">" : if( model && (visibleCondition) > p.visialbeCompareValue.trim()){
+                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
+                                            return false;
+                                         }else{ return true;}
+                                        break;
+                            case "<=" :  if( model && (visibleCondition) <= p.visialbeCompareValue.trim()){
+                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
+                                            return false;
+                                         }else{ return true;}
+                                            break;
+                            case ">=" :  if( model && (visibleCondition)>= p.visialbeCompareValue.trim()){
+                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
+                                            return false;
+                                         }else{ return true;}
+                                         break;
+                            case "<>" :  if( model && (visibleCondition)!= p.visialbeCompareValue.trim()){
+                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
+                                            return false;
+                                         }else{ return true;}
+                                            break;
+                            }
+                            
+                         } 
                     }
-                
-                } : 
-                function (model){ 
-                    if(hideconditionsOperand.length == 3) {
-    
-                        switch(hideconditionsOperand[1]){
-                            case "+" : 
-                                    switch(p.visiableOperator){
-                                        case "=" : if( model && (model[hideconditionsOperand[0]] )== p.visialbeCompareValue){
-                                                        if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                        return false;
-                                                } else{ return true;}
-                                                    break;
-                                        case "<" :  if( model && (model[hideconditionsOperand[0]] ) < p.visialbeCompareValue){
-                                                        if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                        return false;
-                                                    }else{ return true;}
-                                                    break;
-                                        case ">" : if( model && (model[hideconditionsOperand[0]] ) > p.visialbeCompareValue){
-                                                        if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                        return false;
-                                                    }else{ return true;}
-                                                    break;
-                                        case "<=" :  if( model && (model[hideconditionsOperand[0]] ) <= p.visialbeCompareValue){
-                                                        if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                        return false;
-                                                    }else{ return true;}
-                                                        break;
-                                        case ">=" :  if( model && (model[hideconditionsOperand[0]] ) >= p.visialbeCompareValue){
-                                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                        return false;
-                                                    }else{ return true;}
-                                                    break;
-                                        case "<>" :  if( model && (model[hideconditionsOperand[0]] ) != p.visialbeCompareValue){
-                                                        if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                        return false;
-                                                    }else{ return true;}
-                                                        break;
-                                        }
-    
-                                        break;
-                            case "-" : 
-                                        switch(p.visiableOperator){
-                                            case "=" : if( model && (model[hideconditionsOperand[0]] )== p.visialbeCompareValue){
-                                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                            return false;
-                                                    } else{ return true;}
-                                                        break;
-                                            case "<" :  if( model && (model[hideconditionsOperand[0]] ) < p.visialbeCompareValue){
-                                                                if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                            return false;
-                                                        }else{ return true;}
-                                                        break;
-                                            case ">" : if( model && (model[hideconditionsOperand[0]] ) > p.visialbeCompareValue){
-                                                        if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                            return false;
-                                                        }else{ return true;}
-                                                        break;
-                                            case "<=" :  if( model && (model[hideconditionsOperand[0]] ) <= p.visialbeCompareValue){
-                                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                            return false;
-                                                        }else{ return true;}
-                                                            break;
-                                            case ">=" :  if( model && (model[hideconditionsOperand[0]] ) >= p.visialbeCompareValue){
-                                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                            return false;
-                                                        }else{ return true;}
-                                                        break;
-                                            case "<>" :  if( model && (model[hideconditionsOperand[0]] ) != p.visialbeCompareValue){
-                                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                            return false;
-                                                        }else{ return true;}
-                                                            break;
-                                        }
-    
-                                        break;
-                            case "/" :  
-                                        
-                                        switch(p.visiableOperator){
-                                            case "=" : if( model && (model[hideconditionsOperand[0]] )== p.visialbeCompareValue){
-                                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                            return false;
-                                                    } else{ return true;}
-                                                        break;
-                                            case "<" :  if( model && (model[hideconditionsOperand[0]] ) < p.visialbeCompareValue){
-                                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                            return false;
-                                                        }else{ return true;}
-                                                        break;
-                                            case ">" : if( model && (model[hideconditionsOperand[0]] ) < p.visialbeCompareValue){
-                                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                            return false;
-                                                        }else{ return true;}
-                                                        break;
-                                            case "<=" :  if( model && (model[hideconditionsOperand[0]] ) <= p.visialbeCompareValue){
-                                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                            return false;
-                                                        }else{ return true;}
-                                                            break;
-                                            case ">=" :  if( model && (model[hideconditionsOperand[0]] ) >= p.visialbeCompareValue){
-                                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                            return false;
-                                                        }else{ return true;}
-                                                        break;
-                                            case "<>" :  if( model && (model[hideconditionsOperand[0]] ) != p.visialbeCompareValue){
-                                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                            return false;
-                                                        }else{ return true;}
-                                                            break;
-                                        }
-                                        break;
-                            case "*" : 
-                                        switch(p.visiableOperator){
-                                            case "=" : if( model && (model[hideconditionsOperand[0]] )== p.visialbeCompareValue){
-                                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                            return false;
-                                                    } else{ return true;}
-                                                        break;
-                                            case "<" :  if( model && (model[hideconditionsOperand[0]] ) < p.visialbeCompareValue){
-                                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                            return false;
-                                                        }else{ return true;}
-                                                        break;
-                                            case ">" : if( model && (model[hideconditionsOperand[0]] ) < p.visialbeCompareValue){
-                                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                            return false;
-                                                        }else{ return true;}
-                                                        break;
-                                            case "<=" :  if( model && (model[hideconditionsOperand[0]] ) <= p.visialbeCompareValue){
-                                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                            return false;
-                                                        }else{ return true;}
-                                                            break;
-                                            case ">=" :  if( model && (model[hideconditionsOperand[0]] ) >= p.visialbeCompareValue){
-                                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                            return false;
-                                                        }else{ return true;}
-                                                        break;
-                                            case "<>" :  if( model && (model[hideconditionsOperand[0]] )!= p.visialbeCompareValue){
-                                                            if(p.visibleClearOnSave){(p.inputType == "number")?model[p.model] =0:model[p.model]=""; }
-                                                            return false;
-                                                        }else{ return true;}
-                                                            break;
-                                        }
-                                        break;
-    
-                        }
-    
-                    } else if(conditionsOperand.length == 5){
-    
-                    } 
-                    
-                })),
+                }),
             }
             newSchema.push(schema);
         }
@@ -963,9 +305,24 @@ const generateGroupSchema = (schemas, model) => {
  return  newSchema;
 }
 
-function removeHash(value){
-  
-    return (value.replace('#','').replace('#',''));
+//Get Cal culation formulas
+function returnFormula(Formulas,model) {
+    var separators = [' ', '\\\+', '-', '\\\(', '\\\)', '\\*', '/', ':', '\\\?'];
+    var tokens = Formulas.trim().split(new RegExp(separators.join('|'), 'g'));
+    var FieldCtrls = '';
+    for (var i = 0; i < tokens.length; i++) {
+        if (tokens[i] != "" && tokens[i].substring(0, 1) == '#') {
+            FieldCtrls = FieldCtrls + tokens[i].substring(0, tokens[i].length - 1).replace('#','').toUpperCase() + ',';
+            let fieldProperty =tokens[i].substring(0, tokens[i].length - 1).replace('#','').toUpperCase();
+            if(model.hasOwnProperty(fieldProperty)){
+                Formulas = Formulas.replace(tokens[i], model[fieldProperty]);
+            }
+        }
+    }
+    if (FieldCtrls != '') {
+        FieldCtrls = FieldCtrls.substring(0, FieldCtrls.length - 1);
+        return FieldCtrls + '^' + Formulas;
+    }
 }
 
 export default generateGroupSchema;

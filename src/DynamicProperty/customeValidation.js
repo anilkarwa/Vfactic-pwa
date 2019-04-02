@@ -8,15 +8,8 @@ const customeValidaton = (shema,formSchema,formGroupSchema,model) =>{
     tempSchema.forEach(element => {
         let required = false;
        if(element.requiredCondtion !=""){
-            var requiredconditionsOperand = element.requiredCondtion.split(" ");
-            for(var i=0 ; i< requiredconditionsOperand.length;i++){
-                requiredconditionsOperand[i] = removeHash(requiredconditionsOperand[i]);
-            }            
 
-            if(requiredconditionsOperand.length > 0)
-            {
-              required  = isRequired(model,requiredconditionsOperand,element.requiredOperator,element.requiredCompareValue);
-            }
+              required  = isRequired(model,element.requiredCondtion,element.requiredOperator,element.requiredCompareValue);
              
             formSchema.forEach(e=> {
                 if(e.model == element.model)
@@ -42,23 +35,50 @@ const customeValidaton = (shema,formSchema,formGroupSchema,model) =>{
 
 function isRequired(model,conditionsOperand,operator, compareValue){
 
-    if(conditionsOperand.length == 1){
-        switch(operator){
-            case "="  :  return model && ((model[conditionsOperand[0]] ) == compareValue);
+    var requiredCondition = (conditionsOperand).trim();
+    if(requiredCondition != ''){
+        if (requiredCondition.substring(0, 1) == '#' || requiredCondition.substring(0, 1) == '(') {
+            var FieldData = returnFormula(requiredCondition,model).split('^');
+            requiredCondition = FieldData[1];
+           // console.log(requiredCondition);
+
+        switch(operator.trim()){
+            case "="  :  return model && ((requiredCondition) == compareValue.trim());
                          break;
-            case "<"  :  return model && (model[conditionsOperand[0]] ) < compareValue;
+            case "<"  :  return model && (requiredCondition) < compareValue.trim();
                          break;
-            case ">"  :  return model && (model[conditionsOperand[0]] ) > compareValue;
+            case ">"  :  return model && (requiredCondition) > compareValue.trim();
                          break;
-            case "<=" :  return model && (model[conditionsOperand[0]] ) <= compareValue;
+            case "<=" :  return model && (requiredCondition) <= compareValue.trim();
                          break;
-            case ">=" :  return model && (model[conditionsOperand[0]] ) >= compareValue;
+            case ">=" :  return model && (requiredCondition) >= compareValue.trim();
                          break;
-            case "<>" :  return model && (model[conditionsOperand[0]] ) != compareValuee;
+            case "<>" :  return model && (requiredCondition) != compareValuee.trim();
                          break;
          }
     }
+  }
 
+}
+
+//Get Cal culation formulas
+function returnFormula(Formulas,model) {
+    var separators = [' ', '\\\+', '-', '\\\(', '\\\)', '\\*', '/', ':', '\\\?'];
+    var tokens = Formulas.trim().split(new RegExp(separators.join('|'), 'g'));
+    var FieldCtrls = '';
+    for (var i = 0; i < tokens.length; i++) {
+        if (tokens[i] != "" && tokens[i].substring(0, 1) == '#') {
+            FieldCtrls = FieldCtrls + tokens[i].substring(0, tokens[i].length - 1).replace('#','').toUpperCase() + ',';
+            let fieldProperty =tokens[i].substring(0, tokens[i].length - 1).replace('#','').toUpperCase();
+            if(model.hasOwnProperty(fieldProperty)){
+                Formulas = Formulas.replace(tokens[i], model[fieldProperty]);
+            }
+        }
+    }
+    if (FieldCtrls != '') {
+        FieldCtrls = FieldCtrls.substring(0, FieldCtrls.length - 1);
+        return FieldCtrls + '^' + Formulas;
+    }
 }
 
 export default customeValidaton;

@@ -7,9 +7,14 @@
           <v-btn fab dark  color="indigo" @click="addItemInPartyMaster"> <v-icon dark>add</v-icon></v-btn>
         </div>
       <!-- </v-layout> -->
-       Add New Record
+       Add New Record <br/>
       <!-- START: Code for Data table -->
-      <v-data-table :headers="headers" :items="partyMasterTableData" class="elevation-1">
+      <v-card>
+      <v-card-title> 
+        <v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer>
+        <v-text-field  v-model="tableSearch" append-icon="search"  label="Search" single-line  hide-details  ></v-text-field>
+      </v-card-title>
+      <v-data-table :headers="headers" :search="tableSearch" :items="partyMasterTableData" class="elevation-1">
         <template slot="items" slot-scope="props">
           <td class="justify-center layout px-0">
             <v-icon small class="mr-2" @click="editPartyMasterData(props.item)">edit</v-icon>
@@ -22,7 +27,11 @@
         <template slot="no-data">
           <v-btn color="primary">Reset</v-btn>
         </template>
+        <v-alert v-slot:no-results :value="true" color="error" icon="warning">
+          Your search for "{{ tableSearch }}" found no results.
+        </v-alert>
       </v-data-table>
+      </v-card>
       <!-- END: Code for Data table -->
       <!-- START: Dialog box Model code for Party Master Static and Dynamic Field -->
       <v-dialog
@@ -32,7 +41,7 @@
         transition="dialog-bottom-transition"
       >
         <v-card>
-          <v-toolbar dark color="primary">
+          <v-toolbar fixed dark color="primary">
             <v-btn icon dark @click="partyMasterModel = false">
               <v-icon>close</v-icon>
             </v-btn>
@@ -42,11 +51,12 @@
               <v-btn dark flat @click="updatePartyMasterData()">Save</v-btn>
             </v-toolbar-items>
           </v-toolbar>
+           <v-container class="spaceFromTop" fluid grid-list-md >
           <v-layout row wrap>
             <v-flex xs12>
               <v-expansion-panel popout>
                 <v-expansion-panel-content>
-                  <div slot="header">Details</div>
+                  <div slot="header">Edit Information</div>
                   <v-card>
                     <v-card-text>
                       <v-container fluid grid-list-xl>
@@ -189,6 +199,7 @@
                               v-model="editItems[staticFields[15]]"
                             >
                               is Authorised ?
+                              <br/><br/>
                             </b-form-checkbox>
                           </v-flex>
                         </v-layout>
@@ -217,6 +228,7 @@
               </v-expansion-panel>
             </v-flex>
           </v-layout>
+           </v-container>
         </v-card>
       </v-dialog>
       <!-- END: Dialog box Model code for Party Master Static and Dynamic Field -->
@@ -228,7 +240,7 @@
         transition="dialog-bottom-transition"
       >
         <v-card>
-          <v-toolbar dark color="primary">
+          <v-toolbar fixed dark color="primary">
             <v-btn icon dark @click="AddItemInpartyMasterModel = false">
               <v-icon>close</v-icon>
             </v-btn>
@@ -238,6 +250,7 @@
               <v-btn dark flat @click="addItemRequest()">Add</v-btn>
             </v-toolbar-items>
           </v-toolbar>
+           <v-container class="spaceFromTop" fluid grid-list-md >
           <v-layout row wrap>
             <v-flex xs12>
               <v-expansion-panel popout>
@@ -405,6 +418,7 @@
               </v-expansion-panel>
             </v-flex>
           </v-layout>
+           </v-container>
         </v-card>
       </v-dialog>
       <!-- END: Dialog box Model code for Adding new Item in Party Master -->
@@ -433,6 +447,7 @@ import generateSchema from '@/DynamicProperty/generateScheme.js'
 import generateGroupSchema from '@/DynamicProperty/generateGroupSchema.js'
 import generateNewModal from '@/DynamicProperty/generateNewModal.js'
 import customeValidaton from '@/DynamicProperty/customeValidation.js'
+import updateModalAfterChangeMaster from '@/DynamicProperty/updateModalAfterChangeMaster.js';
 
 export default {
   components:{
@@ -444,6 +459,7 @@ export default {
       partyMasterTableData: [],
       preFix: null,
       partyMasterModel: false,
+      tableSearch: '',
       editItems: {},
       addItems: {},
       staticFields: [],
@@ -492,6 +508,21 @@ export default {
   }),
   beforeMount: function() {
     this.loadPatryMasteData();
+  },
+    watch:{
+    dynamicFieldModel:{
+     handler(val, oldVal){
+        this.updateEditModalForValueChanges();
+        },
+    deep: true
+   },
+   addDynamicFieldModel:{
+     handler(val, oldVal){
+        this.updateAddModalForValueChanges();
+        },
+    deep: true
+   }
+
   },
   methods: {
     showSnackBar(type,message){
@@ -803,32 +834,40 @@ export default {
         this.showSnackBar('error',err.response.data);
       });
     },
+
     addItemRequest: function() {
-    this.addFlag = true;
-    this.validateOnclick();
-    const postParams = {
-      docID: localStorage.getItem('menuDocId'),
-      userID: localStorage.getItem('userId'),
-      staticFields: this.addItems,
-      dynamicFields: this.addDynamicFieldModel
-    }
-    if (this.addValidation() && this.isDynamicFormValid ) {
-      httpClient({
-        method: 'POST',
-        url: `${process.env.VUE_APP_API_BASE}PartyMaster`,
-        data: postParams
-      }).then((result) => {
-        this.showSnackBar('success',result.data);
-        this.AddItemInpartyMasterModel = false;
-        this.loadPatryMasteData();
-      }).catch((err) => {
-        this.showSnackBar('error',err.response.data);
-      });
-      } else{
-        this.showSnackBar('error','Please fill all mandatory field.')
+      this.addFlag = true;
+      this.validateOnclick();
+      const postParams = {
+        docID: localStorage.getItem('menuDocId'),
+        userID: localStorage.getItem('userId'),
+        staticFields: this.addItems,
+        dynamicFields: this.addDynamicFieldModel
       }
+      if (this.addValidation() && this.isDynamicFormValid ) {
+        httpClient({
+          method: 'POST',
+          url: `${process.env.VUE_APP_API_BASE}PartyMaster`,
+          data: postParams
+        }).then((result) => {
+          this.showSnackBar('success',result.data);
+          this.AddItemInpartyMasterModel = false;
+          this.loadPatryMasteData();
+        }).catch((err) => {
+          this.showSnackBar('error',err.response.data);
+        });
+        } else{
+          this.showSnackBar('error','Please fill all mandatory field.')
+        }
+    },
+    updateEditModalForValueChanges:function(){
+      updateModalAfterChangeMaster(this.dynamicShema,this.dynamicFieldModel);
+    },
+    updateAddModalForValueChanges: function(){
+      updateModalAfterChangeMaster(this.dynamicShema,this.addDynamicFieldModel);
     }
-  }
+  },
+    
 }
 </script>
 <style scoped>
