@@ -723,7 +723,7 @@ export default {
       this.showSnackBar('error','Please select supplier first');
       return false;
     }
-    if(value != undefined && value != null){
+    if(value != undefined && value != null && value != ''){
     httpClient({
         method: 'GET',
         url: `${process.env.VUE_APP_API_BASE}getItemByCode?itemCode=${value}`
@@ -741,7 +741,7 @@ export default {
       this.showSnackBar('error','Please select supplier first');
       return false;
     }
-    if(value != undefined && value != null){
+    if(value != undefined && value != null && value != ''){
     httpClient({
         method: 'GET',
         url: `${process.env.VUE_APP_API_BASE}getItemByCode?itemCode=${value}`
@@ -755,7 +755,7 @@ export default {
     }
   },
   searchSupplier(value){
-    if(value != null && value != undefined){
+    if(value != null && value != undefined && value != ''){
     httpClient({
         method: 'GET',
         url: `${process.env.VUE_APP_API_BASE}getSupplierByCode?supplierCode=${value}`
@@ -769,7 +769,7 @@ export default {
     }
   },
   addSearchSupplier(value){
-   if(value != null && value != undefined){
+   if(value != null && value != undefined && value != ''){
       httpClient({
           method: 'GET',
           url: `${process.env.VUE_APP_API_BASE}getSupplierByCode?supplierCode=${value}`
@@ -871,7 +871,7 @@ export default {
           // main data load
           this.selectedSupplier = pageData.mainData.supplierId;
           this.partyDOCNumber = pageData.mainData.printPONO;
-          this.dateFormatted = pageData.mainData.PODate;
+          this.dateFormatted = new Date(this.parseDate(pageData.mainData.PODate)).toISOString().substr(0, 10);
 
 
           this.searchSupplierResult = [{supplierId:pageData.mainData.supplierId,supplierCode: pageData.mainData.partyName,supplierName:pageData.mainData.partyName,address1:pageData.mainData.partyAddress1,address2:pageData.mainData.partyAddress2,addres3:pageData.mainData.partyAddress3,address4:pageData.mainData.partyAddress4,city: pageData.mainData.city,pincode:pageData.mainData.PinCode,state:pageData.mainData.state,country: pageData.mainData.country }];
@@ -1008,28 +1008,28 @@ export default {
         this.detailSectionModal.ItemSlNO = this.detailSectionData.length + 1;
        }
      
-     let data = JSON.parse(JSON.stringify(this.detailSectionModal));
-     let that = this;
-     setTimeout(function(){
-      if(that.isDetailSectionValid){
-            if(isSaveNewRecord){
-              that.detailModal = false;
-            } else{ 
-              that.editDetailModal = false;
-            }
-            if(!that.isDetailRowEditing){
-              that.detailSectionData.push(data);
+      let data = JSON.parse(JSON.stringify(this.detailSectionModal));
+      let that = this;
+      setTimeout(function(){
+        if(that.isDetailSectionValid){
+              if(isSaveNewRecord){
+                that.detailModal = false;
+              } else{ 
+                that.editDetailModal = false;
+              }
+              if(!that.isDetailRowEditing){
+                that.detailSectionData.push(data);
+              } else{
+                that.isDetailRowEditing = false;
+                that.selected = [];
+                that.detailSectionData =JSON.parse(JSON.stringify(that.detailSectionData));
+              }
+            
+            that.resetDetailSectionModal(that.detailSectionModal);
             } else{
-              that.isDetailRowEditing = false;
-              that.selected = [];
-              that.detailSectionData =JSON.parse(JSON.stringify(that.detailSectionData));
+            that.showSnackBar('error','Please fill all mandatory fields');
             }
-           
-           that.resetDetailSectionModal(that.detailSectionModal);
-          } else{
-          that.showSnackBar('error','Please fill all mandatory fields');
-          }
-    }, 500);     
+      }, 500);     
     },
     editDetailRow(row, isSaveNewRecord){
       this.isDetailRowEditing = true;
@@ -1437,7 +1437,7 @@ export default {
     },
     parseDate (date) {
       if (!date) return null
-      const [month, day, year] = date.split('/')
+      const [day, month, year] = date.split('/')
       return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
     },
     parseAsDBDate(date){

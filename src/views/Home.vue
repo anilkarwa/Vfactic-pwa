@@ -71,6 +71,7 @@ import PartyMaster from "@/components/masterPages/PartyMaster.vue"
 import GeneralMaster from "@/components/masterPages/GeneralMaster.vue"
 import ItemMaster from "@/components/masterPages/ItemMaster.vue"
 import PartyDocTranscation from "@/components/Transcations/PartyDocTranscation.vue"
+import ItemOpenningBalance from "@/components/FixedViews/Items/ItemOpenningBalance.vue";
 
 
 export default {
@@ -79,7 +80,9 @@ export default {
     PartyMaster,
     GeneralMaster,
     ItemMaster,
-    PartyDocTranscation
+    PartyDocTranscation,
+    ItemOpenningBalance
+    
   },
   data: function() {
     return {
@@ -113,7 +116,7 @@ export default {
   },
   computed: {
     selected () {
-     // console.log('Active', this.active);
+      console.log('Active', this.active);
       if (!this.active.length) return undefined
       const id = this.active[0]
       let selectedmenu = null;
