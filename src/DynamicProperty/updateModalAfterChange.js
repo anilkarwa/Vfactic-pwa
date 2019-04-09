@@ -1,8 +1,9 @@
 
 import VueFormGenerator from 'vue-form-generator'
 import ConvertNumber2Word from '@/DynamicProperty/NumberToWords.js'
+import httpClient from "@/services/httpClient.js"
 
-const updateModalAfterChange = (schemas,headerModal,detailModal,footerModal,totalModal,detailSectionData,section) =>{
+const updateModalAfterChange = (schemas,headerModal,detailModal,footerModal,totalModal,detailSectionData,section,selectedParty,callQueries) =>{
     var tempSchema = schemas;
 
     if(tempSchema.length >0){
@@ -16,7 +17,7 @@ const updateModalAfterChange = (schemas,headerModal,detailModal,footerModal,tota
             if (Formula.substring(0, 1) == '#' || Formula.substring(0, 1) == '(') {
                 var FieldData = returnFormula(Formula,headerModal,detailModal,footerModal,totalModal).split('^');
                  Formula = FieldData[1];
-                //  alert(Formula);
+                // alert(Formula);
                 //alert(JSON.stringify(FieldData));
                  var ouput;
                  try{
@@ -226,6 +227,61 @@ const updateModalAfterChange = (schemas,headerModal,detailModal,footerModal,tota
               }
             }
 
+            
+            //check load from query field data
+            if(p.loadFromQuery != "" && callQueries){
+                let fieldName = p.loadFromQuery.split(".");
+                let itemCode = "";
+                let party = selectedParty;
+                if(fieldName[0] == "i" || fieldName[0] == "g" || fieldName[0] == "u"){
+                   
+                   if(detailModal["ITEMCODE"] != ""){
+                    itemCode=  detailModal["ITEMCODE"];
+                   } else{
+                    itemCode= "000";
+                   }
+                }
+                if(fieldName[0] == "s"){
+                    itemCode="s";
+                }
+                if(fieldName[0] == "c"){
+                    itemCode="c";
+                }
+
+                //reduce call if modal not empty
+                let modelData = "";
+                if(section =="header"){
+                    modelData =  headerModal[p.model];
+                }else if(section == "detail"){
+                    modelData =  detailModal[p.model] ;
+                }else if(section == "footer"){
+                    modelData =  footerModal[p.model] ;
+                }else if(section == "total"){
+                    modelData =  totalModal[p.model];
+                }
+
+                if(itemCode != "" && itemCode != "000" && itemCode && party && modelData == ""){
+                    httpClient({
+                        method: 'GET',
+                        url: `${process.env.VUE_APP_API_BASE}loadDataFromQuery?fieldName=${p.loadFromQuery}&itemCode=${itemCode}&selectedParty=${party}`,
+                    })
+                        .then((result) => {
+                            if(section =="header"){
+                                headerModal[p.model]= result.data.fieldValue;
+                            }else if(section == "detail"){
+                                detailModal[p.model] = result.data.fieldValue;
+                            }else if(section == "footer"){
+                                footerModal[p.model] = result.data.fieldValue;
+                            }else if(section == "total"){
+                                totalModal[p.model]= result.data.fieldValue;
+                            }
+                            console.log('load from query'+ result.data.fieldValue);
+                        }).catch((err) => {
+                         console.log('error gettting data from load field by query');
+                        });
+                  }
+            }
+
         });
     }
     return false;
@@ -245,9 +301,10 @@ function returnFormula(Formulas,headerModal,detailModal,footerModal,totalModal) 
             FieldCtrls = FieldCtrls + tokens[i].substring(0, tokens[i].length - 1).replace('#','').toUpperCase() + ',';
             let fieldProperty =tokens[i].substring(0, tokens[i].length - 1).replace('#','').toUpperCase();
             if(headerModal.hasOwnProperty(fieldProperty)){
+                 //console.log('has property='+fieldProperty);
                 Formulas = Formulas.replace(tokens[i], headerModal[fieldProperty]);
             }else if(detailModal.hasOwnProperty(fieldProperty)){
-               // console.log('has property='+fieldProperty);
+               //console.log('has property='+fieldProperty);
                 Formulas = Formulas.replace(tokens[i], detailModal[fieldProperty]);
             }else if(footerModal.hasOwnProperty(fieldProperty)){
                 Formulas = Formulas.replace(tokens[i], footerModal[fieldProperty]);

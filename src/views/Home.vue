@@ -72,6 +72,7 @@ import GeneralMaster from "@/components/masterPages/GeneralMaster.vue"
 import ItemMaster from "@/components/masterPages/ItemMaster.vue"
 import PartyDocTranscation from "@/components/Transcations/PartyDocTranscation.vue"
 import ItemOpenningBalance from "@/components/FixedViews/Items/ItemOpenningBalance.vue";
+import PurhaseBillAgainstPO from "@/components/Transcations/PurchaseBillAgainstPO.vue";
 
 
 export default {
@@ -81,7 +82,8 @@ export default {
     GeneralMaster,
     ItemMaster,
     PartyDocTranscation,
-    ItemOpenningBalance
+    ItemOpenningBalance,
+    PurhaseBillAgainstPO
     
   },
   data: function() {
