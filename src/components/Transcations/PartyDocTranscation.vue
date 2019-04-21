@@ -654,6 +654,8 @@ export default {
     isDynamicTotalFormValid: true,
     isDetailSectionValid: true,
     isDetailRowEditing : false,
+    searchPartyPrefix: '',
+    searchPartyTableName: ''
   
  }),
 
@@ -758,7 +760,7 @@ export default {
     if(value != null && value != undefined && value != ''){
     httpClient({
         method: 'GET',
-        url: `${process.env.VUE_APP_API_BASE}getSupplierByCode?supplierCode=${value}`
+        url: `${process.env.VUE_APP_API_BASE}getSupplierByCode?supplierCode=${value}&partyTableName=${this.searchPartyTableName}&partyPrefix=${this.searchPartyPrefix}`
       })
         .then((result) => {
           this.searchSupplierResult = result.data;
@@ -772,7 +774,7 @@ export default {
    if(value != null && value != undefined && value != ''){
       httpClient({
           method: 'GET',
-          url: `${process.env.VUE_APP_API_BASE}getSupplierByCode?supplierCode=${value}`
+          url: `${process.env.VUE_APP_API_BASE}getSupplierByCode?supplierCode=${value}&partyTableName=${this.searchPartyTableName}&partyPrefix=${this.searchPartyPrefix}`
         })
           .then((result) => {
             this.searchSupplierResult = result.data;
@@ -875,6 +877,8 @@ export default {
           this.searchSupplierResult = [{supplierId:pageData.mainData.supplierId,supplierCode: pageData.mainData.partyName,supplierName:pageData.mainData.partyName,address1:pageData.mainData.partyAddress1,address2:pageData.mainData.partyAddress2,addres3:pageData.mainData.partyAddress3,address4:pageData.mainData.partyAddress4,city: pageData.mainData.city,pincode:pageData.mainData.PinCode,state:pageData.mainData.state,country: pageData.mainData.country }];
           this.selectedSupplier = pageData.mainData.supplierId;
           this.partyDOCNumber = pageData.mainData.printPONO;
+          this.searchPartyTableName = pageData.mainData.docPartyTableName;
+          this.searchPartyPrefix = pageData.mainData.docPartyPrefix;
           this.date = new Date(this.parseDate(pageData.mainData.PODate)).toISOString().substr(0, 10);
 
           //console.log(JSON.stringify(pageData.headerFields.dynamicFieldModal.fieldProperties));
@@ -949,6 +953,8 @@ export default {
           const pageData = result.data;
 
           this.prefixDropdown =  pageData.prefixData;
+          this.searchPartyTableName = pageData.mainData.docPartyTableName;
+          this.searchPartyPrefix = pageData.mainData.docPartyPrefix;
          
           if(pageData.headerFields.dynamicFieldModal.modal !=null ){
           this.headerDynamicFieldModel = generateNewModal(pageData.headerFields.dynamicFieldModal.fieldProperties,pageData.headerFields.dynamicFieldModal.modal);

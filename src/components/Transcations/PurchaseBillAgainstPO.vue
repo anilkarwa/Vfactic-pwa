@@ -110,11 +110,13 @@
                                   
                                     <v-card>
                                       <v-card-title>
-                                        <span class="headline">User Profile</span>
+                                        <span class="headline">Pending Transactions</span>
                                       </v-card-title>
                                       <v-card-text>
-                                     
-                                        <v-data-table  :headers="loadPendingHeaders"  :items="loadPendingData"
+                                       <div style="width:200px;margin-bottom:12px;">
+                                        <v-text-field  v-model="pendingTableSearch"  append-icon="search"  label="Search" single-line  hide-details  ></v-text-field>
+                                       </div>
+                                        <v-data-table  :headers="loadPendingHeaders" :search="pendingTableSearch"  :items="loadPendingData"
                                             item-key="SLNO"   class="elevation-1"  hide-actions  >
                                             <template v-slot:headers="props">
                                               <tr>
@@ -129,7 +131,7 @@
                                             <template v-slot:items="props">
                                               <tr>
                                                 <template v-for="header in Object.keys(loadPendingData[0])">
-                                                <td class="text-xs-left" :key="header" v-if="header !='ITEMID' && header !=dependentPrefix+'ID' && header !='ITEMSLNO' && header != 'ITEMROWID' "
+                                                <td class="text-xs-left" :key="header" v-if="header !='ITEMID' && header !=dependentPrefix+'ID' && header !='ITEMSLNO' && header != 'ITEMROWID' && header != 'CONVFACT' && header !=dependentPrefix+'ITEMSLNO' "
                                                 @click="selectPendingRowForCoping(props.item)" @dblclick="selectedSingleRowForPendingTransaction(props.item)" >
                                                 {{ props.item[header] }}</td>
                                                 </template>
@@ -138,8 +140,8 @@
                                           </v-data-table>     
 
                                           <br/>
-                                          <v-btn round color="primary" dark  @click="selectAllPendingTransactions()">Select All Items</v-btn>
-                                          <v-btn round color="primary" dark  @click="SelectedAllTranscationForSelectedID()">Select All of {{selectedPendingRowID}}</v-btn>
+                                          <v-btn round color="primary" style="float:left" dark  @click="selectAllPendingTransactions()">Select All Items</v-btn>
+                                          <v-btn round color="primary" style="float:left" dark  @click="SelectedAllTranscationForSelectedID()">Select All of {{selectedPendingRowID}}</v-btn>
                                           <br/>
                                          
 
@@ -158,7 +160,7 @@
                                             <template v-slot:items="props">
                                               <tr>
                                                 <template v-for="header in Object.keys(loadPendingData[0])">
-                                                <td class="text-xs-left" :key="header" v-if="header !='ITEMID' && header !=dependentPrefix+'ID' && header !='ITEMSLNO' && header != 'ITEMROWID' "
+                                                <td class="text-xs-left" :key="header" v-if="header !='ITEMID' && header !=dependentPrefix+'ID' && header !='ITEMSLNO' && header != 'ITEMROWID' && header !='CONVFACT' && header !=dependentPrefix+'ITEMSLNO' "
                                                  @dblclick="removeSelectedRowFromSelectedData(props.item)" >
                                                 {{ props.item[header] }}</td>
                                                 </template>
@@ -166,12 +168,11 @@
                                             </template>
                                           </v-data-table>       
                                             <br/>
-                                          <v-btn round color="primary" dark  @click="removeAllRowForSelectedData()">Remove All Items</v-btn>
-                                          <v-btn round color="primary" dark  @click="removeAllOfSelectedID()">Remove All of {{selectedPendingRowID}}</v-btn>
+                                          <v-btn round color="primary" dark style="float:left"  @click="removeAllRowForSelectedData()">Remove All Items</v-btn>
+                                          <v-btn round color="primary" dark style="float:left"  @click="removeAllOfSelectedID()">Remove All of {{selectedPendingRowID}}</v-btn>
                                             <br/>
                                       </v-card-text>
                                       <v-card-actions>
-                                        <v-spacer></v-spacer>
                                         <v-btn color="blue darken-1" flat @click="dialogLoadPening = false">Close</v-btn>
                                         <v-btn color="blue darken-1" flat @click="copySelectedRowToDetailSection()">OK</v-btn>
                                       </v-card-actions>
@@ -242,7 +243,7 @@
                                             <v-text-field readonly :label="dependentPrefix+' Qty'"  v-model="detailSectionModal[dependentPrefix+'QTY']"></v-text-field>
                                           </v-flex>
                                            <v-flex xs12>
-                                            <v-text-field readonly label="Cum Qty"  v-model="detailSectionModal[prefix+'CUMQTY']"></v-text-field>
+                                            <v-text-field readonly label="Cum Qty"  v-model="detailSectionModal['CUMQTY']"></v-text-field>
                                           </v-flex>
                                           <v-flex xs12>
                                             <v-text-field readonly label="Pending Qty"  v-model="detailSectionModal.PENDQTY"></v-text-field>
@@ -289,7 +290,7 @@
                                   <td> <v-checkbox :input-value="props.selected"   primary  hide-details ></v-checkbox>  </td>
                                   <td> <v-icon samll class="mr-2" @click="editDetailRow(props.item, true)">edit</v-icon></td>
                                   <template v-for="header in Object.keys(detailSectionModal)">
-                                  <td class="text-xs-left" :key="header" v-if="header !='ITEMID' && header !='UOMID' && header !='ITEMSLNO' " >{{ props.item[header] }}</td>
+                                  <td class="text-xs-left" :key="header" v-if="header !='ITEMID' && header !='ITEMSLNO' && header !='UOMID' && header !=dependentPrefix+'ID' && header !='CONVFACT' && header !=dependentPrefix+'ITEMSLNO'  " >{{ props.item[header] }}</td>
                                   </template>
                                 </tr>
                               </template>
@@ -369,36 +370,112 @@
                                   <p>Supplier</p>
                                   <v-autocomplete  v-model="selectedSupplier" :loading="searchItemsLoading" :items="searchSupplierResult" clearable 
                                       :search-input.sync="searchSupplier"   auto-select-first flat  hide-no-data  hide-details  item-text="supplierCode" item-value="supplierId" >
-                                  <template v-slot:no-data>
-                                      <v-list-tile>
-                                        <v-list-tile-title>
-                                          Search for
-                                          <strong>supplier</strong>
-                                        </v-list-tile-title>
-                                      </v-list-tile>
-                                    </template>
-                                    <template v-slot:selection="{ item, selected }" >
-                                      <v-chip :selected="selected" color="blue-grey"  class="white--text"
-                                      >
-                                        <v-icon left>supervised_user_circle</v-icon>
-                                        <span v-text="item.supplierCode"></span>
-                                      </v-chip>
-                                    </template>
-                                    <template v-slot:item="{ item }">
-                                      <v-list-tile-avatar
-                                        color="indigo"
-                                        class=" font-weight-light white--text"
-                                      >
-                                      </v-list-tile-avatar>
-                                      <v-list-tile-content>
-                                        <v-list-tile-title v-text="item.supplierCode"></v-list-tile-title>
-                                        <v-list-tile-sub-title v-text="item.supplierName"></v-list-tile-sub-title>
-                                      </v-list-tile-content>
-                                      <v-list-tile-action>
-                                        <v-icon>supervised_user_circle</v-icon>
-                                      </v-list-tile-action>
-                                    </template>   
+                                    <template v-slot:no-data>
+                                        <v-list-tile>
+                                          <v-list-tile-title>
+                                            Search for
+                                            <strong>supplier</strong>
+                                          </v-list-tile-title>
+                                        </v-list-tile>
+                                      </template>
+                                      <template v-slot:selection="{ item, selected }" >
+                                        <v-chip :selected="selected" color="blue-grey"  class="white--text"
+                                        >
+                                          <v-icon left>supervised_user_circle</v-icon>
+                                          <span v-text="item.supplierCode"></span>
+                                        </v-chip>
+                                      </template>
+                                      <template v-slot:item="{ item }">
+                                        <v-list-tile-avatar
+                                          color="indigo"
+                                          class=" font-weight-light white--text"
+                                        >
+                                        </v-list-tile-avatar>
+                                        <v-list-tile-content>
+                                          <v-list-tile-title v-text="item.supplierCode"></v-list-tile-title>
+                                          <v-list-tile-sub-title v-text="item.supplierName"></v-list-tile-sub-title>
+                                        </v-list-tile-content>
+                                        <v-list-tile-action>
+                                          <v-icon>supervised_user_circle</v-icon>
+                                        </v-list-tile-action>
+                                      </template>   
                                   </v-autocomplete>
+                                </v-flex>
+                                <v-flex xs4 sm5 md5>
+                                  <v-btn round color="primary" dark  @click="loadPendingForTransactions()">Load Pending</v-btn>
+                                    
+                                  <v-dialog v-model="dialogLoadPening" scrollable persistent max-width="80%">
+                                  
+                                    <v-card>
+                                      <v-card-title>
+                                        <span class="headline">Pending Transactions</span>
+                                      </v-card-title>
+                                      <v-card-text>
+                                      <div style="width:200px;margin-bottom:12px;">
+                                       <v-text-field  v-model="pendingTableSearch"  append-icon="search"  label="Search" single-line  hide-details  ></v-text-field>
+                                      </div>
+                                      <v-data-table  :headers="loadPendingHeaders" :search="pendingTableSearch"  :items="loadPendingData"
+                                            item-key="SLNO"   class="elevation-1"  hide-actions  >
+                                            <template v-slot:headers="props">
+                                              <tr>
+                                                <th
+                                                  v-for="header in props.headers"
+                                                  :key="header.text"
+                                                  :class="['column sortable', 'active']" >
+                                                  <b>{{ header.text}}</b>
+                                                </th>
+                                              </tr>
+                                            </template>
+                                            <template v-slot:items="props">
+                                              <tr>
+                                                <template v-for="header in Object.keys(loadPendingData[0])">
+                                                <td class="text-xs-left" :key="header" v-if="header !='ITEMID' && header !=dependentPrefix+'ID' && header !='ITEMSLNO' && header != 'ITEMROWID' && header != 'CONVFACT' && header !=dependentPrefix+'ITEMSLNO' "
+                                                @click="selectPendingRowForCoping(props.item)" @dblclick="selectedSingleRowForPendingTransaction(props.item)" >
+                                                {{ props.item[header] }}</td>
+                                                </template>
+                                              </tr>
+                                            </template>
+                                          </v-data-table>     
+
+                                          <br/>
+                                          <v-btn round color="primary" dark  style="float:left" @click="selectAllPendingTransactions()">Select All Items</v-btn>
+                                          <v-btn round color="primary" dark style="float:left"  @click="SelectedAllTranscationForSelectedID()">Select All of {{selectedPendingRowID}}</v-btn>
+                                          <br/>
+                                         
+
+                                          <v-data-table  :headers="loadPendingHeaders"  :items="loadPendingSelectedData"
+                                            item-key="SLNO"   class="elevation-1"  hide-actions  >
+                                            <template v-slot:headers="props">
+                                              <tr>
+                                                <th
+                                                  v-for="header in props.headers"
+                                                  :key="header.text"
+                                                  :class="['column sortable', 'active']" >
+                                                  <b>{{ header.text}}</b>
+                                                </th>
+                                              </tr>
+                                            </template>
+                                            <template v-slot:items="props">
+                                              <tr>
+                                                <template v-for="header in Object.keys(loadPendingData[0])">
+                                                <td class="text-xs-left" :key="header" v-if="header !='ITEMID' && header !=dependentPrefix+'ID' && header !='ITEMSLNO' && header != 'ITEMROWID' && header !='CONVFACT' && header !=dependentPrefix+'ITEMSLNO' "
+                                                 @dblclick="removeSelectedRowFromSelectedData(props.item)" >
+                                                {{ props.item[header] }}</td>
+                                                </template>
+                                              </tr>
+                                            </template>
+                                          </v-data-table>       
+                                            <br/>
+                                          <v-btn round color="primary" dark style="float:left"  @click="removeAllRowForSelectedData()">Remove All Items</v-btn>
+                                          <v-btn round color="primary" dark style="float:left"  @click="removeAllOfSelectedID()">Remove All of {{selectedPendingRowID}}</v-btn>
+                                            <br/>
+                                      </v-card-text>
+                                      <v-card-actions>
+                                        <v-btn color="blue darken-1" flat @click="dialogLoadPening = false">Close</v-btn>
+                                        <v-btn color="blue darken-1" flat @click="copySelectedRowToDetailSection()">OK</v-btn>
+                                      </v-card-actions>
+                                    </v-card>
+                                  </v-dialog>
                                 </v-flex>
                               </v-layout>
                               <v-layout row>
@@ -456,7 +533,7 @@
                                             <v-text-field readonly :label="dependentPrefix+' Qty'"  v-model="detailSectionModal[dependentPrefix+'QTY']"></v-text-field>
                                           </v-flex>
                                            <v-flex xs12>
-                                            <v-text-field readonly label="Cum Qty"  v-model="detailSectionModal[prefix+'CUMQTY']"></v-text-field>
+                                            <v-text-field readonly label="Cum Qty"  v-model="detailSectionModal['CUMQTY']"></v-text-field>
                                           </v-flex>
                                           <v-flex xs12>
                                             <v-text-field readonly label="Pending Qty"  v-model="detailSectionModal.PENDQTY"></v-text-field>
@@ -504,7 +581,7 @@
                                  <td> <v-icon small class="mr-2" @click="editDetailRow(props.item, false)">edit</v-icon></td>
                                     
                                   <template v-for="header in Object.keys(detailSectionModal)">
-                                  <td class="text-xs-left" :key="header" v-if="header !='ITEMID' && header !='UOMID' && header !='ITEMSLNO'" >{{ props.item[header] }}</td>
+                                  <td class="text-xs-left" :key="header" v-if="header !='ITEMID' && header !='UOMID' && header !='ITEMSLNO' && header !=dependentPrefix+'ID' && header !='CONVFACT' && header !=dependentPrefix+'ITEMSLNO'" >{{ props.item[header] }}</td>
                                   </template>
                                 </tr>
                               </template>
@@ -568,6 +645,7 @@ export default {
 
  data : vm => ({
    tableSearch: '',
+   pendingTableSearch: '',
    loadPendingSearch: '',
    loadPendingData: [],
    loadPendingHeaders: [],
@@ -662,6 +740,8 @@ export default {
     dependentPrefix: '',
     dialogLoadPening: false,
     loadPendingPartyWise: false,
+    searchPartyPrefix: '',
+    searchPartyTableName: ''
   
  }),
 
@@ -766,7 +846,7 @@ export default {
     if(value != null && value != undefined && value != ''){
     httpClient({
         method: 'GET',
-        url: `${process.env.VUE_APP_API_BASE}getSupplierByCode?supplierCode=${value}`
+        url: `${process.env.VUE_APP_API_BASE}getSupplierByCode?supplierCode=${value}&partyTableName=${this.searchPartyTableName}&partyPrefix=${this.searchPartyPrefix}`
       })
         .then((result) => {
           this.searchSupplierResult = result.data;
@@ -780,7 +860,7 @@ export default {
    if(value != null && value != undefined && value != ''){
       httpClient({
           method: 'GET',
-          url: `${process.env.VUE_APP_API_BASE}getSupplierByCode?supplierCode=${value}`
+          url: `${process.env.VUE_APP_API_BASE}getSupplierByCode?supplierCode=${value}&partyTableName=${this.searchPartyTableName}&partyPrefix=${this.searchPartyPrefix}`
         })
           .then((result) => {
             this.searchSupplierResult = result.data;
@@ -884,6 +964,9 @@ export default {
           this.partyDOCNumber = pageData.mainData.printPONO;
           this.date = new Date(this.parseDate(pageData.mainData.PODate)).toISOString().substr(0, 10);
           this.loadPendingPartyWise= pageData.mainData.loadPendingPartyWise;
+          this.dependentPrefix = pageData.mainData.dependentPrefix;
+          this.searchPartyTableName = pageData.mainData.docPartyTableName;
+          this.searchPartyPrefix = pageData.mainData.docPartyPrefix;
 
           //console.log(JSON.stringify(pageData.headerFields.dynamicFieldModal.fieldProperties));
           if(pageData.headerFields.dynamicFieldModal.modal.length > 0){
@@ -962,6 +1045,10 @@ export default {
 
           this.prefixDropdown =  pageData.prefixData;
           this.loadPendingPartyWise = pageData.mainData.loadPendingPartyWise;
+          this.searchPartyTableName = pageData.mainData.docPartyTableName;
+          this.searchPartyPrefix = pageData.mainData.docPartyPrefix;
+
+
          
           if(pageData.headerFields.dynamicFieldModal.modal !=null ){
           this.headerDynamicFieldModel = generateNewModal(pageData.headerFields.dynamicFieldModal.fieldProperties,pageData.headerFields.dynamicFieldModal.modal);
@@ -1011,7 +1098,7 @@ export default {
      },
      generateDetailSectionTableHeader(model){
         for (var property in model) {
-          if(property != "ITEMID" && property != "UOMID" && property != "ITEMSLNO"){
+          if(property != "ITEMID" && property != "UOMID" && property != "ITEMSLNO" && property != "CONVFACT" && property != this.dependentPrefix+"ID" && property != this.dependentPrefix+"ITEMSLNO" ){
             this.detailSectionHeader.push({text: property,value: property});
           }
         }
@@ -1118,11 +1205,11 @@ export default {
     savePartyDocDTLTableData(selectedId){
 
        let query= this.createDetailSectionQueries(selectedId)
-      
+      const docID =  localStorage.getItem('menuDocId') || 0;
 
        httpClient({
         method: 'POST',
-        url: `${process.env.VUE_APP_API_BASE}PurchaseBillAgainstPO?query=${query}`,
+        url: `${process.env.VUE_APP_API_BASE}PurchaseBillAgainstPO?query=${query}&docID=${docID}&selectedId=${selectedId}`,
        })
        .then((result) => {
           this.showSnackBar('success',result.data);
@@ -1132,6 +1219,7 @@ export default {
           this.showSnackBar('error',err.response.data);
        });
     },
+
      onValidatedAddDetailSection:function(isValid,error){
         console.log("Validation detil section result: ", isValid, ", Errors:", error);
       if(this.detailSectionFieldOriginalSchema != null){
@@ -1301,11 +1389,12 @@ export default {
 
             this.loadPendingHeaders = [];
             this.loadPendingData = [];
+            this.loadPendingSelectedData =[];
             if(result.data.tableData.length > 0){
             let loadPendingHeadersKey = Object.keys(result.data.tableData[0]);
             
              loadPendingHeadersKey.forEach(element => {
-                if(element != "ITEMID" && element != this.dependentPrefix+"ID" && element != "ITEMSLNO" && element !="ITEMROWID"){
+                if(element != "ITEMID" && element != this.dependentPrefix+"ID" && element != "ITEMSLNO" && element !="ITEMROWID" && element != "CONVFACT"){
                   this.loadPendingHeaders.push({ text: element, align: "center", value: element })
                 }
              });
@@ -1323,18 +1412,20 @@ export default {
     copySelectedRowToDetailSection(){
       this.dialogLoadPening = false;
       this.loadPendingSelectedData.forEach(e =>{
-        console.log(e);
          this.detailSectionModal.SLNO = this.detailSectionData.length +1;
          this.detailSectionModal.ITEMID=  e.ITEMID,
          this.detailSectionModal.ITEMCODE= e.ITEMCODE;
          this.detailSectionModal.ITEMNAME= e.ITEMNAME;
-         this.detailSectionModal.UOMID= e.UOMCODE;
-         this.detailSectionModal.ITEMSLNO= e.ITEMSLNO;
+         this.detailSectionModal.UOMID= e.UOMID;
+         this.detailSectionModal.ITEMSLNO= this.detailSectionData.length +1;
          this.detailSectionModal.UOM= e.UOMCODE,
          this.detailSectionModal.QOH= e.QOH;
          this.detailSectionModal.PONO= e[this.dependentPrefix+ "NO"];
+         this.detailSectionModal[this.dependentPrefix+'ID'] = e[this.dependentPrefix+ "ID"];
+         this.detailSectionModal[this.dependentPrefix+'ITEMSLNO'] = e.ITEMSLNO;
          this.detailSectionModal.POQTY= e[this.dependentPrefix+ "QTY"] ;
          this.detailSectionModal.CUMQTY= e[this.prefix+ "CUMQTY"];
+         this.detailSectionModal['CONVFACT'] = e.CONVFACT;
          this.detailSectionModal.PENDQTY= e.PENDQTY;
 
          this.detailSectionModal[this.prefix+"QTY"] = e.PENDQTY ;
@@ -1410,13 +1501,22 @@ export default {
         let Columns="",Values="";
        let query="insert into TrnDtl"+this.prefix+" (";
         for (var key in element) {
-          if(key !='ITEMCODE' && key !="ITEMNAME" && key !='UOM' ){
-            Columns+= key;
-            Columns+=",";
-            Values += "'"+element[key]+"'";
-            Values += ","
+          if(key !='ITEMCODE' && key !="ITEMNAME" && key !='UOM' && key !='QOH' && key !='CONVFACT' && key !=this.dependentPrefix+'QTY' && key !=this.dependentPrefix+'NO' && key !='CUMQTY' && key !='PENDQTY' && key !='ITEMROWID' && key !='DOCQTY'){
+            if(key!='StkQty'){
+              Columns+= key;
+              Columns+=",";
+              Values += "'"+element[key]+"'";
+              Values += ","
+            }else{
+               Columns+= key;
+               Columns+=",";
+               Values += "'"+element[this.prefix+'QTY'] * element['CONVFACT'] +"'";
+               Values += ","
+            }
           }
         }
+       
+
         query += Columns+" "+ this.prefix+"ID) values("+Values+""+selecteId+");"
         finalQuery +=query;
       });
@@ -1463,7 +1563,7 @@ export default {
       updateModalAfterChange(this.headerDynamicFieldOriginalSchema,this.headerDynamicFieldModel,this.detailSectionModal,this.footerDynamicFieldModel, this.totalDynamicFieldModel, this.detailSectionData,'header', this.supplier.supplierCode,callQueries);
       updateModalAfterChange(this.detailSectionFieldOriginalSchema,this.headerDynamicFieldModel,this.detailSectionModal,this.footerDynamicFieldModel, this.totalDynamicFieldModel, this.detailSectionData,'detail',this.supplier.supplierCode,callQueries);
       updateModalAfterChange(this.footerDynamicFieldOriginalSchema,this.headerDynamicFieldModel,this.detailSectionModal,this.footerDynamicFieldModel, this.totalDynamicFieldModel, this.detailSectionData,'footer',this.supplier.supplierCode,callQueries);
-      //updateModalAfterChange(this.totalDynamicFieldOriginalSchema,this.headerDynamicFieldModel,this.detailSectionModal,this.footerDynamicFieldModel, this.totalDynamicFieldModel, this.detailSectionData,'total',this.supplier.supplierCode,callQueries);
+      updateModalAfterChange(this.totalDynamicFieldOriginalSchema,this.headerDynamicFieldModel,this.detailSectionModal,this.footerDynamicFieldModel, this.totalDynamicFieldModel, this.detailSectionData,'total',this.supplier.supplierCode,callQueries);
     },
     validateOnclickSaveNewRecord: function($event) {
      console.log('Validating', this.$refs);
