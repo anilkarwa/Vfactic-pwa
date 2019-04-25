@@ -73,6 +73,9 @@ import ItemMaster from "@/components/masterPages/ItemMaster.vue"
 import PartyDocTranscation from "@/components/Transcations/PartyDocTranscation.vue"
 import ItemOpenningBalance from "@/components/FixedViews/Items/ItemOpenningBalance.vue";
 import PurhaseBillAgainstPO from "@/components/Transcations/PurchaseBillAgainstPO.vue";
+import TrnWithOutDetailItem from "@/components/Transcations/TrnWithOutDetailItem.vue";
+import StoreIndent from "@/components/Transcations/StoreIndent.vue";
+import StoreIssueNote from "@/components/Transcations/StoreIssueNote.vue";
 
 
 export default {
@@ -83,7 +86,10 @@ export default {
     ItemMaster,
     PartyDocTranscation,
     ItemOpenningBalance,
-    PurhaseBillAgainstPO
+    PurhaseBillAgainstPO,
+    TrnWithOutDetailItem,
+    StoreIndent,
+    StoreIssueNote
     
   },
   data: function() {

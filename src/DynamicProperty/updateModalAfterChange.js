@@ -17,7 +17,7 @@ const updateModalAfterChange = (schemas,headerModal,detailModal,footerModal,tota
             if (Formula.substring(0, 1) == '#' || Formula.substring(0, 1) == '(') {
                 var FieldData = returnFormula(Formula,headerModal,detailModal,footerModal,totalModal).split('^');
                  Formula = FieldData[1];
-                // alert(Formula);
+                 //alert(Formula);
                 //alert(JSON.stringify(FieldData));
                  var ouput;
                  try{
@@ -67,7 +67,7 @@ const updateModalAfterChange = (schemas,headerModal,detailModal,footerModal,tota
                         Formula = Formula.replace(SVTCOLSUM, '');
                         Formula = Formula.substr(2) //Remove first character from string
                         Formula = Formula.substr(0, Formula.length - 2) //Remove last character from string
-
+                        
                         detailSectionData.forEach( function(value, i){
                             for(var key in value){
                                 if(key == Formula){
@@ -225,6 +225,19 @@ const updateModalAfterChange = (schemas,headerModal,detailModal,footerModal,tota
                     }
                 }  
               }
+            }
+
+            //check for dropdown and add 0 as default option
+            if(p.type == "select"){
+                if(section =="header" && headerModal[p.model] =='' ){
+                    headerModal[p.model]= '0';
+                }else if(section == "detail" && detailModal[p.model] == ''){
+                    detailModal[p.model] =  '0';
+                }else if(section == "footer" && footerModal[p.model] == ''){
+                    footerModal[p.model] =  '0';
+                }else if(section == "total" && totalModal[p.model] == ''){
+                    totalModal[p.model]=  '0';
+                }
             }
 
             
