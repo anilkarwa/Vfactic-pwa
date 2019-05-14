@@ -2,9 +2,9 @@
  <div id="app">
    <v-app id="inspire">
      <div class="text-md-center text-lg-center">
-          <v-btn fab dark small color="indigo" @click="loadSchemaForNewPartyDocTranscation"> <v-icon dark>add</v-icon></v-btn>
+          <v-btn fab dark small color="indigo" @click="loadSchemaForNewPartyDocTranscation" v-if="getCurrentUserRoles('addRight') == '1'"> <v-icon dark>add</v-icon></v-btn>
         </div>
-       Add New Record
+       <span v-if="getCurrentUserRoles('addRight') == '1'"> Add New Record</span><br/>
     <!-- START: Code for Data table -->
     <v-card>
       <v-card-title> 
@@ -14,7 +14,7 @@
         <v-data-table :headers="partyDocHeaders" :search="tableSearch" :items="partyDocTableData" class="elevation-1">
           <template slot="items" slot-scope="props">
             <td class="justify-center layout px-0">
-              <v-icon small class="mr-2" @click="editSelectedPartyDocTranscation(props.item)">edit</v-icon>
+              <v-icon v-if="getCurrentUserRoles('editRight') == '1'" small class="mr-2" @click="editSelectedPartyDocTranscation(props.item)">edit</v-icon>
             </td>
             <td v-for="values in props.item" :key="values.id">
               {{ values }}
@@ -115,7 +115,7 @@
                                 <p>{{supplier.city}} {{supplier.pincode}} {{supplier.state}} {{supplier.country}}</p>
                                 </v-flex>
                               </v-layout>
-
+                              
                             </v-flex>
                             <v-flex xs12 sm4 md4>
                                <vue-form-generator id="Form-generator-css" ref="vfAddHeader" :schema="headerDynamicFieldSchema" :model="headerDynamicFieldModel" :options="formOptions" @validated="onValidatedAddHeader"  ></vue-form-generator> 
@@ -375,6 +375,49 @@
                                 <p>{{supplier.city}} {{supplier.pincode}} {{supplier.state}} {{supplier.country}}</p>
                                 </v-flex>
                               </v-layout>
+                              <v-layout>
+                                <v-flex xs4 sm3 md4>
+                                  <v-dialog v-model="amendmentModal" persistent max-width="600px">
+                                      <template v-slot:activator="{ on }">
+                                        <v-btn color="primary" dark v-on="on" >Amendment</v-btn>
+                                      </template>
+                                      <v-card>
+                                        <v-card-title>
+                                          <span class="headline">Add amendment</span>
+                                        </v-card-title>
+                                        <v-card-text>
+                                          <v-container grid-list-md>
+                                            <v-layout wrap>
+                                              
+                                              <v-flex xs12 sm6>
+                                                <v-text-field label="Date" type="text" readonly></v-text-field>
+                                              </v-flex>
+                                              <v-flex xs12 sm6>
+                                                <v-text-field label="Number" type="text" readonly ></v-text-field>
+                                              </v-flex>
+                                              <v-flex xs12 sm12>
+                                               <v-textarea
+                                                  solo
+                                                  name="input-10-4"
+                                                  label="Description"
+                                                  
+                                                ></v-textarea>
+                                              </v-flex>
+                                              
+                                            </v-layout>
+                                          </v-container>
+                                          
+                                        </v-card-text>
+                                        <v-card-actions>
+                                          <v-spacer></v-spacer>
+                                          <v-btn color="blue darken-1" flat @click="amendmentModal = false">Close</v-btn>
+                                          <v-btn color="blue darken-1" flat @click="addAmendment()">Save</v-btn>
+                                        </v-card-actions>
+                                      </v-card>
+                                    </v-dialog>
+                                </v-flex>
+                              </v-layout>
+
 
                             </v-flex>
                             <v-flex xs12 sm4 md4>
@@ -655,7 +698,8 @@ export default {
     isDetailSectionValid: true,
     isDetailRowEditing : false,
     searchPartyPrefix: '',
-    searchPartyTableName: ''
+    searchPartyTableName: '',
+    amendmentModal: false
   
  }),
 
@@ -1409,6 +1453,9 @@ export default {
         country: ''
       };
     },
+    addAmendment(){
+      
+    },
     updateAllModalForValueChanges(callQueries){
       updateModalAfterChange(this.headerDynamicFieldOriginalSchema,this.headerDynamicFieldModel,this.detailSectionModal,this.footerDynamicFieldModel, this.totalDynamicFieldModel, this.detailSectionData,'header', this.supplier.supplierCode,callQueries);
       updateModalAfterChange(this.detailSectionFieldOriginalSchema,this.headerDynamicFieldModel,this.detailSectionModal,this.footerDynamicFieldModel, this.totalDynamicFieldModel, this.detailSectionData,'detail', this.supplier.supplierCode,callQueries);
@@ -1453,6 +1500,34 @@ export default {
       const [days, months, years] = date.split('/')
       return `${months}/${days}/${years}`
     },
+    getCurrentUserRoles(type){
+      switch(type){
+        case "addRight": return localStorage.getItem('addRight') || 0;
+          break;
+        case "editRight": return localStorage.getItem('editRight') || 0;
+          break;
+        case "deleteRight": return localStorage.getItem('deleteRight') || 0;
+          break;
+        case "printRight": return localStorage.getItem('printRight') || 0;
+          break;
+        case "viewRight": return localStorage.getItem('viewRight') || 0;
+          break;
+        case "authRight": return localStorage.getItem('authRight') || 0;
+          break;
+        case "auth1Right": return localStorage.getItem('auth1Right') || 0;
+          break;
+        case "option1Right": return localStorage.getItem('option1Right') || 0;
+          break;
+        case "option2Right": return localStorage.getItem('option2Right') || 0;
+          break;
+        case "option3Right": return localStorage.getItem('option3Right') || 0;
+          break;
+        case "option4Right": return localStorage.getItem('option4Right') || 0;
+          break;
+        case "option5Right": return localStorage.getItem('option5Right') || 0;
+          break;
+      }
+    }
 
     /* ***************** End Common Methods ***************************** */
  }

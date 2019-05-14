@@ -2,9 +2,9 @@
   <div id="app">
     <v-app id="inspire">
         <div class="text-md-center text-lg-center">
-          <v-btn fab dark small color="indigo" @click="addItemInItemMaster"> <v-icon dark>add</v-icon></v-btn>
+          <v-btn fab dark small color="indigo" @click="addItemInItemMaster" v-if="getCurrentUserRoles('addRight') == '1'"> <v-icon dark>add</v-icon></v-btn>
         </div>
-       Add New Record
+       <span v-if="getCurrentUserRoles('addRight') == '1'"> Add New Record</span>
       <!-- START: table -->
       <v-card>
       <v-card-title> 
@@ -14,8 +14,8 @@
       <v-data-table :headers="headers" :search="tableSearch" :items="itemMasterDataTable" class="elevation-1">
         <template slot="items" slot-scope="props">
           <td class="justify-center layout px-0">
-            <v-icon small class="mr-2" @click="editItemMasterData(props.item)">edit</v-icon>
-            <v-icon small @click="deleteItemMasterData(props.item)">delete</v-icon>
+            <v-icon v-if="getCurrentUserRoles('editRight') == '1'" small class="mr-2" @click="editItemMasterData(props.item)">edit</v-icon>
+            <v-icon v-if="getCurrentUserRoles('deleteRight') == '1'" small @click="deleteItemMasterData(props.item)">delete</v-icon>
           </td>
           <td v-for="values in props.item" :key="values.id">
               {{ values }}
@@ -687,6 +687,34 @@ export default {
     },
     updateAddModalForValueChanges(){
       updateModalAfterChangeMaster(this.dynamicShema,this.addDynamicFieldModel);
+    },
+    getCurrentUserRoles(type){
+      switch(type){
+        case "addRight": return localStorage.getItem('addRight') || 0;
+          break;
+        case "editRight": return localStorage.getItem('editRight') || 0;
+          break;
+        case "deleteRight": return localStorage.getItem('deleteRight') || 0;
+          break;
+        case "printRight": return localStorage.getItem('printRight') || 0;
+          break;
+        case "viewRight": return localStorage.getItem('viewRight') || 0;
+          break;
+        case "authRight": return localStorage.getItem('authRight') || 0;
+          break;
+        case "auth1Right": return localStorage.getItem('auth1Right') || 0;
+          break;
+        case "option1Right": return localStorage.getItem('option1Right') || 0;
+          break;
+        case "option2Right": return localStorage.getItem('option2Right') || 0;
+          break;
+        case "option3Right": return localStorage.getItem('option3Right') || 0;
+          break;
+        case "option4Right": return localStorage.getItem('option4Right') || 0;
+          break;
+        case "option5Right": return localStorage.getItem('option5Right') || 0;
+          break;
+      }
     }
   }
 }

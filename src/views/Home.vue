@@ -5,21 +5,13 @@
         <v-list dense>
             <v-card  class="mx-auto"   max-width="500" >
               <v-sheet class="pa-3 primary">
-                <v-text-field v-model="search"  label="Search.." dark
-                  flat solo-inverted hide-details clearable clear-icon="mdi-close-circle-outline"  ></v-text-field>
+                <!-- <v-text-field v-model="search"  label="Search.." dark
+                  flat solo-inverted hide-details clearable clear-icon="mdi-close-circle-outline"  ></v-text-field> -->
               </v-sheet>
               <v-card-text>
-                <v-treeview activatable open-on-click transition  :items="menu" :search="search" :open.sync="open"
-                item-key="menuId" item-text="menuItemCapiton" :active.sync="active" > 
-                  <template v-slot:prepend="{ item, active }">
-                    <v-icon
-                      v-if="!item.children"
-                      :color="active ? 'primary' : ''"
-                    >
-                      mdi-account
-                    </v-icon>
-                  </template>
-                </v-treeview>
+                <div v-if="menu && menu.length">
+                <b-tree-view :data="menu" nodeLabelProp="menuItemCapiton" :renameNodeOnDblClick="renameMenu" :contextMenuItems="contextMenuItems" @nodeSelect="selectedMenu"></b-tree-view>
+                </div>
               </v-card-text>
             </v-card>
         </v-list>
@@ -29,6 +21,7 @@
         <v-toolbar-title class="white--text">{{selectedCompanyName}}</v-toolbar-title>
         <v-spacer></v-spacer>
       <v-toolbar-items class="hidden-sm-and-down">
+        <v-btn flat class="white--text" @click="changeUser()">Change User</v-btn>
         <v-btn flat class="white--text" @click="userLogout()">Logout</v-btn>
 
       </v-toolbar-items>
@@ -37,8 +30,8 @@
         <v-container fluid>
           <v-layout justify-center align-center>
             <v-flex shrink>
-              <div v-if="selected">
-                <h1>{{ selected.menuItemCapiton }} </h1>
+              <div v-if="selecteMenu">
+                <h1>{{ selecteMenu.menuItemCapiton }} </h1>
                 <component v-bind:is="currentView"></component>
               </div>
               <div v-else>
@@ -55,7 +48,29 @@
   
             <v-spacer></v-spacer>
             <span class="white--text"> Login : {{loggedInUserName}}</span> &nbsp &nbsp&nbsp&nbsp
-            <span class="white--text"> Finanical Year : {{currentFinancialYear}}</span>
+            <span @dblclick="changeFinancialYear()" style="cursor:pointer;" class="white--text"> Finanical Year : {{currentFinancialYear}}</span>
+
+            <v-dialog v-model="financialYearDialog" scrollable max-width="700px">
+              <v-card>
+                <v-card-title>Change financial Year</v-card-title>
+                <v-divider></v-divider>
+                <v-card-text style="height: 400px;">
+                  <v-data-table  :headers="financialYearTableheaders"  :items="financialYearList"  class="elevation-1" >
+                    <template v-slot:items="props">
+                      <td class="text-xs-center">{{ props.item.fromDate }}</td>
+                      <td class="text-xs-center">{{ props.item.toDate }}</td>
+                      <td class="text-xs-right">
+                         <v-switch v-model="props.item.active" @change="switchFinancialYear(props.item)"></v-switch>
+                      </td>
+                    </template>
+                  </v-data-table>
+                </v-card-text>
+                <v-divider></v-divider>
+                <v-card-actions>
+                  <v-btn color="blue darken-1" flat @click="financialYearDialog = false">Close</v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
 
           </v-card-title>
         </v-card>
@@ -76,7 +91,8 @@ import PurhaseBillAgainstPO from "@/components/Transcations/PurchaseBillAgainstP
 import TrnWithOutDetailItem from "@/components/Transcations/TrnWithOutDetailItem.vue";
 import StoreIndent from "@/components/Transcations/StoreIndent.vue";
 import StoreIssueNote from "@/components/Transcations/StoreIssueNote.vue";
-
+import AuthoriseDocument from "@/components/Utilities/AuthoriseDocument.vue";
+import ShortCloseDocument from "@/components/Utilities/ShortCloseDocument.vue";
 
 export default {
   name: "home",
@@ -89,7 +105,11 @@ export default {
     PurhaseBillAgainstPO,
     TrnWithOutDetailItem,
     StoreIndent,
-    StoreIssueNote
+    StoreIssueNote,
+    AuthoriseDocument,
+    ShortCloseDocument
+    
+    
     
   },
   data: function() {
@@ -103,7 +123,17 @@ export default {
       caseSensitive: false,
       loggedInUserName :'',
       selectedCompanyName: '',
-      currentFinancialYear : ''
+      currentFinancialYear : '',
+      renameMenu: false,
+      contextMenuItems : [],
+      selecteMenu:{},
+      financialYearDialog:false,
+      financialYearList: [],
+      financialYearTableheaders : [
+        { text: 'From Date', align: 'center',  value: 'fromDate',sortable: false, },
+        { text: 'To Date', align: 'center',  value: 'toDate',sortable: false, },
+        { text: 'Action', align: 'left',  value: 'active',sortable: false, }
+        ],
     };
   },
   beforeMount: function() {
@@ -122,44 +152,7 @@ export default {
     }
     this.fetchMenu();
   },
-  computed: {
-    selected () {
-      console.log('Active', this.active);
-      if (!this.active.length) return undefined
-      const id = this.active[0]
-      let selectedmenu = null;
-      let selectedMenuRow = null;
-      this.menu.forEach(m =>{
-         if(m.children.length > 0){
-            selectedmenu = m.children.find( cm => cm.menuId === id);
-            if(!selectedmenu){
-              m.children.forEach( fc =>{
-                selectedmenu = fc.children.find( sm => sm.menuId ===id);
-                if(selectedmenu){
-                  selectedMenuRow = selectedmenu;
-                }
-              })
-              if(selectedmenu){
-                  selectedMenuRow = selectedmenu;
-                }
-            } 
-            
-         }
-      })
-      if(selectedMenuRow){
-      console.log('selected item= '+JSON.stringify(selectedMenuRow));
-       localStorage.setItem('menuDocId', selectedMenuRow.menuDocId)
-      this.currentView = '';
-      let that = this;
-      setTimeout(() => 
-        {
-          that.currentView = selectedMenuRow.pageLink;
-        },
-        100);
-      }
-      return selectedMenuRow;
-    }
-  },
+  
   methods: {
     fetchMenu: function() {
       let selectedUser = 0;
@@ -176,9 +169,98 @@ export default {
         }
       });
     },
+    selectedMenu(treeObject, isSelected){
+      console.log(JSON.stringify(treeObject.data)+ " "+ isSelected);
+      if(isSelected){
+      const id = treeObject.data.menuId;
+      let selectedmenu = null;
+      let selectedMenuRow = null;
+      this.menu.forEach(m =>{
+         if(m.children.length > 0){
+            selectedmenu = m.children.find( cm => cm.menuId == id);
+            if(!selectedmenu){
+              m.children.forEach( fc =>{
+                selectedmenu = fc.children.find( sm => sm.menuId == id);
+                if(selectedmenu){
+                  selectedMenuRow = selectedmenu;
+                }
+              })
+            } 
+             if(selectedmenu){
+               selectedMenuRow = selectedmenu;
+            }
+            
+         }
+      })
+      
+      if(selectedMenuRow && selectedMenuRow.pageLink !="" &&  selectedMenuRow.pageLink !=null && isSelected){
+        this.selecteMenu = selectedMenuRow;
+        console.log('selected item= '+JSON.stringify(selectedMenuRow));
+        this.processUserRoles(selectedMenuRow.userRights);
+        localStorage.setItem('menuDocId', selectedMenuRow.menuDocId)
+        this.currentView = '';
+        let that = this;
+        setTimeout(() => 
+          {
+            that.currentView = selectedMenuRow.pageLink;
+          },
+          100);
+        }
+      }
+    },
+    changeFinancialYear(){
+      this.financialYearDialog =true;
+      httpClient({
+        method: "GET",
+        url: `${process.env.VUE_APP_API_BASE}ChangeFinanicalYear`
+      }).then(res => {
+        if (res.status === 200 && res.data) {
+            this.financialYearList = res.data;
+        }
+      });
+    },
+    switchFinancialYear(row){
+      //reset all other financial year to false
+      this.financialYearList.forEach(e =>{
+         if(e.fromDate != row.fromDate && e.toDate != row.toDate){
+           e.active = false;
+         } else{
+           localStorage.setItem('financialYear',e.fromDate+ ' - '+e.toDate);
+           this.currentFinancialYear = e.fromDate+ ' - '+e.toDate;
+         }
+      })
+
+      httpClient({
+        method: "PUT",
+        url: `${process.env.VUE_APP_API_BASE}ChangeFinanicalYear`,
+        data: this.financialYearList
+      }).then(res => {
+        if (res.status === 200 && res.data) {
+           this.changeFinancialYear();
+        }
+      });
+    },
+    processUserRoles(roles){
+      let rights = roles.split('');
+      localStorage.setItem('addRight',rights[0]);
+      localStorage.setItem('editRight',rights[1]);
+      localStorage.setItem('deleteRight',rights[2]);
+      localStorage.setItem('printRight',rights[3]);
+      localStorage.setItem('viewRight',rights[4]);
+      localStorage.setItem('authRight',rights[5]);
+      localStorage.setItem('auth1Right',rights[6]);
+      localStorage.setItem('option1Right',rights[7]);
+      localStorage.setItem('option2Right',rights[8]);
+      localStorage.setItem('option3Right',rights[9]);
+      localStorage.setItem('option4Right',rights[10]);
+      localStorage.setItem('option5Right',rights[11]);
+    },
     userLogout(){
       localStorage.clear();
       this.$router.push({ path: '/' })
+    },
+    changeUser(){
+      this.$router.push({ path: '/login' })
     }
   }
 };

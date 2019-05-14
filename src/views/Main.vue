@@ -127,10 +127,10 @@ export default {
       chnageDataBaseModel: false,
       companyList: [],
       dataBaseDetails: {
-        databaseName: 'vFactIC_Globe',
-        userName: 'sa',
-        password: 'svt@123$$',
-        server: 'SOFTVENTS02'
+        databaseName: '',
+        userName: '',
+        password: '',
+        server: ''
       },
       snackbar: false,
       snackbarColor: '',
@@ -139,8 +139,8 @@ export default {
     }
   },
   beforeMount: function() {
-    console.log('calling before mount function');
     this.fetchCompanyList();
+    this.getSelectDatabaseDetails();
   },
   methods: {
     fetchCompanyList: function() {
@@ -175,6 +175,7 @@ export default {
           this.snackbarColor = 'green',
           this.snackbarText = ' DataBase Connection chnaged successfully!'
           this.snackbar = true;
+         this.fetchCompanyList();
         }
       },(error) => {
         console.log('Error::', error);
@@ -195,6 +196,19 @@ export default {
           localStorage.setItem('dataBaseName', DatabaseName);
           localStorage.setItem('selectedCompanyName', details.dbDisplayName);
           this.$router.push({ path: 'login' })
+        }
+      })
+    },
+    getSelectDatabaseDetails(){
+      httpClient({
+        method: 'GET',
+        url: `${process.env.VUE_APP_API_BASE}ChangeConnectionString`
+      }).then((response) => {
+        if(response.status === 200) {
+          this.dataBaseDetails.databaseName= response.data.databaseName,
+          this.dataBaseDetails.userName= response.data.userName,
+          this.dataBaseDetails.password= response.data.password,
+          this.dataBaseDetails.server= response.data.server
         }
       })
     }

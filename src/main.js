@@ -9,6 +9,7 @@ import VueFormGenerator from 'vue-form-generator/dist/vfg.js'
 //import 'vue-form-generator/dist/vfg-core.css'
 import fieldInputDropdown from "./CustomFields/fieldInputDropdown.vue";
 import Cleave from 'vue-cleave-component';
+import BootstrapVueTreeview from 'bootstrap-vue-treeview';
 
 Vue.component("fieldInputDropdown", fieldInputDropdown);
 
@@ -30,6 +31,7 @@ Vue.use(VueFormGenerator,{
     }
   }
 })
+Vue.use(BootstrapVueTreeview)
 
 new Vue({
   router,
