@@ -87,12 +87,13 @@ import GeneralMaster from "@/components/masterPages/GeneralMaster.vue"
 import ItemMaster from "@/components/masterPages/ItemMaster.vue"
 import PartyDocTranscation from "@/components/Transcations/PartyDocTranscation.vue"
 import ItemOpenningBalance from "@/components/FixedViews/Items/ItemOpenningBalance.vue";
-import PurhaseBillAgainstPO from "@/components/Transcations/PurchaseBillAgainstPO.vue";
+import PurchaseBillAgainstPO from "@/components/Transcations/PurchaseBillAgainstPO.vue";
 import TrnWithOutDetailItem from "@/components/Transcations/TrnWithOutDetailItem.vue";
 import StoreIndent from "@/components/Transcations/StoreIndent.vue";
 import StoreIssueNote from "@/components/Transcations/StoreIssueNote.vue";
 import AuthoriseDocument from "@/components/Utilities/AuthoriseDocument.vue";
 import ShortCloseDocument from "@/components/Utilities/ShortCloseDocument.vue";
+import PartyDocTranscationWithOnlyHeader from "@/components/Transcations/PartyDocWithOnlyHeader.vue";
 
 export default {
   name: "home",
@@ -102,12 +103,14 @@ export default {
     ItemMaster,
     PartyDocTranscation,
     ItemOpenningBalance,
-    PurhaseBillAgainstPO,
+    PurchaseBillAgainstPO,
     TrnWithOutDetailItem,
     StoreIndent,
     StoreIssueNote,
     AuthoriseDocument,
-    ShortCloseDocument
+    ShortCloseDocument,
+    PartyDocTranscationWithOnlyHeader
+
     
     
     

@@ -3,7 +3,7 @@ import VueFormGenerator from 'vue-form-generator'
 import ConvertNumber2Word from '@/DynamicProperty/NumberToWords.js'
 import httpClient from "@/services/httpClient.js"
 
-const updateModalAfterChange = (schemas,headerModal,detailModal,footerModal,totalModal,detailSectionData,section,selectedParty,callQueries) =>{
+const updateModalSingleSchema = (schemas,model,callQueries) =>{
     var tempSchema = schemas;
 
     if(tempSchema.length >0){
@@ -15,7 +15,7 @@ const updateModalAfterChange = (schemas,headerModal,detailModal,footerModal,tota
             var SVTROUNDOFFAMT = 'SVTROUNDOFFAMT', SVTCOLAVG = 'SVTCOLAVG', SVTGETGRIDDATA = 'SVTGETGRIDDATA';
             var formulaSplit = Formula.split("(");
             if (Formula.substring(0, 1) == '#' || Formula.substring(0, 1) == '(') {
-                var FieldData = returnFormula(Formula,headerModal,detailModal,footerModal,totalModal).split('^');
+                var FieldData = returnFormula(Formula,model).split('^');
                  Formula = FieldData[1];
                  //alert(Formula);
                 //alert(JSON.stringify(FieldData));
@@ -25,15 +25,9 @@ const updateModalAfterChange = (schemas,headerModal,detailModal,footerModal,tota
                  }catch(e){
                      ouput =0;
                  }
-                 if(section =="header"){
-                     headerModal[p.model]= parseFloat(ouput.toFixed(2));
-                 }else if(section == "detail"){
-                     detailModal[p.model] = parseFloat(ouput.toFixed(2));
-                 }else if(section == "footer"){
-                     footerModal[p.model] = parseFloat(ouput.toFixed(2));
-                 }else if(section == "total"){
-                     totalModal[p.model]= parseFloat(ouput.toFixed(2));
-                 }
+                 
+                 model[p.model]= parseFloat(ouput.toFixed(2));
+                 
                 
              } else{
 
@@ -51,15 +45,9 @@ const updateModalAfterChange = (schemas,headerModal,detailModal,footerModal,tota
                                 }
                             }
                         });
-                        if(section =="header"){
-                            headerModal[p.model]= (AvgValue / k).toFixed(2);
-                        }else if(section == "detail"){
-                            detailModal[p.model] = (AvgValue / k).toFixed(2);
-                        }else if(section == "footer"){
-                            footerModal[p.model] = (AvgValue / k).toFixed(2);
-                        }else if(section == "total"){
-                            totalModal[p.model]= (AvgValue / k).toFixed(2);
-                        }
+                        
+                        model[p.model]= (AvgValue / k).toFixed(2);
+                       
                     } catch (ex) { }
                 }else if (formulaSplit[0].toString().trim() == SVTCOLSUM) {
                     try {
@@ -75,15 +63,9 @@ const updateModalAfterChange = (schemas,headerModal,detailModal,footerModal,tota
                                 }
                             }
                         });
-                        if(section =="header"){
-                            headerModal[p.model]= TotalValue.toFixed(2);
-                        }else if(section == "detail"){
-                            detailModal[p.model] =TotalValue.toFixed(2);
-                        }else if(section == "footer"){
-                            footerModal[p.model] = TotalValue.toFixed(2);
-                        }else if(section == "total"){
-                            totalModal[p.model]= TotalValue.toFixed(2);
-                        }
+                        
+                        model[p.model]= TotalValue.toFixed(2);
+                        
 
                     } catch (ex) { }
                 }else if (formulaSplit[0].trim() == SVTAMTINWORDS) {
@@ -97,15 +79,8 @@ const updateModalAfterChange = (schemas,headerModal,detailModal,footerModal,tota
                         var amountInWords = '';
                         value = value.substr(0, value.length - 1);
                         value = value.replace("#","");
-                        if(headerModal.hasOwnProperty(value.toUpperCase())){
-                            amountInWords = ConvertNumber2Word(headerModal[value.toUpperCase()],0);
-                        }else if(detailModal.hasOwnProperty(value.toUpperCase())){
-                            amountInWords = ConvertNumber2Word(detailModal[value.toUpperCase()],0);
-                        }else if(footerModal.hasOwnProperty(value.toUpperCase())){
-                            amountInWords = ConvertNumber2Word(footerModal[value.toUpperCase()],0);
-                        } else if(totalModal.hasOwnProperty(value.toUpperCase())){
-                            amountInWords = ConvertNumber2Word(totalModal[value.toUpperCase()],0);
-                            //console.log('amount ing words after='+amountInWords);
+                        if(model.hasOwnProperty(value.toUpperCase())){
+                            amountInWords = ConvertNumber2Word(model[value.toUpperCase()],0);
                         }
                         
                         var textStyle = amtInWordsFrmla[2];
@@ -125,75 +100,44 @@ const updateModalAfterChange = (schemas,headerModal,detailModal,footerModal,tota
                                 output = 'Rupee ' + amountInWords.toString().replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); });
                                 break;
                         }
-                        if(section =="header"){
-                            headerModal[p.model]= output;
-                        }else if(section == "detail"){
-                            detailModal[p.model] =output;
-                        }else if(section == "footer"){
-                            footerModal[p.model] = output;
-                        }else if(section == "total"){
-                            totalModal[p.model]= output;
-                        }
-
+                        
+                        model[p.model]= output;
+                        
 
                     } catch (ex) { }
 
                 }else if (formulaSplit[0].trim() == SVTROUND50) {
                     Formula = Formula.replace(SVTROUND50, '');
-                    FieldData = returnFormula(Formula,headerModal,detailModal,footerModal,totalModal).split('^');
+                    FieldData = returnFormula(Formula,model).split('^');
                     Formula = FieldData[1];
-                    if(section =="header"){
-                        headerModal[p.model]= Math.round(eval(Formula)).toFixed(2).toString();
-                    }else if(section == "detail"){
-                        detailModal[p.model] =Math.round(eval(Formula)).toFixed(2).toString();
-                    }else if(section == "footer"){
-                        footerModal[p.model] = Math.round(eval(Formula)).toFixed(2).toString();
-                    }else if(section == "total"){
-                        totalModal[p.model]= Math.round(eval(Formula)).toFixed(2).toString();
-                    }
+                    
+                    model[p.model]= Math.round(eval(Formula)).toFixed(2).toString();
+                   
                     
                 }
                 else if (formulaSplit[0].trim() == SVTROUND100) {
                     Formula = Formula.replace(SVTROUND100, '');
-                    FieldData = returnFormula(Formula,headerModal,detailModal,footerModal,totalModal).split('^');
+                    FieldData = returnFormula(Formula,model).split('^');
                     Formula = FieldData[1];
-                    if(section =="header"){
-                        headerModal[p.model]= Math.ceil(eval(Formula)).toFixed(2);
-                    }else if(section == "detail"){
-                        detailModal[p.model] =Math.ceil(eval(Formula)).toFixed(2);
-                    }else if(section == "footer"){
-                        footerModal[p.model] = Math.ceil(eval(Formula)).toFixed(2);
-                    }else if(section == "total"){
-                        totalModal[p.model]= Math.ceil(eval(Formula)).toFixed(2);
-                    }
+                    
+                    model[p.model]= Math.ceil(eval(Formula)).toFixed(2);
+                    
                 }
                 else if (formulaSplit[0].trim()== SVTROUND2) {
                     Formula = Formula.replace(SVTROUND2, '');
-                    FieldData = returnFormula(Formula,headerModal,detailModal,footerModal,totalModal).split('^');
+                    FieldData = returnFormula(Formula,model).split('^');
                     Formula = FieldData[1];
-                    if(section =="header"){
-                        headerModal[p.model]= parseFloat(eval(Formula).toFixed(2));
-                    }else if(section == "detail"){
-                        detailModal[p.model] = parseFloat(eval(Formula).toFixed(2));
-                    }else if(section == "footer"){
-                        footerModal[p.model] = parseFloat(eval(Formula).toFixed(2));
-                    }else if(section == "total"){
-                        totalModal[p.model]= parseFloat(eval(Formula).toFixed(2));
-                    }
+                   
+                    model[p.model]= parseFloat(eval(Formula).toFixed(2));
+                    
                 }
                 else if (formulaSplit[0].trim() == SVTROUNDOFFAMT) {
                     Formula = Formula.replace(SVTROUNDOFFAMT, '');
-                    FieldData = returnFormula(Formula,headerModal,detailModal,footerModal,totalModal).split('^');
+                    FieldData = returnFormula(Formula,model).split('^');
                     Formula = FieldData[1]; var roundOffAmt = eval(Formula).toFixed(0) - eval(Formula).toFixed(2);
-                    if(section =="header"){
-                        headerModal[p.model]= parseFloat(roundOffAmt.toFixed(2));
-                    }else if(section == "detail"){
-                        detailModal[p.model] = parseFloat(roundOffAmt.toFixed(2));
-                    }else if(section == "footer"){
-                        footerModal[p.model] = parseFloat(roundOffAmt.toFixed(2));
-                    }else if(section == "total"){
-                        totalModal[p.model]= parseFloat(roundOffAmt.toFixed(2));
-                    }
+                   
+                    model[p.model]= parseFloat(roundOffAmt.toFixed(2));
+                    
                 }else if (formulaSplit[0].toString() == SVTCOLSUMGROUP) {
                     var i = 0, TotalValue = 0
                     Formula = Formula.replace(SVTCOLSUMGROUP, '');
@@ -214,72 +158,28 @@ const updateModalAfterChange = (schemas,headerModal,detailModal,footerModal,tota
                             }
                         }
                     });
-                    if(section =="header"){
-                        headerModal[p.model]= parseFloat(TotalValue.toFixed(2));
-                    }else if(section == "detail"){
-                        detailModal[p.model] = parseFloat(TotalValue.toFixed(2));
-                    }else if(section == "footer"){
-                        footerModal[p.model] = parseFloat(TotalValue.toFixed(2));
-                    }else if(section == "total"){
-                        totalModal[p.model]= parseFloat(TotalValue.toFixed(2));
-                    }
+                    
+                    model[p.model]= parseFloat(TotalValue.toFixed(2));
+                    
                 } else if (formulaSplit[0].toString() == 'SVTCURDATE') {
-                    if(section =="header"){
-                        headerModal[p.model]= '' + getCurrentDate();
-                    }else if(section == "detail"){
-                        detailModal[p.model] = '' + getCurrentDate();
-                    }else if(section == "footer"){
-                        footerModal[p.model] = '' + getCurrentDate();
-                    }else if(section == "total"){
-                        totalModal[p.model]= '' + getCurrentDate();
-                    }
+                    model[p.model] = '' + getCurrentDate();
                 }
                 else if (formulaSplit[0].toString() == 'SVTCURTIME') {
-                    if(section =="header"){
-                        headerModal[p.model]= '' + getTimeZone();
-                    }else if(section == "detail"){
-                        detailModal[p.model] = '' + getTimeZone();
-                    }else if(section == "footer"){
-                        footerModal[p.model] = '' + getTimeZone();
-                    }else if(section == "total"){
-                        totalModal[p.model]= '' + getTimeZone();
-                    }
+                    model[p.model] = '' + getTimeZone();
                 }
                 else if (formulaSplit[0].toString() == 'SVTFYF') {
-                    if(section =="header"){
-                        headerModal[p.model]= '' + getFinYears(1);
-                    }else if(section == "detail"){
-                        detailModal[p.model] = '' + getFinYears(1);
-                    }else if(section == "footer"){
-                        footerModal[p.model] = '' + getFinYears(1);
-                    }else if(section == "total"){
-                        totalModal[p.model]= '' + getFinYears(1);
-                    }
+                    model[p.model] = '' + getFinYears(1); /*Financial year start year like 01/04/2014 returns 14*/
                 }
                 else if (formulaSplit[0].toString() == 'SVTFYT') {
-                    if(section =="header"){
-                        headerModal[p.model]= '' + getFinYears(2);
-                    }else if(section == "detail"){
-                        detailModal[p.model] = '' + getFinYears(2);
-                    }else if(section == "footer"){
-                        footerModal[p.model] = '' + getFinYears(2);
-                    }else if(section == "total"){
-                        totalModal[p.model]= '' + getFinYears(2);
-                    }
-                }   
+                    model[p.model] = '' + getFinYears(2); /*Financial year end year like 31/03/2015 returns 15*/
+                } 
               }
             }
 
             //check for dropdown and add 0 as default option
             if(p.type == "select"){
-                if(section =="header" && headerModal[p.model] =='' ){
-                    headerModal[p.model]= '0';
-                }else if(section == "detail" && detailModal[p.model] == ''){
-                    detailModal[p.model] =  '0';
-                }else if(section == "footer" && footerModal[p.model] == ''){
-                    footerModal[p.model] =  '0';
-                }else if(section == "total" && totalModal[p.model] == ''){
-                    totalModal[p.model]=  '0';
+                if( model[p.model] =='' ){
+                    model[p.model]= '0';
                 }
             }
 
@@ -306,15 +206,9 @@ const updateModalAfterChange = (schemas,headerModal,detailModal,footerModal,tota
 
                 //reduce call if modal not empty
                 let modelData = "";
-                if(section =="header"){
-                    modelData =  headerModal[p.model];
-                }else if(section == "detail"){
-                    modelData =  detailModal[p.model] ;
-                }else if(section == "footer"){
-                    modelData =  footerModal[p.model] ;
-                }else if(section == "total"){
-                    modelData =  totalModal[p.model];
-                }
+                
+                    modelData = model[p.model];
+                
 
                 if(itemCode != "" && itemCode != "000" && itemCode && party && modelData == ""){
                     httpClient({
@@ -322,15 +216,9 @@ const updateModalAfterChange = (schemas,headerModal,detailModal,footerModal,tota
                         url: `${process.env.VUE_APP_API_BASE}loadDataFromQuery?fieldName=${p.loadFromQuery}&itemCode=${itemCode}&selectedParty=${party}`,
                     })
                         .then((result) => {
-                            if(section =="header"){
-                                headerModal[p.model]= result.data.fieldValue;
-                            }else if(section == "detail"){
-                                detailModal[p.model] = result.data.fieldValue;
-                            }else if(section == "footer"){
-                                footerModal[p.model] = result.data.fieldValue;
-                            }else if(section == "total"){
-                                totalModal[p.model]= result.data.fieldValue;
-                            }
+                           
+                            model[p.model]= result.data.fieldValue;
+                            
                             console.log('load from query'+ result.data.fieldValue);
                         }).catch((err) => {
                          console.log('error gettting data from load field by query');
@@ -348,7 +236,7 @@ const updateModalAfterChange = (schemas,headerModal,detailModal,footerModal,tota
 }
 
 //Get Cal culation formulas
-function returnFormula(Formulas,headerModal,detailModal,footerModal,totalModal) {
+function returnFormula(Formulas,model) {
     var separators = [' ', '\\\+', '-', '\\\(', '\\\)', '\\*', '/', ':', '\\\?'];
     var tokens = Formulas.trim().split(new RegExp(separators.join('|'), 'g'));
     var FieldCtrls = '';
@@ -356,16 +244,9 @@ function returnFormula(Formulas,headerModal,detailModal,footerModal,totalModal) 
         if (tokens[i] != "" && tokens[i].substring(0, 1) == '#') {
             FieldCtrls = FieldCtrls + tokens[i].substring(0, tokens[i].length - 1).replace('#','').toUpperCase() + ',';
             let fieldProperty =tokens[i].substring(0, tokens[i].length - 1).replace('#','').toUpperCase();
-            if(headerModal.hasOwnProperty(fieldProperty)){
+            if(model.hasOwnProperty(fieldProperty)){
                  //console.log('has property='+fieldProperty);
-                Formulas = Formulas.replace(tokens[i], headerModal[fieldProperty]);
-            }else if(detailModal.hasOwnProperty(fieldProperty)){
-               //console.log('has property='+fieldProperty);
-                Formulas = Formulas.replace(tokens[i], detailModal[fieldProperty]);
-            }else if(footerModal.hasOwnProperty(fieldProperty)){
-                Formulas = Formulas.replace(tokens[i], footerModal[fieldProperty]);
-            }else if(totalModal.hasOwnProperty(fieldProperty)){
-                Formulas = Formulas.replace(tokens[i], totalModal[fieldProperty]);
+                Formulas = Formulas.replace(tokens[i], model[fieldProperty]);
             }
             
         }
@@ -416,4 +297,4 @@ function getFinYears(flag) {
 }
 
 
-export default updateModalAfterChange;
+export default updateModalSingleSchema;

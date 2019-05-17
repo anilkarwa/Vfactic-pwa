@@ -540,8 +540,7 @@
 <script>
 
 import httpClient from "@/services/httpClient.js"
-import generateSchema from '@/DynamicProperty/generateScheme.js'
-import generateGroupSchema from '@/DynamicProperty/generateGroupSchema.js'
+import generateSchemaForTransaction from '@/DynamicProperty/generateSchemaForTransaction.js'
 import generateNewModal from '@/DynamicProperty/generateNewModal.js'
 import customeValidaton from '@/DynamicProperty/customeValidation.js'
 import updateModalAfterChange from '@/DynamicProperty/updateModalAfterChange.js'
@@ -870,14 +869,14 @@ export default {
           if(pageData.headerFields.dynamicFieldModal.modal.length > 0){
           this.headerDynamicFieldModel = pageData.headerFields.dynamicFieldModal.modal[0];
           this.headerDynamicFieldOriginalSchema = pageData.headerFields.dynamicFieldModal.fieldProperties;
-          this.headerDynamicFieldSchema.fields = generateSchema(pageData.headerFields.dynamicFieldModal.fieldProperties, this.headerDynamicFieldModel);
+        
           }
           
          
           let modalData = JSON.parse(JSON.stringify(pageData.detailFields.dynamicFieldModal.modal[0]));
           this.detailSectionModal =JSON.parse(JSON.stringify(generateNewModal(pageData.detailFields.dynamicFieldModal.fieldProperties,modalData)));
           this.detailSectionFieldOriginalSchema = pageData.detailFields.dynamicFieldModal.fieldProperties;
-          this.detailSectionFieldSchema.fields = generateSchema(pageData.detailFields.dynamicFieldModal.fieldProperties, pageData.detailFields.dynamicFieldModal.modal[0]);
+          
 
           this.generateDetailSectionTableHeader(this.detailSectionModal);
           this.detailSectionData = pageData.detailFields.dynamicFieldModal.modal;
@@ -885,12 +884,17 @@ export default {
 
           this.footerDynamicFieldModel = pageData.footerFields.dynamicFieldModal.modal[0];
           this.footerDynamicFieldOriginalSchema = pageData.footerFields.dynamicFieldModal.fieldProperties;
-          this.footerDynamicFieldSchema.fields = generateSchema(pageData.footerFields.dynamicFieldModal.fieldProperties, this.headerDynamicFieldModel);
+          
 
           this.totalDynamicFieldModel = pageData.totalFields.dynamicFieldModal.modal[0];
           this.totalDynamicFieldOriginalSchema = pageData.totalFields.dynamicFieldModal.fieldProperties;
-          this.totalDynamicFieldSchema.fields = generateSchema(pageData.totalFields.dynamicFieldModal.fieldProperties, this.headerDynamicFieldModel);
+         
 
+          //generate schemas
+          this.headerDynamicFieldSchema.fields =  generateSchemaForTransaction(pageData.headerFields.dynamicFieldModal.fieldProperties, this.headerDynamicFieldModel,pageData.detailFields.dynamicFieldModal.modal[0],this.footerDynamicFieldModel, this.totalDynamicFieldModel);
+          this.detailSectionFieldSchema.fields = generateSchemaForTransaction(pageData.detailFields.dynamicFieldModal.fieldProperties,this.headerDynamicFieldModel, pageData.detailFields.dynamicFieldModal.modal[0],this.footerDynamicFieldModel, this.totalDynamicFieldModel);
+          this.footerDynamicFieldSchema.fields = generateSchemaForTransaction(pageData.footerFields.dynamicFieldModal.fieldProperties,this.headerDynamicFieldModel,pageData.detailFields.dynamicFieldModal.modal[0], this.footerDynamicFieldModel, this.totalDynamicFieldModel);
+          this.totalDynamicFieldSchema.fields = generateSchemaForTransaction(pageData.totalFields.dynamicFieldModal.fieldProperties,this.headerDynamicFieldModel,pageData.detailFields.dynamicFieldModal.modal[0],this.footerDynamicFieldModel, this.totalDynamicFieldModel);
 
 
           convertDateWithSchema(this.headerDynamicFieldOriginalSchema,this.headerDynamicFieldModel, false);
@@ -949,12 +953,12 @@ export default {
           if(pageData.headerFields.dynamicFieldModal.modal !=null ){
           this.headerDynamicFieldModel = generateNewModal(pageData.headerFields.dynamicFieldModal.fieldProperties,pageData.headerFields.dynamicFieldModal.modal);
           this.headerDynamicFieldOriginalSchema = pageData.headerFields.dynamicFieldModal.fieldProperties;
-          this.headerDynamicFieldSchema.fields = generateSchema(pageData.headerFields.dynamicFieldModal.fieldProperties, this.headerDynamicFieldModel);
+          
           }
           this.detailSectionDynamicModal = JSON.parse(JSON.stringify(generateNewModal(pageData.detailFields.dynamicFieldModal.fieldProperties,pageData.detailFields.dynamicFieldModal.modal)));
           this.detailSectionModal = {...this.detailSectionModal,...this.detailSectionDynamicModal};
           this.detailSectionFieldOriginalSchema = pageData.detailFields.dynamicFieldModal.fieldProperties;
-          this.detailSectionFieldSchema.fields = generateSchema(pageData.detailFields.dynamicFieldModal.fieldProperties, pageData.detailFields.dynamicFieldModal.modal);
+          
 
           this.generateDetailSectionTableHeader(this.detailSectionModal);
 
@@ -963,13 +967,19 @@ export default {
           
           this.footerDynamicFieldModel =generateNewModal(pageData.footerFields.dynamicFieldModal.fieldProperties, pageData.footerFields.dynamicFieldModal.modal);
           this.footerDynamicFieldOriginalSchema = pageData.footerFields.dynamicFieldModal.fieldProperties;
-          this.footerDynamicFieldSchema.fields = generateSchema(pageData.footerFields.dynamicFieldModal.fieldProperties, this.headerDynamicFieldModel);
+          
          }
          if(pageData.totalFields.dynamicFieldModal.modal !=null){
           this.totalDynamicFieldModel =generateNewModal(pageData.totalFields.dynamicFieldModal.fieldProperties,pageData.totalFields.dynamicFieldModal.modal);
           this.totalDynamicFieldOriginalSchema = pageData.totalFields.dynamicFieldModal.fieldProperties;
-          this.totalDynamicFieldSchema.fields = generateSchema(pageData.totalFields.dynamicFieldModal.fieldProperties, this.headerDynamicFieldModel);
+          
          }
+
+          //generate schemas
+          this.headerDynamicFieldSchema.fields = generateSchemaForTransaction(pageData.headerFields.dynamicFieldModal.fieldProperties, this.headerDynamicFieldModel,pageData.detailFields.dynamicFieldModal.modal, this.footerDynamicFieldModel, this.totalDynamicFieldModel);
+          this.detailSectionFieldSchema.fields = generateSchemaForTransaction(pageData.detailFields.dynamicFieldModal.fieldProperties,this.headerDynamicFieldModel, pageData.detailFields.dynamicFieldModal.modal, this.footerDynamicFieldModel, this.totalDynamicFieldModel);
+          this.footerDynamicFieldSchema.fields = generateSchemaForTransaction(pageData.footerFields.dynamicFieldModal.fieldProperties,this.headerDynamicFieldModel,pageData.detailFields.dynamicFieldModal.modal, this.footerDynamicFieldModel, this.totalDynamicFieldModel);
+          this.totalDynamicFieldSchema.fields = generateSchemaForTransaction(pageData.totalFields.dynamicFieldModal.fieldProperties,this.headerDynamicFieldModel,pageData.detailFields.dynamicFieldModal.modal, this.footerDynamicFieldModel, this.totalDynamicFieldModel);
 
         }).catch((err) => {
 

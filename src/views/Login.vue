@@ -138,7 +138,7 @@ export default {
         }).catch((err) => {
           console.log('Error Handling', err);
           this.snackbarColor = 'red',
-          this.snackbarText = 'Opps! error is occured!'
+          this.snackbarText = 'Opps! Error has occured!'
           this.snackbar = true;
         });
       } else {

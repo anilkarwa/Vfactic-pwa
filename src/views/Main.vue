@@ -173,7 +173,7 @@ export default {
         console.log('Response from server', response);
         if(response.status === 200) {
           this.snackbarColor = 'green',
-          this.snackbarText = ' DataBase Connection chnaged successfully!'
+          this.snackbarText = ' DataBase connection changed successfully!'
           this.snackbar = true;
          this.fetchCompanyList();
         }

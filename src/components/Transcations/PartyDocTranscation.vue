@@ -70,7 +70,8 @@
 
                               <v-layout row>
                                 <v-flex xs4 sm7 md7>
-                                  <p>Supplier</p>
+                                  <p v-if="searchPartyPrefix =='SUPP'">Supplier</p>
+                                  <p v-if="searchPartyPrefix =='CUST'">Customer</p>
                                   <v-autocomplete  v-model="selectedSupplier" :loading="searchItemsLoading" :items="searchSupplierResult" clearable 
                                       :search-input.sync="addSearchSupplier" auto-select-first flat  hide-no-data  hide-details  item-text="supplierCode" item-value="supplierId" >
                                   <template v-slot:no-data>
@@ -139,7 +140,13 @@
                                 <v-dialog v-model="detailModal" scrollable persistent max-width="450px">
                                   <template v-slot:activator="{ on }">
                                     <!-- <v-btn color="primary" dark v-on="on">Open Dialog</v-btn> -->
-                                    <v-btn fab dark small color="indigo" v-on="on"> <v-icon dark>add</v-icon> </v-btn>
+                                    <v-tooltip top>
+                                      <template v-slot:activator="{ on }">
+                                        <v-btn fab dark small color="indigo" v-on="on"> <v-icon dark>add</v-icon> </v-btn>
+                                      </template>
+                                      <span>Tooltip</span>
+                                    </v-tooltip>
+                                    
                                   </template>
                                   <v-card>
                                     <v-card-title>
@@ -214,15 +221,33 @@
                                         <v-icon>close</v-icon>
                                       </v-btn>
                                     </template>
-                                     <v-btn fab  dark  small color="green" @click="moveRowUpwared()">
-                                      <v-icon>arrow_upward</v-icon>
-                                    </v-btn>
-                                    <v-btn  fab  dark  small color="indigo" @click="moveRowDownwared()" >
-                                      <v-icon>arrow_downward</v-icon>
-                                    </v-btn> 
-                                    <v-btn fab  dark small color="red" @click="removeDetailRecord()">
-                                      <v-icon>delete</v-icon>
-                                    </v-btn>
+                                    <v-tooltip top>
+                                      <template v-slot:activator="{ on }">
+                                        <v-btn fab  dark  small color="green" @click="moveRowUpwared()">
+                                          <v-icon>arrow_upward</v-icon>
+                                        </v-btn>
+                                      </template>
+                                      <span>Tooltip</span>
+                                    </v-tooltip>
+                                    
+                                     <v-tooltip top>
+                                      <template v-slot:activator="{ on }">
+                                        <v-btn  fab  dark  small color="indigo" @click="moveRowDownwared()" >
+                                           <v-icon>arrow_downward</v-icon>
+                                         </v-btn> 
+                                      </template>
+                                      <span>Tooltip</span>
+                                    </v-tooltip>
+                                    
+                                     <v-tooltip top>
+                                      <template v-slot:activator="{ on }">
+                                        <v-btn fab  dark small color="red" @click="removeDetailRecord()">
+                                          <v-icon>delete</v-icon>
+                                        </v-btn>
+                                      </template>
+                                      <span>Tooltip</span>
+                                    </v-tooltip>
+                                    
                                   </v-speed-dial>
                                   <!--End speed dial code -->
                               </div>
@@ -330,7 +355,8 @@
 
                               <v-layout row>
                                 <v-flex xs4 sm7 md7>
-                                  <p>Supplier</p>
+                                  <p v-if="searchPartyPrefix =='SUPP'">Supplier</p>
+                                  <p v-if="searchPartyPrefix =='CUST'">Customer</p>
                                   <v-autocomplete  v-model="selectedSupplier" :loading="searchItemsLoading" :items="searchSupplierResult" clearable 
                                       :search-input.sync="searchSupplier"   auto-select-first flat  hide-no-data  hide-details  item-text="supplierCode" item-value="supplierId" >
                                   <template v-slot:no-data>
@@ -602,8 +628,7 @@
 <script>
 
 import httpClient from "@/services/httpClient.js"
-import generateSchema from '@/DynamicProperty/generateScheme.js'
-import generateGroupSchema from '@/DynamicProperty/generateGroupSchema.js'
+import generateSchemaForTransaction from '@/DynamicProperty/generateSchemaForTransaction.js'
 import generateNewModal from '@/DynamicProperty/generateNewModal.js'
 import customeValidaton from '@/DynamicProperty/customeValidation.js'
 import updateModalAfterChange from '@/DynamicProperty/updateModalAfterChange.js'
@@ -929,14 +954,13 @@ export default {
           if(pageData.headerFields.dynamicFieldModal.modal.length > 0){
           this.headerDynamicFieldModel = pageData.headerFields.dynamicFieldModal.modal[0];
           this.headerDynamicFieldOriginalSchema = pageData.headerFields.dynamicFieldModal.fieldProperties;
-          this.headerDynamicFieldSchema.fields = generateSchema(pageData.headerFields.dynamicFieldModal.fieldProperties, this.headerDynamicFieldModel);
           }
           
          
           let modalData = JSON.parse(JSON.stringify(pageData.detailFields.dynamicFieldModal.modal[0]));
           this.detailSectionModal =JSON.parse(JSON.stringify(generateNewModal(pageData.detailFields.dynamicFieldModal.fieldProperties,modalData)));
           this.detailSectionFieldOriginalSchema = pageData.detailFields.dynamicFieldModal.fieldProperties;
-          this.detailSectionFieldSchema.fields = generateSchema(pageData.detailFields.dynamicFieldModal.fieldProperties, pageData.detailFields.dynamicFieldModal.modal[0]);
+          
           // reset detail section modal
           this.resetDetailSectionModal(this.detailSectionModal);
           this.generateDetailSectionTableHeader(this.detailSectionModal);
@@ -945,14 +969,18 @@ export default {
 
           this.footerDynamicFieldModel = pageData.footerFields.dynamicFieldModal.modal[0];
           this.footerDynamicFieldOriginalSchema = pageData.footerFields.dynamicFieldModal.fieldProperties;
-          this.footerDynamicFieldSchema.fields = generateSchema(pageData.footerFields.dynamicFieldModal.fieldProperties, this.headerDynamicFieldModel);
+          
 
           this.totalDynamicFieldModel = pageData.totalFields.dynamicFieldModal.modal[0];
           this.totalDynamicFieldOriginalSchema = pageData.totalFields.dynamicFieldModal.fieldProperties;
-          this.totalDynamicFieldSchema.fields = generateSchema(pageData.totalFields.dynamicFieldModal.fieldProperties, this.headerDynamicFieldModel);
+          
 
-
-
+          //generate schemas
+          this.headerDynamicFieldSchema.fields =  generateSchemaForTransaction(pageData.headerFields.dynamicFieldModal.fieldProperties, this.headerDynamicFieldModel,pageData.detailFields.dynamicFieldModal.modal[0],this.footerDynamicFieldModel, this.totalDynamicFieldModel);
+          this.detailSectionFieldSchema.fields = generateSchemaForTransaction(pageData.detailFields.dynamicFieldModal.fieldProperties,this.headerDynamicFieldModel, pageData.detailFields.dynamicFieldModal.modal[0],this.footerDynamicFieldModel, this.totalDynamicFieldModel);
+          this.footerDynamicFieldSchema.fields = generateSchemaForTransaction(pageData.footerFields.dynamicFieldModal.fieldProperties,this.headerDynamicFieldModel,pageData.detailFields.dynamicFieldModal.modal[0], this.footerDynamicFieldModel, this.totalDynamicFieldModel);
+          this.totalDynamicFieldSchema.fields = generateSchemaForTransaction(pageData.totalFields.dynamicFieldModal.fieldProperties,this.headerDynamicFieldModel,pageData.detailFields.dynamicFieldModal.modal[0],this.footerDynamicFieldModel, this.totalDynamicFieldModel);
+          
           convertDateWithSchema(this.headerDynamicFieldOriginalSchema,this.headerDynamicFieldModel, false);
           convertDateWithSchema(this.footerDynamicFieldOriginalSchema,this.footerDynamicFieldModel,false);
           convertDateWithSchema(this.totalDynamicFieldOriginalSchema,this.totalDynamicFieldModel,false);
@@ -1003,12 +1031,12 @@ export default {
           if(pageData.headerFields.dynamicFieldModal.modal !=null ){
           this.headerDynamicFieldModel = generateNewModal(pageData.headerFields.dynamicFieldModal.fieldProperties,pageData.headerFields.dynamicFieldModal.modal);
           this.headerDynamicFieldOriginalSchema = pageData.headerFields.dynamicFieldModal.fieldProperties;
-          this.headerDynamicFieldSchema.fields = generateSchema(pageData.headerFields.dynamicFieldModal.fieldProperties, this.headerDynamicFieldModel);
+          
           }
           
           this.detailSectionModal ={ ...this.detailSectionModal,...JSON.parse(JSON.stringify(generateNewModal(pageData.detailFields.dynamicFieldModal.fieldProperties,pageData.detailFields.dynamicFieldModal.modal)))};
           this.detailSectionFieldOriginalSchema = pageData.detailFields.dynamicFieldModal.fieldProperties;
-          this.detailSectionFieldSchema.fields = generateSchema(pageData.detailFields.dynamicFieldModal.fieldProperties, pageData.detailFields.dynamicFieldModal.modal);
+          
           // reset detail section modal
           this.resetDetailSectionModal(this.detailSectionModal);
           this.generateDetailSectionTableHeader(this.detailSectionModal);
@@ -1018,13 +1046,21 @@ export default {
           
           this.footerDynamicFieldModel =generateNewModal(pageData.footerFields.dynamicFieldModal.fieldProperties, pageData.footerFields.dynamicFieldModal.modal);
           this.footerDynamicFieldOriginalSchema = pageData.footerFields.dynamicFieldModal.fieldProperties;
-          this.footerDynamicFieldSchema.fields = generateSchema(pageData.footerFields.dynamicFieldModal.fieldProperties, this.headerDynamicFieldModel);
+          
          }
          if(pageData.totalFields.dynamicFieldModal.modal !=null){
           this.totalDynamicFieldModel =generateNewModal(pageData.totalFields.dynamicFieldModal.fieldProperties,pageData.totalFields.dynamicFieldModal.modal);
           this.totalDynamicFieldOriginalSchema = pageData.totalFields.dynamicFieldModal.fieldProperties;
-          this.totalDynamicFieldSchema.fields = generateSchema(pageData.totalFields.dynamicFieldModal.fieldProperties, this.headerDynamicFieldModel);
+          
          }
+
+
+         //generate schemas
+          this.headerDynamicFieldSchema.fields = generateSchemaForTransaction(pageData.headerFields.dynamicFieldModal.fieldProperties, this.headerDynamicFieldModel,pageData.detailFields.dynamicFieldModal.modal, this.footerDynamicFieldModel, this.totalDynamicFieldModel);
+          this.detailSectionFieldSchema.fields = generateSchemaForTransaction(pageData.detailFields.dynamicFieldModal.fieldProperties,this.headerDynamicFieldModel, pageData.detailFields.dynamicFieldModal.modal, this.footerDynamicFieldModel, this.totalDynamicFieldModel);
+          this.footerDynamicFieldSchema.fields = generateSchemaForTransaction(pageData.footerFields.dynamicFieldModal.fieldProperties,this.headerDynamicFieldModel,pageData.detailFields.dynamicFieldModal.modal, this.footerDynamicFieldModel, this.totalDynamicFieldModel);
+          this.totalDynamicFieldSchema.fields = generateSchemaForTransaction(pageData.totalFields.dynamicFieldModal.fieldProperties,this.headerDynamicFieldModel,pageData.detailFields.dynamicFieldModal.modal, this.footerDynamicFieldModel, this.totalDynamicFieldModel);
+
 
         }).catch((err) => {
 
@@ -1181,7 +1217,7 @@ export default {
         partDocFixedFields[this.prefix+"NO"] = this.partyDOCNumber;
         partDocFixedFields["Print"+this.prefix+"NO"] = this.partyDOCNumber;
         partDocFixedFields[this.prefix+"Date"]=this.parseAsDBDate(this.dateFormatted);
-        partDocFixedFields["SUPPID"]= this.supplier.supplierId;
+        partDocFixedFields[this.searchPartyPrefix+"ID"]= this.supplier.supplierId;
         partDocFixedFields["PartyName"] = this.supplier.supplierName;
         partDocFixedFields["PartyAdd1"] = this.supplier.address1;
         partDocFixedFields["PartyAdd2"] = this.supplier.address2;
@@ -1298,7 +1334,7 @@ export default {
       if(this.validateStaticFields() && this.isDynamicHeaderFormValid && this.isDynamicFooterFormValid  && this.isDynamicTotalFormValid  && this.detailSectionData.length > 0){
 
           let partDocFixedFields ={};
-          partDocFixedFields["SUPPID"]= this.supplier.supplierId;
+          partDocFixedFields[this.searchPartyPrefix+"ID"]= this.supplier.supplierId;
           partDocFixedFields["PartyName"] = this.supplier.supplierName;
           partDocFixedFields["PartyAdd1"] = this.supplier.address1;
           partDocFixedFields["PartyAdd2"] = this.supplier.address2;

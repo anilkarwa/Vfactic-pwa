@@ -15,7 +15,7 @@
         <template slot="items" slot-scope="props">
           <td class="justify-center layout px-0">
             <v-icon v-if="getCurrentUserRoles('editRight') == '1'" small class="mr-2" @click="editItemMasterData(props.item)">edit</v-icon>
-            <v-icon v-if="getCurrentUserRoles('deleteRight') == '1'" small @click="deleteItemMasterData(props.item)">delete</v-icon>
+            <v-icon v-if="getCurrentUserRoles('deleteRight') == '1'" small @click="openDeleteConfirmatinModal(props.item)">delete</v-icon>
           </td>
           <td v-for="values in props.item" :key="values.id">
               {{ values }}
@@ -33,7 +33,7 @@
         fullscreen
         hide-overlay
         transition="dialog-bottom-transition"
-      >
+       >
         <v-card>
           <v-toolbar fixed dark color="primary">
             <v-btn icon dark @click="itemMasterModel = false">
@@ -195,7 +195,7 @@
         fullscreen
         hide-overlay
         transition="dialog-bottom-transition"
-      >
+       >
         <v-card>
           <v-toolbar fixed dark color="primary">
             <v-btn icon dark @click="addItemMasterModel = false">
@@ -351,7 +351,27 @@
         </v-card>
       </v-dialog>
       <!-- END: dialog box model code for adding new Item in Item Master -->
-            <v-snackbar
+    <!-- Delete confirm dialog model -->
+      <v-dialog v-model="deleteModal"  max-width="290">
+        <v-card>
+          <v-card-title class="headline">Delete selected record?</v-card-title>
+          <v-card-text>
+            Are you sure, you want to delete this record?
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="red darken-1"  flat="flat"  @click="deleteModal = false" >
+              Cancel
+            </v-btn>
+            <v-btn  color="green darken-1" flat="flat"  @click="deleteItemMasterData()">
+              Delete
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+       </v-dialog>
+    <!-- End delete dailog modal -->
+
+     <v-snackbar
         v-model="snackbar"
         :color="color"
         :multi-line="true"
@@ -423,7 +443,9 @@ export default {
       timeout: 5000,
       text: '',
       dynamicShema:{},
-      dynamicModal: {}
+      dynamicModal: {},
+      deleteModal: false,
+      deleteSelectedId:0,
     }
   },
   beforeMount: function() {
@@ -493,8 +515,12 @@ export default {
           this.showSnackBar('error',err.response.data);
         });
     },
-    deleteItemMasterData: function(params) {
-      const selectedID = params[Object.keys(params)[0]];
+    openDeleteConfirmatinModal(params){
+      this.deleteSelectedId = params[Object.keys(params)[0]];
+      this.deleteModal =true;
+    },
+    deleteItemMasterData() {
+      const selectedID = this.deleteSelectedId;
       const docID = localStorage.getItem('menuDocId') || 1121; // Need to remove 1121 value and put 0 apart of this;
       const userID = localStorage.getItem('userId') || 0;
        /**
@@ -505,6 +531,8 @@ export default {
         url: `${process.env.VUE_APP_API_BASE}ItemMaster?selectedID=${selectedID}&docID=${docID}&userID=${userID}`
       })
         .then((result) => {
+          this.deleteModal = false;
+          this.deleteSelectedId = 0;
           this.loadItemMaster();
           this.showSnackBar('success',result.data);
         }).catch((err) => {

@@ -1,4 +1,3 @@
-import generateSchema from "./generateScheme";
 
 
 const customeValidaton = (shema,formSchema,formGroupSchema,model) =>{

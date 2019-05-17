@@ -77,6 +77,18 @@ const updateModalAfterChangeMaster = (schemas,model) =>{
                     model[p.model]= parseFloat(roundOffAmt.toFixed(2));
                     
                 } 
+                else if (formulaSplit[0].toString() == 'SVTCURDATE') {
+                    model[p.model] = '' + getCurrentDate();
+                }
+                else if (formulaSplit[0].toString() == 'SVTCURTIME') {
+                    model[p.model] = '' + getTimeZone();
+                }
+                else if (formulaSplit[0].toString() == 'SVTFYF') {
+                    model[p.model] = '' + getFinYears(1); /*Financial year start year like 01/04/2014 returns 14*/
+                }
+                else if (formulaSplit[0].toString() == 'SVTFYT') {
+                    model[p.model] = '' + getFinYears(2); /*Financial year end year like 31/03/2015 returns 15*/
+                } 
               }
             }
 
@@ -106,5 +118,44 @@ function returnFormula(Formulas,model) {
     }
 }
 
+
+//Get System Current Date (dd MMM yyyy)
+function getCurrentDate() {
+    var current_date = new Date();
+    var month_value = current_date.getMonth();
+    var day_value = current_date.getDate();
+    var year_value = current_date.getFullYear();
+    return day_value + '/' + (month_value + 1) + '/' + year_value;
+}
+
+//get client time
+function getTimeZone() {
+    var localTime = new Date();
+    var hours = localTime.getHours();
+    var minutes = localTime.getMinutes();
+    var seconds = localTime.getSeconds();
+    return hours + "." + minutes + "." + seconds;
+}
+
+//get client system seconds from time
+function getTimeStamp() { var localTime = new Date(); return localTime; }
+
+//get client system seconds from time for auto save in cookies add seconds based on client settings
+function getTimeStampForAutoSave() { var localTime = new Date(); localTime.setSeconds(localTime.getSeconds() + parseInt($.session.get(Session_AutoSaveInSeconds))); return localTime; }
+
+
+/*Get Financila Year Start Year and End Year*/
+function getFinYears(flag) {
+    switch (flag) {
+        case 1: /*Financial year start year like 01/04/2014 returns 14*/
+            var FromFinalYear = $.session.get(Session_FromYear).split("/");
+            if (FromFinalYear.length > 0) { return FromFinalYear[2].slice(-2) } else { return "" }
+            break;
+        case 2: /*Financial year end year like 31/03/2015 returns 15*/
+            var ToFinalYear = $.session.get(Session_ToYear).split("/");
+            if (ToFinalYear.length > 0) { return ToFinalYear[2].slice(-2) } else { return "" }
+            break;
+    }
+}
 
 export default updateModalAfterChangeMaster;
