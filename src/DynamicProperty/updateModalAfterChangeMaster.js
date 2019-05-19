@@ -91,7 +91,75 @@ const updateModalAfterChangeMaster = (schemas,model) =>{
                 } 
               }
             }
+           
 
+            //check load from query field data
+            if(p.loadFromQuery != "" && callQueries){
+                let fieldName = p.loadFromQuery.split(".");
+                let itemCode = "";
+                let party = selectedParty;
+                if(fieldName[0] == "i" || fieldName[0] == "g" || fieldName[0] == "u"){
+                    
+                    if(detailModal["ITEMCODE"] != ""){
+                    itemCode=  detailModal["ITEMCODE"];
+                    } else{
+                    itemCode= "000";
+                    }
+                }
+                if(fieldName[0] == "s"){
+                    itemCode="s";
+                }
+                if(fieldName[0] == "c"){
+                    itemCode="c";
+                }
+
+                //reduce call if modal not empty
+                let modelData = "";
+                
+                    modelData = model[p.model];
+                
+
+                if(itemCode != "" && itemCode != "000" && itemCode && party && modelData == ""){
+                    httpClient({
+                        method: 'GET',
+                        url: `${process.env.VUE_APP_API_BASE}loadDataFromQuery?fieldName=${p.loadFromQuery}&itemCode=${itemCode}&selectedParty=${party}`,
+                    })
+                        .then((result) => {
+                            
+                            model[p.model]= result.data.fieldValue;
+                            
+                            console.log('load from query'+ result.data.fieldValue);
+                        }).catch((err) => {
+                            console.log('error gettting data from load field by query');
+                        });
+                    }
+            }
+            if(p.pickUpQuery != ""){
+                let pickUpField = "";
+                let query = p.pickUpQuery;
+                pickUpField = model[p.pickUpAfterField];
+
+                //replace value in query 
+                let myRegExp = new RegExp('#'+p.pickUpAfterField+'#','ig');
+                query = query.replace(myRegExp,pickUpField);
+                query = query.replace(/\`/g,"'");
+                console.log('pickup query= '+query);
+                
+                if(pickUpField !=""){
+                    httpClient({
+                        method: 'GET',
+                        url: `${process.env.VUE_APP_API_BASE}loadDataFromQuery?&query=${query}`,
+                    })
+                    .then((result) => {
+                        model[p.model] = result.data.fieldValue;
+                       
+                        console.log('load from pickup query'+ result.data.fieldValue);
+                    }).catch((err) => {
+                        console.log('error gettting data from load field by query');
+                    });
+                }
+            }
+            
         });
     }
     return false;

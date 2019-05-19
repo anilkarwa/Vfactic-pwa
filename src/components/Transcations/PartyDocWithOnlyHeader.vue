@@ -52,7 +52,7 @@
                             <v-flex xs12 sm7 md7>
                               <p>{{prefix}} NO.</p>
                               <v-layout row>
-                              <v-flex xs3 sm3 md3> <v-select v-model="selectedPrefix"  :items="prefixDropdown" label="Prefix" @change="getDocNumber()"  item-text="prefix" item-value="prefix"></v-select></v-flex>
+                              <v-flex xs3 sm3 md3> <v-select v-model="selectedPrefix"  :items="prefixDropdown" item-value="prefix" item-text="prefix" label="Prefix" @change="getDocNumber()"></v-select></v-flex>
                               <v-flex xs2 sm2 md2> <v-text-field v-model="partyDOCID"  ></v-text-field> </v-flex>
                               <v-flex xs3 sm3 md3> 
                                    <v-menu  reff="datePickerModal" v-model="datePickerModal" :close-on-content-click="false" lazy transition="scale-transition" offset-y
@@ -104,7 +104,7 @@
                             <v-flex xs12 sm7 md7>
                               <p>{{prefix}} NO.</p>
                               <v-layout row>
-                              <v-flex xs3 sm3 md3> <v-select v-model="selectedPrefix"  :items="prefixDropdown" label="Prefix" readonly ></v-select></v-flex>
+                              <v-flex xs3 sm3 md3> <v-select v-model="selectedPrefix"  :items="prefixDropdown" item-value="prefix" item-text="prefix" label="Prefix" readonly ></v-select></v-flex>
                               <v-flex xs2 sm2 md2> <v-text-field v-model="partyDOCID"  ></v-text-field> </v-flex>
                               <v-flex xs3 sm3 md3> 
                                   <!-- <v-menu  ref="datePickerModal" v-model="datePickerModal" :close-on-content-click="false" lazy transition="scale-transition" offset-y
@@ -336,6 +336,8 @@ export default {
           this.prefix =result.data.prefix;
           
           const pageData = result.data;
+          this.selectedPrefix = pageData.mainData.docPrefix;
+          this.prefixDropdown = pageData.prefixData;
           // main data load
 
           this.partyDOCNumber = pageData.mainData.printPONO;
@@ -444,6 +446,8 @@ export default {
           data: updateParams
         })
         .then((result) => {
+             this.addPartyDocModal = false;
+             this.loadPartDocTableData();
              this.showSnackBar('success','Record saved successfullly');
           }).catch((err) => {
             this.showSnackBar('error',err.response.data);

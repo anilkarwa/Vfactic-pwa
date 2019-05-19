@@ -225,6 +225,31 @@ const updateModalSingleSchema = (schemas,model,callQueries) =>{
                         });
                   }
             }
+            if(p.pickUpQuery != ""){
+                let pickUpField = "";
+                let query = p.pickUpQuery;
+                pickUpField = model[p.pickUpAfterField];
+
+                //replace value in query 
+                let myRegExp = new RegExp('#'+p.pickUpAfterField+'#','ig');
+                query = query.replace(myRegExp,pickUpField);
+                query = query.replace(/\`/g,"'");
+                console.log('pickup query= '+query);
+                
+                if(pickUpField !=""){
+                    httpClient({
+                        method: 'GET',
+                        url: `${process.env.VUE_APP_API_BASE}loadDataFromQuery?&query=${query}`,
+                    })
+                    .then((result) => {
+                        model[p.model] = result.data.fieldValue;
+                       
+                        console.log('load from pickup query'+ result.data.fieldValue);
+                    }).catch((err) => {
+                        console.log('error gettting data from load field by query');
+                    });
+                }
+            }
 
         });
     }

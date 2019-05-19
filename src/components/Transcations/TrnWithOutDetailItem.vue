@@ -273,7 +273,7 @@
                             <v-flex xs12 sm7 md7>
                               <p>{{prefix}} NO.</p>
                               <v-layout row>
-                              <v-flex xs3 sm3 md3> <v-select v-model="selectedPrefix"  :items="prefixDropdown" label="Prefix" readonly ></v-select></v-flex>
+                              <v-flex xs3 sm3 md3> <v-select v-model="selectedPrefix"  :items="prefixDropdown" item-value="prefix" item-text="prefix" label="Prefix" readonly ></v-select></v-flex>
                               <v-flex xs2 sm2 md2> <v-text-field v-model="partyDOCID"  ></v-text-field> </v-flex>
                               <v-flex xs3 sm3 md3> 
                                   <!-- <v-menu  ref="datePickerModal" v-model="datePickerModal" :close-on-content-click="false" lazy transition="scale-transition" offset-y
@@ -809,6 +809,8 @@ export default {
           this.dependentPrefix = pageData.mainData.dependentPrefix;
           this.searchPartyTableName = pageData.mainData.docPartyTableName;
           this.searchPartyPrefix = pageData.mainData.docPartyPrefix;
+          this.selectedPrefix = pageData.mainData.docPrefix;
+          this.prefixDropdown = pageData.prefixData;
 
           //console.log(JSON.stringify(pageData.headerFields.dynamicFieldModal.fieldProperties));
           if(pageData.headerFields.dynamicFieldModal.modal.length > 0){

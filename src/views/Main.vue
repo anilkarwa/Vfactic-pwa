@@ -162,7 +162,8 @@ export default {
         databaseName: this.dataBaseDetails.databaseName,
         userName: this.dataBaseDetails.userName,
         password: this.dataBaseDetails.password,
-        server: this.dataBaseDetails.server
+        server: this.dataBaseDetails.server,
+        fileName :window.location.hostname
       }
       console.log('payload', payload);
       httpClient({
@@ -172,6 +173,12 @@ export default {
       }).then((response) => {
         console.log('Response from server', response);
         if(response.status === 200) {
+          //get to localstoage
+         
+          localStorage.setItem(`dbusername`,this.dataBaseDetails.userName);
+          localStorage.setItem(`dbpassword`,this.dataBaseDetails.password);
+          localStorage.setItem(`dbserver`,this.dataBaseDetails.server);
+          localStorage.setItem('sessionNumber',Math.floor(Math.random() * 100000000));
           this.snackbarColor = 'green',
           this.snackbarText = ' DataBase connection changed successfully!'
           this.snackbar = true;
@@ -187,17 +194,18 @@ export default {
     readCompanyDetials: function(details) {
       const DatabaseName = details.dbName;
       console.log('DatabaseName', DatabaseName);
-      httpClient({
+      localStorage.setItem('dataBaseName', DatabaseName);
+      localStorage.setItem('selectedCompanyName', details.dbDisplayName);
+      this.$router.push({ path: 'login' })
+      /*httpClient({
         method: 'PUT',
         url: `${process.env.VUE_APP_API_BASE}updateDBInConnectionString?selectedCompanyDB=${DatabaseName}`
       }).then((response) => {
         console.log('Response from server', response);
         if(response.status === 200) {
-          localStorage.setItem('dataBaseName', DatabaseName);
-          localStorage.setItem('selectedCompanyName', details.dbDisplayName);
-          this.$router.push({ path: 'login' })
+
         }
-      })
+      })*/
     },
     getSelectDatabaseDetails(){
       httpClient({
@@ -205,10 +213,15 @@ export default {
         url: `${process.env.VUE_APP_API_BASE}ChangeConnectionString`
       }).then((response) => {
         if(response.status === 200) {
-          this.dataBaseDetails.databaseName= response.data.databaseName,
-          this.dataBaseDetails.userName= response.data.userName,
-          this.dataBaseDetails.password= response.data.password,
-          this.dataBaseDetails.server= response.data.server
+          this.dataBaseDetails.databaseName= response.data.databaseName;
+          this.dataBaseDetails.userName= response.data.userName;
+          this.dataBaseDetails.password= response.data.password;
+          this.dataBaseDetails.server= response.data.server;
+          //get to localstoage
+          let dbName = response.data.databaseName;
+          localStorage.setItem(`dbusername`,response.data.userName);
+          localStorage.setItem(`dbpassword`,response.data.password);
+          localStorage.setItem(`dbserver`,response.data.server);
         }
       })
     }

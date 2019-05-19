@@ -337,6 +337,48 @@ const updateModalAfterChange = (schemas,headerModal,detailModal,footerModal,tota
                         });
                   }
             }
+            if(p.pickUpQuery != ""){
+                let pickUpField = "";
+                let query = p.pickUpQuery;
+                
+                if(headerModal.hasOwnProperty(p.pickUpAfterField)){
+                    pickUpField =  headerModal[p.pickUpAfterField];
+                }else if(detailModal.hasOwnProperty(p.pickUpAfterField)){
+                    pickUpField = detailModal[p.pickUpAfterField];
+                }else if(footerModal.hasOwnProperty(p.pickUpAfterField)){
+                    pickUpField = footerModal[p.pickUpAfterField];
+                }else if(totalModal.hasOwnProperty(p.pickUpAfterField)){
+                    pickUpField = totalModal[p.pickUpAfterField];
+                }
+
+                //replace value in query 
+                //replace value in query 
+                let myRegExp = new RegExp('#'+p.pickUpAfterField+'#','ig');
+                query = query.replace(myRegExp,pickUpField);
+                query = query.replace(/\`/g,"'");
+                console.log('pickup query= '+query);
+                
+                if(pickUpField !=""){
+                    httpClient({
+                        method: 'GET',
+                        url: `${process.env.VUE_APP_API_BASE}loadDataFromQuery?&query=${query}`,
+                    })
+                    .then((result) => {
+                       if(headerModal.hasOwnProperty(p.model)){
+                             headerModal[p.model] = result.data.fieldValue;
+                       }else if(detailModal.hasOwnProperty(p.model)){
+                             detailModal[p.model] = result.data.fieldValue;
+                       }else if(footerModal.hasOwnProperty(p.model)){
+                             footerModal[p.model] = result.data.fieldValue;
+                       }else if(totalModal.hasOwnProperty(p.model)){
+                             totalModal[p.model] = result.data.fieldValue;
+                       }
+                        console.log('load from pickup query'+ result.data.fieldValue);
+                    }).catch((err) => {
+                        console.log('error gettting data from load field by query');
+                    });
+                }
+            }
 
         });
     }

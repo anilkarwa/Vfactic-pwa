@@ -3,10 +3,10 @@ const axiosInstance = axios.create();
 /**
  *
  */
+
 axiosInstance.interceptors.request.use(
     config => {
-        //  eslint-disable-line
-        // TODO: Do something before request is sent
+
         return config;
     },
     error => {
@@ -43,6 +43,10 @@ const fetchRequester = async ({ method, url, data }) => {
         headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
+            'dbname': localStorage.getItem('dataBaseName') || '',
+            'dbusername':localStorage.getItem('dbusername') || '',
+            'dbpassword':localStorage.getItem('dbpassword') || '',
+            'dbserver':localStorage.getItem('dbserver') || ''
         }
     });
     return response;
