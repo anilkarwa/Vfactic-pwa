@@ -13,12 +13,14 @@
       </v-card-title>
         <v-data-table :headers="partyDocHeaders" :search="tableSearch" :items="partyDocTableData" class="elevation-1">
           <template slot="items" slot-scope="props">
+            <tr @click="editSelectedPartyDocTranscation(props.item)">
             <td class="justify-center layout px-0">
               <v-icon v-if="getCurrentUserRoles('editRight') == '1'" small class="mr-2" @click="editSelectedPartyDocTranscation(props.item)">edit</v-icon>
             </td>
             <td v-for="values in props.item" :key="values.id">
               {{ values }}
             </td>
+            </tr>
           </template>
           <template slot="no-data">
             <v-btn color="primary">Reset</v-btn>
@@ -35,9 +37,7 @@
                 </v-btn>
                 <v-toolbar-title>Add Information</v-toolbar-title>
                 <v-spacer></v-spacer>
-                <v-toolbar-items>
-                  <v-btn dark flat @click="savePartyDocHDRTableData()">Save</v-btn>
-                </v-toolbar-items>
+                <v-btn class="blue darken-1 white--text" @click="savePartyDocHDRTableData()">Add</v-btn>
               </v-toolbar>
               <v-container class="spaceFromTop" fluid grid-list-md >
                 <v-layout row wrap>
@@ -92,9 +92,7 @@
                 </v-btn>
                 <v-toolbar-title>Edit Information</v-toolbar-title>
                 <v-spacer></v-spacer>
-                <v-toolbar-items>
-                  <v-btn dark flat @click="updatePartyDoc()">Save</v-btn>
-                </v-toolbar-items>
+                <v-btn class="blue darken-1 white--text" @click="updatePartyDoc()">Save</v-btn>
               </v-toolbar>
               <v-container  class="spaceFromTop" fluid grid-list-md >
                 <v-layout row wrap>
@@ -298,7 +296,7 @@ export default {
      /* ******************* Main table functions ************************* */
      loadPartDocTableData(){
       const docID =  localStorage.getItem('menuDocId') || 0;
-      this.partyDocHeaders= [ { text: "Edit", align: "center" } ],
+      this.partyDocHeaders= [ { text: "Action", align: "center",sortable: false } ],
       this.partyDocHeadersKey = [];
       httpClient({
         method: 'GET',
@@ -323,6 +321,12 @@ export default {
         });
     },
      editSelectedPartyDocTranscation(params){
+
+      if(this.getCurrentUserRoles('editRight') != '1')
+       {
+         this.showSnackBar('error',"You do not have edit rights on the page.");
+         return
+       }
 
        this.selectedID = params[Object.keys(params)[0]];
        const docID =  localStorage.getItem('menuDocId') || 0;

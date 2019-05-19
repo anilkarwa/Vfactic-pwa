@@ -20,11 +20,8 @@
         <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
         <v-toolbar-title class="white--text">{{selectedCompanyName}}</v-toolbar-title>
         <v-spacer></v-spacer>
-      <v-toolbar-items class="hidden-sm-and-down">
-        <v-btn flat class="white--text" @click="changeUser()">Change User</v-btn>
-        <v-btn flat class="white--text" @click="userLogout()">Logout</v-btn>
-
-      </v-toolbar-items>
+         <v-btn  class="blue darken-1 white--text" @click="changeUser()">Change User</v-btn>
+        <v-btn  class="blue darken-1 white--text" @click="userLogout()">Logout</v-btn>
       </v-toolbar>
       <v-content>
         <v-container fluid>

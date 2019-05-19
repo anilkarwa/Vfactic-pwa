@@ -5,6 +5,7 @@
       <v-toolbar-title>VfactIC</v-toolbar-title>
       <v-spacer></v-spacer>
       <router-link to = "/"><span class="white--text">Back to Company Selection</span> </router-link>
+      
     </v-toolbar>
     <v-content>
       <v-container fluid fill-height>
@@ -24,7 +25,7 @@
               <v-card-text>
                 <v-form>
                   <v-text-field prepend-icon="person" v-model="loginModel.userName" name="login" label="Login" type="text" ></v-text-field>
-                  <v-text-field prepend-icon="lock" v-model="loginModel.password" name="password" label="Password" id="password" type="password" ></v-text-field>
+                  <v-text-field prepend-icon="lock" v-model="loginModel.password" name="password" label="Password" id="password" type="password" v-on:keyup.enter="userLogin()" ></v-text-field>
                 </v-form>
               </v-card-text>
               <v-card-actions>

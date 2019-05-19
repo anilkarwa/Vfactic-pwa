@@ -13,12 +13,14 @@
       </v-card-title>
         <v-data-table :headers="partyDocHeaders" :search="tableSearch" :items="partyDocTableData" class="elevation-1">
           <template slot="items" slot-scope="props">
+            <tr @click="editSelectedPartyDocTranscation(props.item)">
             <td class="justify-center layout px-0">
               <v-icon v-if="getCurrentUserRoles('editRight') == '1'" small class="mr-2" @click="editSelectedPartyDocTranscation(props.item)">edit</v-icon>
             </td>
             <td v-for="values in props.item" :key="values.id">
               {{ values }}
             </td>
+            </tr>
           </template>
           <template slot="no-data">
             <v-btn color="primary">Reset</v-btn>
@@ -35,9 +37,7 @@
                 </v-btn>
                 <v-toolbar-title>Add Information</v-toolbar-title>
                 <v-spacer></v-spacer>
-                <v-toolbar-items>
-                  <v-btn dark flat @click="savePartyDocHDRTableData()">Save</v-btn>
-                </v-toolbar-items>
+                <v-btn class="blue darken-1 white--text" @click="savePartyDocHDRTableData()">Add</v-btn>
               </v-toolbar>
               <v-container class="spaceFromTop" fluid grid-list-md >
                 <v-layout row wrap>
@@ -70,7 +70,8 @@
 
                               <v-layout row>
                                 <v-flex xs4 sm7 md7>
-                                  <p>Supplier</p>
+                                  <p v-if="searchPartyPrefix =='SUPP'">Supplier</p>
+                                  <p v-if="searchPartyPrefix =='CUST'">Customer</p>
                                   <v-autocomplete  v-model="selectedSupplier" :loading="searchItemsLoading" :items="searchSupplierResult" clearable 
                                       :search-input.sync="addSearchSupplier" auto-select-first flat  hide-no-data  hide-details  item-text="supplierCode" item-value="supplierId" >
                                      <template v-slot:no-data>
@@ -259,9 +260,7 @@
                 </v-btn>
                 <v-toolbar-title>Edit Information</v-toolbar-title>
                 <v-spacer></v-spacer>
-                <v-toolbar-items>
-                  <v-btn dark flat @click="updatePartyDoc()">Save</v-btn>
-                </v-toolbar-items>
+                <v-btn  class="blue darken-1 white--text" @click="updatePartyDoc()">Save</v-btn>
               </v-toolbar>
               <v-container  class="spaceFromTop" fluid grid-list-md >
                 <v-layout row wrap>
@@ -289,7 +288,8 @@
 
                               <v-layout row>
                                 <v-flex xs4 sm7 md7>
-                                  <p>Supplier</p>
+                                 <p v-if="searchPartyPrefix =='SUPP'">Supplier</p>
+                                 <p v-if="searchPartyPrefix =='CUST'">Customer</p>
                                   <v-autocomplete  v-model="selectedSupplier" :loading="searchItemsLoading" :items="searchSupplierResult" clearable 
                                       :search-input.sync="searchSupplier"   auto-select-first flat  hide-no-data  hide-details  item-text="supplierCode" item-value="supplierId" >
                                     <template v-slot:no-data>
@@ -759,7 +759,7 @@ export default {
      /* ******************* Main table functions ************************* */
      loadPartDocTableData(){
       const docID =  localStorage.getItem('menuDocId') || 0;
-      this.partyDocHeaders= [ { text: "Edit", align: "center" } ],
+      this.partyDocHeaders= [ { text: "Action", align: "center",sortable: false } ],
       this.partyDocHeadersKey = [];
       httpClient({
         method: 'GET',
@@ -784,6 +784,13 @@ export default {
         });
     },
      editSelectedPartyDocTranscation(params){
+
+       if(this.getCurrentUserRoles('editRight') != '1')
+       {
+         this.showSnackBar('error',"You do not have edit rights on the page.");
+         return
+       }
+
        this.resetFromVariable();
        this.detailSectionModal = {};
        this.detailSectionHeader = [];
@@ -816,7 +823,6 @@ export default {
           if(pageData.headerFields.dynamicFieldModal.modal.length > 0){
           this.headerDynamicFieldModel = pageData.headerFields.dynamicFieldModal.modal[0];
           this.headerDynamicFieldOriginalSchema = pageData.headerFields.dynamicFieldModal.fieldProperties;
-        
           }
           
          
@@ -829,24 +835,31 @@ export default {
           this.detailSectionData = pageData.detailFields.dynamicFieldModal.modal;
           console.log('detail section data after load='+ JSON.stringify(this.detailSectionData));
 
+         if(pageData.footerFields.dynamicFieldModal != null){
           this.footerDynamicFieldModel = pageData.footerFields.dynamicFieldModal.modal[0];
           this.footerDynamicFieldOriginalSchema = pageData.footerFields.dynamicFieldModal.fieldProperties;
+         }
           
-
-          this.totalDynamicFieldModel = pageData.totalFields.dynamicFieldModal.modal[0];
-          this.totalDynamicFieldOriginalSchema = pageData.totalFields.dynamicFieldModal.fieldProperties;
+          if(pageData.totalFields.dynamicFieldModal !=null){
+           this.totalDynamicFieldModel = pageData.totalFields.dynamicFieldModal.modal[0];
+           this.totalDynamicFieldOriginalSchema = pageData.totalFields.dynamicFieldModal.fieldProperties;
+          }
           
 
            //generate schemas
           this.headerDynamicFieldSchema.fields =  generateSchemaForTransaction(pageData.headerFields.dynamicFieldModal.fieldProperties, this.headerDynamicFieldModel,pageData.detailFields.dynamicFieldModal.modal[0],this.footerDynamicFieldModel, this.totalDynamicFieldModel);
           this.detailSectionFieldSchema.fields = generateSchemaForTransaction(pageData.detailFields.dynamicFieldModal.fieldProperties,this.headerDynamicFieldModel, pageData.detailFields.dynamicFieldModal.modal[0],this.footerDynamicFieldModel, this.totalDynamicFieldModel);
-          this.footerDynamicFieldSchema.fields = generateSchemaForTransaction(pageData.footerFields.dynamicFieldModal.fieldProperties,this.headerDynamicFieldModel,pageData.detailFields.dynamicFieldModal.modal[0], this.footerDynamicFieldModel, this.totalDynamicFieldModel);
-          this.totalDynamicFieldSchema.fields = generateSchemaForTransaction(pageData.totalFields.dynamicFieldModal.fieldProperties,this.headerDynamicFieldModel,pageData.detailFields.dynamicFieldModal.modal[0],this.footerDynamicFieldModel, this.totalDynamicFieldModel);
-
+          
 
           convertDateWithSchema(this.headerDynamicFieldOriginalSchema,this.headerDynamicFieldModel, false);
-          convertDateWithSchema(this.footerDynamicFieldOriginalSchema,this.footerDynamicFieldModel,false);
-          convertDateWithSchema(this.totalDynamicFieldOriginalSchema,this.totalDynamicFieldModel,false);
+          if(pageData.footerFields.dynamicFieldModal !=null) {
+             this.footerDynamicFieldSchema.fields = generateSchemaForTransaction(pageData.footerFields.dynamicFieldModal.fieldProperties,this.headerDynamicFieldModel,pageData.detailFields.dynamicFieldModal.modal[0], this.footerDynamicFieldModel, this.totalDynamicFieldModel);
+             convertDateWithSchema(this.footerDynamicFieldOriginalSchema,this.footerDynamicFieldModel,false);
+          }
+          if(pageData.totalFields.dynamicFieldModal !=null){
+            this.totalDynamicFieldSchema.fields = generateSchemaForTransaction(pageData.totalFields.dynamicFieldModal.fieldProperties,this.headerDynamicFieldModel,pageData.detailFields.dynamicFieldModal.modal[0],this.footerDynamicFieldModel, this.totalDynamicFieldModel);
+            convertDateWithSchema(this.totalDynamicFieldOriginalSchema,this.totalDynamicFieldModel,false);
+          }
 
         }).catch((err) => {
 
@@ -1004,7 +1017,7 @@ export default {
         partDocFixedFields[this.prefix+"NO"] = this.partyDOCNumber;
         partDocFixedFields["Print"+this.prefix+"NO"] = this.partyDOCNumber;
         partDocFixedFields[this.prefix+"Date"]=this.parseAsDBDate(this.dateFormatted);
-        partDocFixedFields["SUPPID"]= this.supplier.supplierId;
+        partDocFixedFields[this.searchPartyPrefix+"ID"]= this.supplier.supplierId;
         partDocFixedFields["PartyName"] = this.supplier.supplierName;
         partDocFixedFields["PartyAdd1"] = this.supplier.address1;
         partDocFixedFields["PartyAdd2"] = this.supplier.address2;
@@ -1115,7 +1128,7 @@ export default {
       if(this.validateStaticFields() && this.isDynamicHeaderFormValid && this.isDynamicFooterFormValid  && this.isDynamicTotalFormValid  && this.detailSectionData.length > 0){
 
           let partDocFixedFields ={};
-          partDocFixedFields["SUPPID"]= this.supplier.supplierId;
+          partDocFixedFields[this.searchPartyPrefix+"ID"]= this.supplier.supplierId;
           partDocFixedFields["PartyName"] = this.supplier.supplierName;
           partDocFixedFields["PartyAdd1"] = this.supplier.address1;
           partDocFixedFields["PartyAdd2"] = this.supplier.address2;

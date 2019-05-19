@@ -202,5 +202,11 @@ display: inline-block;
    position: relative;
    top:50px;
  }
+ table thead{
+   background-color: #4286f4;
+ }
+ table thead th{
+   color: white !important;
+ }
 
 </style>

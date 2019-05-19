@@ -14,6 +14,7 @@
       </v-card-title>
       <v-data-table :headers="headers" :search="tableSearch" :items="generalMasterTableData" class="elevation-1">
         <template slot="items" slot-scope="props">
+          <tr @click="editGeneralMasterData(props.item)">
           <td class="justify-center layout px-0">
             <v-icon v-if="getCurrentUserRoles('editRight') == '1'"  small class="mr-2" @click="editGeneralMasterData(props.item)">edit</v-icon>
             <v-icon v-if="getCurrentUserRoles('deleteRight') == '1'" small @click="openDeleteConfirmatinModal(props.item)">delete</v-icon>
@@ -21,6 +22,7 @@
           <td v-for="values in props.item" :key="values.id">
             {{ values }}
           </td>
+          </tr>
         </template>
         <template slot="no-data">
           <v-btn color="primary">Reset</v-btn>
@@ -34,7 +36,7 @@
         fullscreen
         hide-overlay
         transition="dialog-bottom-transition"
-      >
+       >
         <v-card>
           <v-toolbar fixed dark color="primary">
             <v-btn icon dark @click="generalMasterModel = false">
@@ -42,9 +44,7 @@
             </v-btn>
             <v-toolbar-title>Edit Information</v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-toolbar-items>
-              <v-btn dark flat @click="updateGeneralMasterData()">Save</v-btn>
-            </v-toolbar-items>
+            <v-btn class="blue darken-1 white--text" @click="updateGeneralMasterData()">Save</v-btn>
           </v-toolbar>
            <v-container class="spaceFromTop" fluid grid-list-md >
           <v-layout row wrap>
@@ -181,9 +181,7 @@
             </v-btn>
             <v-toolbar-title>Add Record</v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-toolbar-items>
-              <v-btn dark flat @click="addItemRequest()">Add</v-btn>
-            </v-toolbar-items>
+            <v-btn class="blue darken-1 white--text" @click="addItemRequest()">Add</v-btn>
           </v-toolbar>
            <v-container class="spaceFromTop" fluid grid-list-md >
           <v-layout row wrap>
@@ -404,7 +402,7 @@ export default {
        * Code for loading the party master data
        */
       const docID =  localStorage.getItem('menuDocId') || 0;
-      this.headers = [ { text: "Edit", align: "center" } ];
+      this.headers = [ { text: "Action", align: "center",sortable: false } ];
       httpClient({
         method: 'GET',
         url: `${process.env.VUE_APP_API_BASE}GeneralMaster?docID=${docID}`
@@ -428,6 +426,12 @@ export default {
         });
     },
     editGeneralMasterData: function(params) {
+      if(this.getCurrentUserRoles('editRight') != '1')
+       {
+         this.showSnackBar('error',"You do not have edit rights on the page.");
+         return
+       }
+
       this.generalMasterModel = true;
       const docID = localStorage.getItem('menuDocId') || 0;
       const selectedI = params[Object.keys(params)[0]];

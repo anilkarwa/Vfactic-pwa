@@ -16,6 +16,7 @@
       </v-card-title>
       <v-data-table :headers="headers" :search="tableSearch" :items="partyMasterTableData" class="elevation-1">
         <template slot="items" slot-scope="props">
+          <tr @click="editPartyMasterData(props.item)">
           <td class="justify-center layout px-0">
             <v-icon v-if="getCurrentUserRoles('editRight') == '1'" small class="mr-2" @click="editPartyMasterData(props.item)">edit</v-icon>
             <v-icon v-if="getCurrentUserRoles('deleteRight') == '1'" small @click="openDeleteConfirmatinModal(props.item)">delete</v-icon>
@@ -23,6 +24,7 @@
           <td v-for="values in props.item" :key="values.id">
             {{ values }}
           </td>
+          </tr>
         </template>
         <template slot="no-data">
           <v-btn color="primary">Reset</v-btn>
@@ -47,9 +49,7 @@
             </v-btn>
             <v-toolbar-title>Edit Information</v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-toolbar-items>
-              <v-btn dark flat @click="updatePartyMasterData()">Save</v-btn>
-            </v-toolbar-items>
+            <v-btn class="blue darken-1 white--text" @click="updatePartyMasterData()">Save</v-btn>
           </v-toolbar>
            <v-container class="spaceFromTop" fluid grid-list-md >
           <v-layout row wrap>
@@ -246,9 +246,8 @@
             </v-btn>
             <v-toolbar-title>Add Record</v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-toolbar-items>
-              <v-btn dark flat @click="addItemRequest()">Add</v-btn>
-            </v-toolbar-items>
+            <v-btn class="blue darken-1 white--text" @click="addItemRequest()">Add</v-btn>
+
           </v-toolbar>
            <v-container class="spaceFromTop" fluid grid-list-md >
           <v-layout row wrap>
@@ -555,7 +554,7 @@ export default {
     },
     loadPatryMasteData: function() {
       const docID = localStorage.getItem('menuDocId') || 0;
-      this.headers= [ { text: "Edit", align: "center" } ],
+      this.headers= [ { text: "Action", align: "center",sortable: false } ],
       /**
        * Code for loading the party master data
        */
@@ -581,6 +580,13 @@ export default {
         });
     },
     editPartyMasterData: function(params) {
+
+      if(this.getCurrentUserRoles('editRight') != '1')
+       {
+         this.showSnackBar('error',"You do not have edit rights on the page.");
+         return
+       }
+
       this.selectedID = params[Object.keys(params)[0]];
       const docID = localStorage.getItem('menuDocId') || 0; 
       this.partyMasterModel = true;
