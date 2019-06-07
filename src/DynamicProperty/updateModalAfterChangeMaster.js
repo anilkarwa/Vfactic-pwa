@@ -31,12 +31,12 @@ const updateModalAfterChangeMaster = (schemas,model) =>{
                 if (formulaSplit[0].toString().trim() == SVTCOLAVG) {
                     try {
                         var k = 0, AvgValue = 0
-                        Formula = Formula.replace(SVTCOLAVG, '');
+                        Formula = Formula.replace(SVTCOLAVG, '').replace(/\s+/g,"");
                         Formula = Formula.substr(2) //Remove first character from string
                         Formula = Formula.substr(0, Formula.length - 2) //Remove last character from string
                         detailSectionData.forEach( function(value, i){
                             for(var key in value){
-                                if(key == Formula){
+                                if(key == Formula.toUpperCase()){
                                     AvgValue = AvgValue + parseFloat(value[key]);
                                     k = k + 1;
                                 }
@@ -46,7 +46,7 @@ const updateModalAfterChangeMaster = (schemas,model) =>{
                         
                     } catch (ex) { }
                 }else if (formulaSplit[0].trim() == SVTROUND50) {
-                    Formula = Formula.replace(SVTROUND50, '');
+                    Formula = Formula.replace(SVTROUND50, '').replace(/\s+/g,"");
                     FieldData = returnFormula(Formula,model).split('^');
                     Formula = FieldData[1];
 
@@ -54,7 +54,7 @@ const updateModalAfterChangeMaster = (schemas,model) =>{
                     
                 }
                 else if (formulaSplit[0].trim() == SVTROUND100) {
-                    Formula = Formula.replace(SVTROUND100, '');
+                    Formula = Formula.replace(SVTROUND100, '').replace(/\s+/g,"");
                     FieldData = returnFormula(Formula,model).split('^');
                     Formula = FieldData[1];
 
@@ -62,7 +62,7 @@ const updateModalAfterChangeMaster = (schemas,model) =>{
                     
                 }
                 else if (formulaSplit[0].trim()== SVTROUND2) {
-                    Formula = Formula.replace(SVTROUND2, '');
+                    Formula = Formula.replace(SVTROUND2, '').replace(/\s+/g,"");
                     FieldData = returnFormula(Formula,model).split('^');
                     Formula = FieldData[1];
 
@@ -70,7 +70,7 @@ const updateModalAfterChangeMaster = (schemas,model) =>{
                     
                 }
                 else if (formulaSplit[0].trim() == SVTROUNDOFFAMT) {
-                    Formula = Formula.replace(SVTROUNDOFFAMT, '');
+                    Formula = Formula.replace(SVTROUNDOFFAMT, '').replace(/\s+/g,"");
                     FieldData = returnFormula(Formula,model).split('^');
                     Formula = FieldData[1]; var roundOffAmt = eval(Formula).toFixed(0) - eval(Formula).toFixed(2);
 
@@ -93,47 +93,6 @@ const updateModalAfterChangeMaster = (schemas,model) =>{
             }
            
 
-            //check load from query field data
-            if(p.loadFromQuery != "" && callQueries){
-                let fieldName = p.loadFromQuery.split(".");
-                let itemCode = "";
-                let party = selectedParty;
-                if(fieldName[0] == "i" || fieldName[0] == "g" || fieldName[0] == "u"){
-                    
-                    if(detailModal["ITEMCODE"] != ""){
-                    itemCode=  detailModal["ITEMCODE"];
-                    } else{
-                    itemCode= "000";
-                    }
-                }
-                if(fieldName[0] == "s"){
-                    itemCode="s";
-                }
-                if(fieldName[0] == "c"){
-                    itemCode="c";
-                }
-
-                //reduce call if modal not empty
-                let modelData = "";
-                
-                    modelData = model[p.model];
-                
-
-                if(itemCode != "" && itemCode != "000" && itemCode && party && modelData == ""){
-                    httpClient({
-                        method: 'GET',
-                        url: `${process.env.VUE_APP_API_BASE}loadDataFromQuery?fieldName=${p.loadFromQuery}&itemCode=${itemCode}&selectedParty=${party}`,
-                    })
-                        .then((result) => {
-                            
-                            model[p.model]= result.data.fieldValue;
-                            
-                            console.log('load from query'+ result.data.fieldValue);
-                        }).catch((err) => {
-                            console.log('error gettting data from load field by query');
-                        });
-                    }
-            }
             if(p.pickUpQuery != ""){
                 let pickUpField = "";
                 let query = p.pickUpQuery;

@@ -1,12 +1,12 @@
-//Get Cal culation formulas
-function returnFormula(Formulas) {
+const  returnFormula = (Formulas,model) => {
     var separators = [' ', '\\\+', '-', '\\\(', '\\\)', '\\*', '/', ':', '\\\?'];
     var tokens = Formulas.split(new RegExp(separators.join('|'), 'g'));
     var FieldCtrls = '';
     for (var i = 0; i < tokens.length; i++) {
         if (tokens[i] != "" && tokens[i].substring(0, 1) == '#') {
-            FieldCtrls = FieldCtrls + tokens[i].substring(0, tokens[i].length - 1) + ',';
-            Formulas = Formulas.replace(tokens[i], "parseFloat($('" + tokens[i].substring(0, tokens[i].length - 1) + "').val())");
+            FieldCtrls = FieldCtrls + tokens[i].substring(0, tokens[i].length - 1).replace('#','').toUpperCase() + ',';
+            let fieldProperty =tokens[i].substring(0, tokens[i].length - 1).replace('#','').toUpperCase();
+            Formulas = Formulas.replace(tokens[i], "parseFloat("+model[fieldProperty]+")");
         }
     }
     if (FieldCtrls != '') {
@@ -14,3 +14,5 @@ function returnFormula(Formulas) {
         return FieldCtrls + '^' + Formulas;
     }
 }
+
+export default returnFormula;

@@ -14,9 +14,9 @@
         <v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer>
         <v-text-field  v-model="tableSearch" append-icon="search"  label="Search" single-line  hide-details  ></v-text-field>
       </v-card-title>
-      <v-data-table :headers="headers" :search="tableSearch" :items="partyMasterTableData" class="elevation-1">
+      <v-data-table :headers="headers" :search="tableSearch" :items="partyMasterTableData" :pagination.sync="pagination" class="elevation-1">
         <template slot="items" slot-scope="props">
-          <tr @click="editPartyMasterData(props.item)">
+          <tr>
           <td class="justify-center layout px-0">
             <v-icon v-if="getCurrentUserRoles('editRight') == '1'" small class="mr-2" @click="editPartyMasterData(props.item)">edit</v-icon>
             <v-icon v-if="getCurrentUserRoles('deleteRight') == '1'" small @click="openDeleteConfirmatinModal(props.item)">delete</v-icon>
@@ -47,7 +47,7 @@
             <v-btn icon dark @click="partyMasterModel = false">
               <v-icon>close</v-icon>
             </v-btn>
-            <v-toolbar-title>Edit Information</v-toolbar-title>
+            <v-toolbar-title>{{$store.state.pageName}} - Edit</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-btn class="blue darken-1 white--text" @click="updatePartyMasterData()">Save</v-btn>
           </v-toolbar>
@@ -244,7 +244,7 @@
             <v-btn icon dark @click="AddItemInpartyMasterModel = false">
               <v-icon>close</v-icon>
             </v-btn>
-            <v-toolbar-title>Add Record</v-toolbar-title>
+            <v-toolbar-title>{{$store.state.pageName}} - Add</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-btn class="blue darken-1 white--text" @click="addItemRequest()">Add</v-btn>
 
@@ -526,6 +526,9 @@ export default {
       dynamicModal: {},
       deleteModal: false,
       deleteSelectedId:0,
+      pagination: {
+        rowsPerPage: parseInt(localStorage.getItem('rowPerPageDataTable')) || 5
+      },
     
   }),
   beforeMount: function() {
@@ -543,7 +546,13 @@ export default {
         this.updateAddModalForValueChanges();
         },
     deep: true
-   }
+   },
+    pagination: {
+    handler () {
+      localStorage.setItem('rowPerPageDataTable',this.pagination.rowsPerPage);
+    },
+    deep: true
+  }
 
   },
   methods: {

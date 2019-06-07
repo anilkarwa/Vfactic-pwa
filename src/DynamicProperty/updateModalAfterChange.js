@@ -40,12 +40,12 @@ const updateModalAfterChange = (schemas,headerModal,detailModal,footerModal,tota
                 if (formulaSplit[0].toString().trim() == SVTCOLAVG) {
                     try {
                         var k = 0, AvgValue = 0
-                        Formula = Formula.replace(SVTCOLAVG, '');
+                        Formula = Formula.replace(SVTCOLAVG, '').replace(/\s+/g,"");
                         Formula = Formula.substr(2) //Remove first character from string
                         Formula = Formula.substr(0, Formula.length - 2) //Remove last character from string
                         detailSectionData.forEach( function(value, i){
                             for(var key in value){
-                                if(key == Formula){
+                                if(key == Formula.toUpperCase()){
                                     AvgValue = AvgValue + parseFloat(value[key]);
                                     k = k + 1;
                                 }
@@ -64,13 +64,13 @@ const updateModalAfterChange = (schemas,headerModal,detailModal,footerModal,tota
                 }else if (formulaSplit[0].toString().trim() == SVTCOLSUM) {
                     try {
                         var k = 0, TotalValue = 0
-                        Formula = Formula.replace(SVTCOLSUM, '');
+                        Formula = Formula.replace(SVTCOLSUM, '').replace(/\s+/g,"");;
                         Formula = Formula.substr(2) //Remove first character from string
                         Formula = Formula.substr(0, Formula.length - 2) //Remove last character from string
                         
                         detailSectionData.forEach( function(value, i){
                             for(var key in value){
-                                if(key == Formula){
+                                if(key == Formula.toUpperCase()){
                                     TotalValue = TotalValue + parseFloat(value[key]);
                                 }
                             }
@@ -89,7 +89,7 @@ const updateModalAfterChange = (schemas,headerModal,detailModal,footerModal,tota
                 }else if (formulaSplit[0].trim() == SVTAMTINWORDS) {
                     try {
                         var Type = 0;
-                        Formula = Formula.replace(SVTAMTINWORDS, '');
+                        Formula = Formula.replace(SVTAMTINWORDS, '').replace(/\s+/g,"");;
                         Formula = Formula.replace('(', '');
                         Formula = Formula.replace(')', '');
                         var amtInWordsFrmla = Formula.split(',');
@@ -139,7 +139,7 @@ const updateModalAfterChange = (schemas,headerModal,detailModal,footerModal,tota
                     } catch (ex) { }
 
                 }else if (formulaSplit[0].trim() == SVTROUND50) {
-                    Formula = Formula.replace(SVTROUND50, '');
+                    Formula = Formula.replace(SVTROUND50, '').replace(/\s+/g,"");;
                     FieldData = returnFormula(Formula,headerModal,detailModal,footerModal,totalModal).split('^');
                     Formula = FieldData[1];
                     if(section =="header"){
@@ -154,7 +154,7 @@ const updateModalAfterChange = (schemas,headerModal,detailModal,footerModal,tota
                     
                 }
                 else if (formulaSplit[0].trim() == SVTROUND100) {
-                    Formula = Formula.replace(SVTROUND100, '');
+                    Formula = Formula.replace(SVTROUND100, '').replace(/\s+/g,"");;
                     FieldData = returnFormula(Formula,headerModal,detailModal,footerModal,totalModal).split('^');
                     Formula = FieldData[1];
                     if(section =="header"){
@@ -168,7 +168,7 @@ const updateModalAfterChange = (schemas,headerModal,detailModal,footerModal,tota
                     }
                 }
                 else if (formulaSplit[0].trim()== SVTROUND2) {
-                    Formula = Formula.replace(SVTROUND2, '');
+                    Formula = Formula.replace(SVTROUND2, '').replace(/\s+/g,"");;
                     FieldData = returnFormula(Formula,headerModal,detailModal,footerModal,totalModal).split('^');
                     Formula = FieldData[1];
                     if(section =="header"){
@@ -182,7 +182,7 @@ const updateModalAfterChange = (schemas,headerModal,detailModal,footerModal,tota
                     }
                 }
                 else if (formulaSplit[0].trim() == SVTROUNDOFFAMT) {
-                    Formula = Formula.replace(SVTROUNDOFFAMT, '');
+                    Formula = Formula.replace(SVTROUNDOFFAMT, '').replace(/\s+/g,"");;
                     FieldData = returnFormula(Formula,headerModal,detailModal,footerModal,totalModal).split('^');
                     Formula = FieldData[1]; var roundOffAmt = eval(Formula).toFixed(0) - eval(Formula).toFixed(2);
                     if(section =="header"){
@@ -196,7 +196,7 @@ const updateModalAfterChange = (schemas,headerModal,detailModal,footerModal,tota
                     }
                 }else if (formulaSplit[0].toString() == SVTCOLSUMGROUP) {
                     var i = 0, TotalValue = 0
-                    Formula = Formula.replace(SVTCOLSUMGROUP, '');
+                    Formula = Formula.replace(SVTCOLSUMGROUP, '').replace(/\s+/g,"");;
                     Formula = Formula.substr(2) //Remove first character from string
                     Formula = Formula.substr(0, Formula.length - 1) //Remove last character from string
                     var formulaValues = Formula.split(",");
@@ -337,7 +337,7 @@ const updateModalAfterChange = (schemas,headerModal,detailModal,footerModal,tota
                         });
                   }
             }
-            if(p.pickUpQuery != ""){
+            if(p.pickUpQuery != "" && p.pickUpAfterField != '#SVTPARTY#'){
                 let pickUpField = "";
                 let query = p.pickUpQuery;
                 
@@ -354,6 +354,11 @@ const updateModalAfterChange = (schemas,headerModal,detailModal,footerModal,tota
                 //replace value in query 
                 //replace value in query 
                 let myRegExp = new RegExp('#'+p.pickUpAfterField+'#','ig');
+                /*if(p.pickUpAfterField == "#SVTPARTY#" || p.pickUpAfterField == "SVTPARTY"){
+                    myRegExp = new RegExp(p.pickUpAfterField,'ig');
+                }else{
+                    myRegExp = new RegExp('#'+p.pickUpAfterField+'#','ig');
+                }*/
                 query = query.replace(myRegExp,pickUpField);
                 query = query.replace(/\`/g,"'");
                 console.log('pickup query= '+query);

@@ -15,6 +15,7 @@ const generateSchema = (schemas, model) => {
                 model : p.model,
                 label : p.label,
                 min: p.min,
+                step:(p.inputType) =="text" ? "": "any",
                 maxlength: p.max,
                 help: p.help,
                 featured: p.featured,

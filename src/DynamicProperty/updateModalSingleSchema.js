@@ -34,12 +34,12 @@ const updateModalSingleSchema = (schemas,model,callQueries) =>{
                 if (formulaSplit[0].toString().trim() == SVTCOLAVG) {
                     try {
                         var k = 0, AvgValue = 0
-                        Formula = Formula.replace(SVTCOLAVG, '');
+                        Formula = Formula.replace(SVTCOLAVG, '').replace(/\s+/g,"");
                         Formula = Formula.substr(2) //Remove first character from string
                         Formula = Formula.substr(0, Formula.length - 2) //Remove last character from string
                         detailSectionData.forEach( function(value, i){
                             for(var key in value){
-                                if(key == Formula){
+                                if(key == Formula.toUpperCase()){
                                     AvgValue = AvgValue + parseFloat(value[key]);
                                     k = k + 1;
                                 }
@@ -52,13 +52,13 @@ const updateModalSingleSchema = (schemas,model,callQueries) =>{
                 }else if (formulaSplit[0].toString().trim() == SVTCOLSUM) {
                     try {
                         var k = 0, TotalValue = 0
-                        Formula = Formula.replace(SVTCOLSUM, '');
+                        Formula = Formula.replace(SVTCOLSUM, '').replace(/\s+/g,"");
                         Formula = Formula.substr(2) //Remove first character from string
                         Formula = Formula.substr(0, Formula.length - 2) //Remove last character from string
                         
                         detailSectionData.forEach( function(value, i){
                             for(var key in value){
-                                if(key == Formula){
+                                if(key == Formula.toUpperCase()){
                                     TotalValue = TotalValue + parseFloat(value[key]);
                                 }
                             }
@@ -71,7 +71,7 @@ const updateModalSingleSchema = (schemas,model,callQueries) =>{
                 }else if (formulaSplit[0].trim() == SVTAMTINWORDS) {
                     try {
                         var Type = 0;
-                        Formula = Formula.replace(SVTAMTINWORDS, '');
+                        Formula = Formula.replace(SVTAMTINWORDS, '').replace(/\s+/g,"");
                         Formula = Formula.replace('(', '');
                         Formula = Formula.replace(')', '');
                         var amtInWordsFrmla = Formula.split(',');
@@ -107,7 +107,7 @@ const updateModalSingleSchema = (schemas,model,callQueries) =>{
                     } catch (ex) { }
 
                 }else if (formulaSplit[0].trim() == SVTROUND50) {
-                    Formula = Formula.replace(SVTROUND50, '');
+                    Formula = Formula.replace(SVTROUND50, '').replace(/\s+/g,"");
                     FieldData = returnFormula(Formula,model).split('^');
                     Formula = FieldData[1];
                     
@@ -116,7 +116,7 @@ const updateModalSingleSchema = (schemas,model,callQueries) =>{
                     
                 }
                 else if (formulaSplit[0].trim() == SVTROUND100) {
-                    Formula = Formula.replace(SVTROUND100, '');
+                    Formula = Formula.replace(SVTROUND100, '').replace(/\s+/g,"");
                     FieldData = returnFormula(Formula,model).split('^');
                     Formula = FieldData[1];
                     
@@ -124,7 +124,7 @@ const updateModalSingleSchema = (schemas,model,callQueries) =>{
                     
                 }
                 else if (formulaSplit[0].trim()== SVTROUND2) {
-                    Formula = Formula.replace(SVTROUND2, '');
+                    Formula = Formula.replace(SVTROUND2, '').replace(/\s+/g,"");
                     FieldData = returnFormula(Formula,model).split('^');
                     Formula = FieldData[1];
                    
@@ -132,7 +132,7 @@ const updateModalSingleSchema = (schemas,model,callQueries) =>{
                     
                 }
                 else if (formulaSplit[0].trim() == SVTROUNDOFFAMT) {
-                    Formula = Formula.replace(SVTROUNDOFFAMT, '');
+                    Formula = Formula.replace(SVTROUNDOFFAMT, '').replace(/\s+/g,"");
                     FieldData = returnFormula(Formula,model).split('^');
                     Formula = FieldData[1]; var roundOffAmt = eval(Formula).toFixed(0) - eval(Formula).toFixed(2);
                    
@@ -140,7 +140,7 @@ const updateModalSingleSchema = (schemas,model,callQueries) =>{
                     
                 }else if (formulaSplit[0].toString() == SVTCOLSUMGROUP) {
                     var i = 0, TotalValue = 0
-                    Formula = Formula.replace(SVTCOLSUMGROUP, '');
+                    Formula = Formula.replace(SVTCOLSUMGROUP, '').replace(/\s+/g,"");
                     Formula = Formula.substr(2) //Remove first character from string
                     Formula = Formula.substr(0, Formula.length - 1) //Remove last character from string
                     var formulaValues = Formula.split(",");

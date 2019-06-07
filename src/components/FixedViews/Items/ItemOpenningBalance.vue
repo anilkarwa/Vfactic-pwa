@@ -103,7 +103,7 @@
                         </v-flex>
                         <v-flex xs12 sm3 md3>
                           <v-text-field :rules="requiredRules"  type="number"  v-model="itemOpenningData.openningQty" label="Qty"
-                            required  prefix="र" ></v-text-field>
+                            required ></v-text-field>
                         </v-flex>
 
                         <v-flex xs12 sm3 md3>

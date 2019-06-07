@@ -11,11 +11,12 @@
         <v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer>
         <v-text-field  v-model="tableSearch" append-icon="search"  label="Search" single-line  hide-details  ></v-text-field>
       </v-card-title>
-        <v-data-table :headers="partyDocHeaders" :search="tableSearch" :items="partyDocTableData" class="elevation-1">
+        <v-data-table :headers="partyDocHeaders" :search="tableSearch" :items="partyDocTableData" :pagination.sync="pagination" class="elevation-1">
           <template slot="items" slot-scope="props">
-            <tr @click="editSelectedPartyDocTranscation(props.item)">
+            <tr >
             <td class="justify-center layout px-0">
               <v-icon v-if="getCurrentUserRoles('editRight') == '1'" small class="mr-2" @click="editSelectedPartyDocTranscation(props.item)">edit</v-icon>
+               <v-icon v-if="getCurrentUserRoles('viewRight') == '1'" small class="mr-2" @click="viewPdf(props.item)">picture_as_pdf</v-icon>
             </td>
             <td v-for="values in props.item" :key="values.id">
               {{ values }}
@@ -28,6 +29,33 @@
         </v-data-table>
       </v-card>
         <!-- END: Code for Data table -->
+
+      <!-- Pdf viewer modal -->
+          <v-dialog v-model="pdfDailog" fullscreen hide-overlay transition="dialog-bottom-transition">
+              <v-card>
+                <v-toolbar dark color="primary">
+                  <v-btn icon dark @click="pdfDailog = false">
+                    <v-icon>close</v-icon>
+                  </v-btn>
+                  <v-toolbar-title>Document Preview</v-toolbar-title>
+                  <v-spacer></v-spacer>
+                </v-toolbar>
+                   <iframe 
+                      :src="pdfUrl"
+                      height="600"
+                      width="100%"
+                      type="application/pdf"
+                      frameborder="0"
+                    ></iframe>
+                     <!-- <pdf :src="pdf" :page="1">
+                      <template slot="loading">
+                        loading content here...
+                      </template>
+                    </pdf> -->
+              </v-card>
+            </v-dialog>
+      <!--End Pdf viewer modal -->
+
        <!-- Add PartyDoc Transcation Dialog -->
           <v-dialog  v-model="addPartyDocModal"   fullscreen  hide-overlay  transition="dialog-bottom-transition" >
            <v-card>
@@ -35,7 +63,7 @@
                 <v-btn icon dark @click="addPartyDocModal = false">
                   <v-icon>close</v-icon>
                 </v-btn>
-                <v-toolbar-title>Add Information</v-toolbar-title>
+                <v-toolbar-title>{{$store.state.pageName}} - Add</v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-btn class="blue darken-1 white--text" @click="savePartyDocHDRTableData()">Add</v-btn>
               </v-toolbar>
@@ -289,7 +317,7 @@
                 <v-btn icon dark @click="ediPartyDocModal = false">
                   <v-icon>close</v-icon>
                 </v-btn>
-                <v-toolbar-title>Edit Information</v-toolbar-title>
+                <v-toolbar-title>{{$store.state.pageName}} - Edit</v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-btn class="blue darken-1 white--text" @click="updatePartyDoc()">Save</v-btn>
               </v-toolbar>
@@ -644,7 +672,13 @@ export default {
     dialogLoadPening: false,
     loadPendingPartyWise: false,
     searchPartyPrefix: '',
-    searchPartyTableName: ''
+    searchPartyTableName: '',
+    pagination: {
+        rowsPerPage: parseInt(localStorage.getItem('rowPerPageDataTable')) || 5
+    },
+    pdfDailog:false,
+    pdfUrl :'',
+    
   
  }),
 
@@ -658,6 +692,12 @@ export default {
     }
  },
   watch: {
+  pagination: {
+    handler () {
+      localStorage.setItem('rowPerPageDataTable',this.pagination.rowsPerPage);
+    },
+    deep: true
+  },
   date (val) {
       this.dateFormatted = this.formatDate(this.date)
   },
@@ -1204,6 +1244,7 @@ export default {
             data: updateParams
           })
           .then((result) => {
+              this.loadPartDocTableData();
               this.showSnackBar('success',result.data);
             }).catch((err) => {
               this.showSnackBar('error',err.response.data);
@@ -1517,6 +1558,22 @@ export default {
         case "option5Right": return localStorage.getItem('option5Right') || 0;
           break;
       }
+    },
+    viewPdf(props){
+      console.log(JSON.stringify(props));
+      let docId = localStorage.getItem('menuDocId') || 0;
+      let docNumber = props[Object.keys(props)[1]] ;
+      httpClient({
+            method: 'GET',
+            url: `${process.env.VUE_APP_API_BASE}getPdfFile?docId=${docId}&docNumber=${docNumber}`,
+          })
+          .then((result) => {
+             ;
+              this.pdfUrl = result.data;
+              this.pdfDailog = true;
+            }).catch((err) => {
+              this.showSnackBar('error','File not available');
+          });
     }
 
     /* ***************** End Common Methods ***************************** */

@@ -95,55 +95,6 @@
                               <v-flex xs3 sm3 md3> <v-text-field v-model="partyDOCNumber"  readonly ></v-text-field></v-flex>
                               </v-layout>
 
-                              <v-layout row>
-                                <v-flex xs4 sm7 md7>
-                                  <p v-if="searchPartyPrefix =='SUPP'">Supplier</p>
-                                  <p v-if="searchPartyPrefix =='CUST'">Customer</p>
-                                  <v-autocomplete  v-model="selectedSupplier" :loading="searchItemsLoading" :items="searchSupplierResult" clearable 
-                                      :search-input.sync="addSearchSupplier" auto-select-first flat  hide-no-data  hide-details  item-text="supplierCode" item-value="supplierId" >
-                                     <template v-slot:no-data>
-                                      <v-list-tile>
-                                        <v-list-tile-title>
-                                          Search for
-                                          <strong>supplier</strong>
-                                        </v-list-tile-title>
-                                      </v-list-tile>
-                                    </template>
-                                    <template v-slot:selection="{ item, selected }" >
-                                      <v-chip :selected="selected" color="blue-grey"  class="white--text"
-                                      >
-                                        <v-icon left>supervised_user_circle</v-icon>
-                                        <span v-text="item.supplierCode"></span>
-                                      </v-chip>
-                                    </template>
-                                    <template v-slot:item="{ item }">
-                                      <v-list-tile-avatar
-                                        color="indigo"
-                                        class=" font-weight-light white--text"
-                                      >
-                                      </v-list-tile-avatar>
-                                      <v-list-tile-content>
-                                        <v-list-tile-title v-text="item.supplierCode"></v-list-tile-title>
-                                        <v-list-tile-sub-title v-text="item.supplierName"></v-list-tile-sub-title>
-                                      </v-list-tile-content>
-                                      <v-list-tile-action>
-                                        <v-icon>supervised_user_circle</v-icon>
-                                      </v-list-tile-action>
-                                    </template>   
-                                  </v-autocomplete>
-                                </v-flex>
-                              </v-layout>
-                              <v-layout row>
-                                <v-flex xs4 sm4 md4>
-                                <p><i>Billing address</i></p>
-                                <p>{{supplier.supplierCode}}</p>
-                                <p>{{supplier.address1}}</p>
-                                <p>{{supplier.address2}}</p>
-                                <p>{{supplier.address3}} {{supplier.address4}} </p>
-                                <p>{{supplier.city}} {{supplier.pincode}} {{supplier.state}} {{supplier.country}}</p>
-                                </v-flex>
-                              </v-layout>
-
                             </v-flex>
                             <v-flex xs12 sm4 md4>
                                <vue-form-generator id="Form-generator-css" ref="vfAddHeader" :schema="headerDynamicFieldSchema" :model="headerDynamicFieldModel" :options="formOptions" @validated="onValidatedAddHeader"  ></vue-form-generator> 
@@ -313,54 +264,6 @@
                               <v-flex xs3 sm3 md3> <v-text-field v-model="partyDOCNumber"  readonly ></v-text-field></v-flex>
                               </v-layout>
 
-                              <v-layout row>
-                                <v-flex xs4 sm7 md7>
-                                 <p v-if="searchPartyPrefix =='SUPP'">Supplier</p>
-                                 <p v-if="searchPartyPrefix =='CUST'">Customer</p>
-                                  <v-autocomplete  v-model="selectedSupplier" :loading="searchItemsLoading" :items="searchSupplierResult" clearable 
-                                      :search-input.sync="searchSupplier"   auto-select-first flat  hide-no-data  hide-details  item-text="supplierCode" item-value="supplierId" >
-                                    <template v-slot:no-data>
-                                        <v-list-tile>
-                                          <v-list-tile-title>
-                                            Search for
-                                            <strong>supplier</strong>
-                                          </v-list-tile-title>
-                                        </v-list-tile>
-                                      </template>
-                                      <template v-slot:selection="{ item, selected }" >
-                                        <v-chip :selected="selected" color="blue-grey"  class="white--text"
-                                        >
-                                          <v-icon left>supervised_user_circle</v-icon>
-                                          <span v-text="item.supplierCode"></span>
-                                        </v-chip>
-                                      </template>
-                                      <template v-slot:item="{ item }">
-                                        <v-list-tile-avatar
-                                          color="indigo"
-                                          class=" font-weight-light white--text"
-                                        >
-                                        </v-list-tile-avatar>
-                                        <v-list-tile-content>
-                                          <v-list-tile-title v-text="item.supplierCode"></v-list-tile-title>
-                                          <v-list-tile-sub-title v-text="item.supplierName"></v-list-tile-sub-title>
-                                        </v-list-tile-content>
-                                        <v-list-tile-action>
-                                          <v-icon>supervised_user_circle</v-icon>
-                                        </v-list-tile-action>
-                                      </template>   
-                                  </v-autocomplete>
-                                </v-flex>
-                              </v-layout>
-                              <v-layout row>
-                                <v-flex xs4 sm4 md4>
-                                <p><i>Billing address</i></p>
-                                <p>{{supplier.supplierCode}}</p>
-                                <p>{{supplier.address1}}</p>
-                                <p>{{supplier.address2}}</p>
-                                <p>{{supplier.address3}} {{supplier.address4}} </p>
-                                <p>{{supplier.city}} {{supplier.pincode}} {{supplier.state}} {{supplier.country}}</p>
-                                </v-flex>
-                              </v-layout>
                               <v-layout>
                                 <v-flex xs4 sm3 md4>
                                   <v-btn v-if="showAmmendment" color="primary" dark @click="amendmentModal= true" >Amendment</v-btn>
@@ -778,56 +681,6 @@ export default {
         });
     }
   },
-  searchSupplier(value){
-    if(value != null && value != undefined && value != ''){
-    httpClient({
-        method: 'GET',
-        url: `${process.env.VUE_APP_API_BASE}getSupplierByCode?supplierCode=${value}&partyTableName=${this.searchPartyTableName}&partyPrefix=${this.searchPartyPrefix}`
-      })
-        .then((result) => {
-          this.searchSupplierResult = result.data;
-        }).catch((err) => {
-
-          this.showSnackBar('error',err.response.data);
-        });
-    }
-  },
-  addSearchSupplier(value){
-   if(value != null && value != undefined && value != ''){
-      httpClient({
-          method: 'GET',
-          url: `${process.env.VUE_APP_API_BASE}getSupplierByCode?supplierCode=${value}&partyTableName=${this.searchPartyTableName}&partyPrefix=${this.searchPartyPrefix}`
-        })
-          .then((result) => {
-            this.searchSupplierResult = result.data;
-          }).catch((err) => {
-
-            this.showSnackBar('error',err.response.data);
-          });
-      }
-  },
-  selectedSupplier: function(val){
-    let supplierData = this.searchSupplierResult.find(e=> e.supplierId == val);
-    if(supplierData != undefined && supplierData != null){
-      this.supplier= supplierData;
-      this.updateAllModalForValueChanges(true);
-    } else{
-      this.selectedSupplier =0;
-      this.supplier = {
-        supplierId:0,
-        supplierCode:'',
-        supplierName: '',
-        address1:'',
-        address2: '',
-        address3: '',
-        address4: '',
-        city: '',
-        pincode: '',
-        state: '',
-        country: ''
-      };
-    }
-  },
   selectedItem: function(val){
     let itemData = this.searchItemResult.find(e => e.itemId == val);
     console.log('selected item='+JSON.stringify(itemData));
@@ -930,8 +783,6 @@ export default {
           
           const pageData = result.data;
           // main data load
-           this.searchSupplierResult = [{supplierId:pageData.mainData.supplierId,supplierCode: pageData.mainData.partyName,supplierName:pageData.mainData.partyName,address1:pageData.mainData.partyAddress1,address2:pageData.mainData.partyAddress2,addres3:pageData.mainData.partyAddress3,address4:pageData.mainData.partyAddress4,city: pageData.mainData.city,pincode:pageData.mainData.PinCode,state:pageData.mainData.state,country: pageData.mainData.country }];
-          this.selectedSupplier = pageData.mainData.supplierId;
           this.partyDOCNumber = pageData.mainData.printPONO;
           this.date = new Date(this.parseDate(pageData.mainData.PODate)).toISOString().substr(0, 10);
           this.loadPendingPartyWise= pageData.mainData.loadPendingPartyWise;
@@ -1139,18 +990,7 @@ export default {
         partDocFixedFields[this.prefix+"NO"] = this.partyDOCNumber;
         partDocFixedFields["Print"+this.prefix+"NO"] = this.partyDOCNumber;
         partDocFixedFields[this.prefix+"Date"]=this.parseAsDBDate(this.dateFormatted);
-        partDocFixedFields[this.searchPartyPrefix+"ID"]= this.supplier.supplierId;
-        partDocFixedFields["PartyName"] = this.supplier.supplierName;
-        partDocFixedFields["PartyAdd1"] = this.supplier.address1;
-        partDocFixedFields["PartyAdd2"] = this.supplier.address2;
-        partDocFixedFields["PartyAdd3"] = this.supplier.address3;
-        partDocFixedFields["PartyAdd4"] = this.supplier.address4;
-        partDocFixedFields["PartyCity"] = this.supplier.city;
-        partDocFixedFields["PartyState"] = this.supplier.state;
-        partDocFixedFields["PartyPinCode"] = this.supplier.pincode;
-        partDocFixedFields["PartyCountry"] = this.supplier.country;
 
-        
         let header =JSON.parse(JSON.stringify(this.headerDynamicFieldModel));
         let footer =JSON.parse(JSON.stringify(this.footerDynamicFieldModel));
         let total = JSON.parse(JSON.stringify(this.totalDynamicFieldModel));
@@ -1250,16 +1090,6 @@ export default {
       if(this.validateStaticFields() && this.isDynamicHeaderFormValid && this.isDynamicFooterFormValid  && this.isDynamicTotalFormValid  && this.detailSectionData.length > 0){
 
           let partDocFixedFields ={};
-          partDocFixedFields[this.searchPartyPrefix+"ID"]= this.supplier.supplierId;
-          partDocFixedFields["PartyName"] = this.supplier.supplierName;
-          partDocFixedFields["PartyAdd1"] = this.supplier.address1;
-          partDocFixedFields["PartyAdd2"] = this.supplier.address2;
-          partDocFixedFields["PartyAdd3"] = this.supplier.address3;
-          partDocFixedFields["PartyAdd4"] = this.supplier.address4;
-          partDocFixedFields["PartyCity"] = this.supplier.city;
-          partDocFixedFields["PartyState"] = this.supplier.state;
-          partDocFixedFields["PartyPinCode"] = this.supplier.pincode;
-          partDocFixedFields["PartyCountry"] = this.supplier.country;
 
           let header =JSON.parse(JSON.stringify(this.headerDynamicFieldModel));
           let footer =JSON.parse(JSON.stringify(this.footerDynamicFieldModel));
@@ -1284,7 +1114,6 @@ export default {
             data: updateParams
           })
           .then((result) => {
-              this.loadPartDocTableData();
               this.showSnackBar('success',result.data);
             }).catch((err) => {
               this.showSnackBar('error',err.response.data);
@@ -1337,9 +1166,6 @@ export default {
     /* ***************** Common Methods ********************************* */
     validateStaticFields(){
       if(this.dateFormatted =="" || this.dateFormatted == null || this.dateFormatted == undefined){
-        return false;
-      }
-      if(this.selectedSupplier == 0 || this.selectedSupplier =='' || this.selectedSupplier == null || this.selectedSupplier == undefined){
         return false;
       }
       return true;

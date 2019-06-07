@@ -11,11 +11,12 @@
         <v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer>
         <v-text-field  v-model="tableSearch" append-icon="search"  label="Search" single-line  hide-details  ></v-text-field>
       </v-card-title>
-        <v-data-table :headers="partyDocHeaders" :search="tableSearch" :items="partyDocTableData" class="elevation-1">
+        <v-data-table :headers="partyDocHeaders" :search="tableSearch" :items="partyDocTableData" :pagination.sync="pagination" class="elevation-1">
           <template slot="items" slot-scope="props">
-            <tr @click="editSelectedPartyDocTranscation(props.item)">
+            <tr>
             <td class="justify-center layout px-0">
               <v-icon v-if="getCurrentUserRoles('editRight') == '1'" small class="mr-2" @click="editSelectedPartyDocTranscation(props.item)">edit</v-icon>
+              <v-icon v-if="getCurrentUserRoles('viewRight') == '1'" small class="mr-2" @click="viewPdf(props.item)">picture_as_pdf</v-icon>
             </td>
             <td v-for="values in props.item" :key="values.id">
               {{ values }}
@@ -28,6 +29,32 @@
         </v-data-table>
       </v-card>
         <!-- END: Code for Data table -->
+      <!-- Pdf viewer modal -->
+          <v-dialog v-model="pdfDailog" fullscreen hide-overlay transition="dialog-bottom-transition">
+              <v-card>
+                <v-toolbar dark color="primary">
+                  <v-btn icon dark @click="pdfDailog = false">
+                    <v-icon>close</v-icon>
+                  </v-btn>
+                  <v-toolbar-title>Document Preview</v-toolbar-title>
+                  <v-spacer></v-spacer>
+                </v-toolbar>
+                   <iframe 
+                      :src="pdfUrl"
+                      height="600"
+                      width="100%"
+                      type="application/pdf"
+                      frameborder="0"
+                    ></iframe>
+                     <!-- <pdf :src="pdf" :page="1">
+                      <template slot="loading">
+                        loading content here...
+                      </template>
+                    </pdf> -->
+              </v-card>
+            </v-dialog>
+      <!--End Pdf viewer modal -->
+
        <!-- Add PartyDoc Transcation Dialog -->
           <v-dialog  v-model="addPartyDocModal"   fullscreen  hide-overlay  transition="dialog-bottom-transition" >
            <v-card>
@@ -35,7 +62,7 @@
                 <v-btn icon dark @click="addPartyDocModal = false">
                   <v-icon>close</v-icon>
                 </v-btn>
-                <v-toolbar-title>Add Information</v-toolbar-title>
+                <v-toolbar-title>{{$store.state.pageName}} - Add</v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-btn class="blue darken-1 white--text" @click="savePartyDocHDRTableData()">Add</v-btn>
 
@@ -141,13 +168,7 @@
                                 <v-dialog v-model="detailModal" scrollable persistent max-width="450px">
                                   <template v-slot:activator="{ on }">
                                     <!-- <v-btn color="primary" dark v-on="on">Open Dialog</v-btn> -->
-                                    <v-tooltip top>
-                                      <template v-slot:activator="{ on }">
                                         <v-btn fab dark small color="indigo" v-on="on"> <v-icon dark>add</v-icon> </v-btn>
-                                      </template>
-                                      <span>Tooltip</span>
-                                    </v-tooltip>
-                                    
                                   </template>
                                   <v-card>
                                     <v-card-title>
@@ -324,7 +345,7 @@
                 <v-btn icon dark @click="ediPartyDocModal = false">
                   <v-icon>close</v-icon>
                 </v-btn>
-                <v-toolbar-title>Edit Information</v-toolbar-title>
+                <v-toolbar-title>{{$store.state.pageName}} - Edit</v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-btn class="blue darken-1 white--text" @click="updatePartyDoc()">Save</v-btn>
               </v-toolbar>
@@ -402,30 +423,38 @@
                               </v-layout>
                               <v-layout>
                                 <v-flex xs4 sm3 md4>
+                                  <v-btn v-if="showAmmendment" color="primary" dark @click="amendmentModal= true" >Amendment</v-btn>
+                                  <div v-if="ammendmentSetOnce">
+                                    <p>Ammendment No : {{ammendmentNo}}<p>
+                                    <p>Ammendment Date : {{ammendmentDate}}</p>
+                                    <p>Details : {{ammendmentDetail}}</p>
+                                  </div>
                                   <v-dialog v-model="amendmentModal" persistent max-width="600px">
-                                      <template v-slot:activator="{ on }">
-                                        <v-btn color="primary" dark v-on="on" >Amendment</v-btn>
-                                      </template>
+                                      
                                       <v-card>
                                         <v-card-title>
                                           <span class="headline">Add amendment</span>
                                         </v-card-title>
                                         <v-card-text>
                                           <v-container grid-list-md>
+                                           <v-layout>
+                                             <v-flex sm4>
+                                               <v-btn v-if="incrementAmmendment" color="primary" dark @click="newAmmendment()" >New Ammendment</v-btn>
+                                             </v-flex>
+                                           </v-layout>
                                             <v-layout wrap>
-                                              
                                               <v-flex xs12 sm6>
-                                                <v-text-field label="Date" type="text" readonly></v-text-field>
+                                                <v-text-field label="Date" type="text" readonly v-model="ammendmentDate"></v-text-field>
                                               </v-flex>
                                               <v-flex xs12 sm6>
-                                                <v-text-field label="Number" type="text" readonly ></v-text-field>
+                                                <v-text-field label="Number" type="text" readonly v-model="ammendmentNo " ></v-text-field>
                                               </v-flex>
                                               <v-flex xs12 sm12>
                                                <v-textarea
                                                   solo
                                                   name="input-10-4"
                                                   label="Description"
-                                                  
+                                                  v-model="ammendmentDetail"
                                                 ></v-textarea>
                                               </v-flex>
                                               
@@ -632,9 +661,12 @@ import generateNewModal from '@/DynamicProperty/generateNewModal.js'
 import customeValidaton from '@/DynamicProperty/customeValidation.js'
 import updateModalAfterChange from '@/DynamicProperty/updateModalAfterChange.js'
 import convertDateWithSchema from '@/DynamicProperty/convertDateWithSchema.js';
+import pdf from 'pdfvuer'
 
 export default {
-
+components: {
+    pdf
+},
  data : vm => ({
    tableSearch: '',
    partyDOCID: 0,
@@ -723,7 +755,18 @@ export default {
     isDetailRowEditing : false,
     searchPartyPrefix: '',
     searchPartyTableName: '',
-    amendmentModal: false
+    amendmentModal: false,
+    pagination: {
+        rowsPerPage: parseInt(localStorage.getItem('rowPerPageDataTable')) || 5
+    },
+    pdfDailog:false,
+    pdfUrl :'',
+    showAmmendment:false,
+    ammendmentDetail: '',
+    ammendmentNo :0,
+    ammendmentDate:'',
+    incrementAmmendment:true,
+    ammendmentSetOnce: false,
   
  }),
 
@@ -737,6 +780,12 @@ export default {
     }
  },
   watch: {
+   pagination: {
+    handler () {
+      localStorage.setItem('rowPerPageDataTable',this.pagination.rowsPerPage);
+    },
+    deep: true
+  },
   date (val) {
       this.dateFormatted = this.formatDate(this.date)
   },
@@ -898,6 +947,34 @@ export default {
 
  methods:{
      /* ******************* Main table functions ************************* */
+     loadAmmendment(){
+       const docID =  localStorage.getItem('menuDocId') || 0;
+        httpClient({
+            method: 'GET',
+            url: `${process.env.VUE_APP_API_BASE}Amendments?docId=${docID}&selectedId=${this.selectedID}`
+          })
+            .then((result) => {
+              this.incrementAmmendment = true;
+               this.showAmmendment = result.data.showAmendment;
+               this.ammendmentDetail = result.data.amendmentDetail;
+               this.ammendmentNo = result.data.amendmentNo;
+               this.ammendmentDate = result.data.amendmentDate;
+               this.ammendmentSetOnce = result.data.savedOnce == 'Y'?true:false;
+               if(!this.ammendmentSetOnce){
+                 this.ammendmentNo = 1;
+                 var d = new Date();
+                 this.ammendmentDate = d.toLocaleDateString("en-GB", { // you can skip the first argument
+                                        year: "numeric",
+                                        month: "2-digit",
+                                        day: "2-digit",
+                                      });
+               }
+            }).catch((err) => {
+
+              this.showSnackBar('error',err.response.data);
+            });
+
+     },
      loadPartDocTableData(){
       const docID =  localStorage.getItem('menuDocId') || 0;
       this.partyDocHeaders= [ { text: "Edit", align: "center",sortable: false } ],
@@ -943,6 +1020,7 @@ export default {
         url: `${process.env.VUE_APP_API_BASE}PartyDocTranscation?selectedID=${this.selectedID}&docID=${docID}`
       })
         .then((result) => {
+          this.loadAmmendment();
           this.ediPartyDocModal = true;
           this.prefix =result.data.prefix;
           
@@ -1375,6 +1453,7 @@ export default {
             data: updateParams
           })
           .then((result) => {
+              this.loadPartDocTableData();
               this.showSnackBar('success',result.data);
             }).catch((err) => {
               this.showSnackBar('error',err.response.data);
@@ -1496,8 +1575,29 @@ export default {
         country: ''
       };
     },
+    newAmmendment(){
+      this.incrementAmmendment = false;
+      this.ammendmentNo += 1;
+      var d = new Date();
+      this.ammendmentDate = d.toLocaleDateString("en-GB", { // you can skip the first argument
+                            year: "numeric",
+                            month: "2-digit",
+                            day: "2-digit",
+                          });
+    },
     addAmendment(){
-      
+      var docID = localStorage.getItem('menuDocId') || 0;
+
+      httpClient({
+            method: 'PUT',
+            url: `${process.env.VUE_APP_API_BASE}Amendments?docId=${docID}&selectedId=${this.selectedID}&ammendmentDate=${this.ammendmentDate}&ammendmentNo=${this.ammendmentNo}&ammendmentDetail=${this.ammendmentDetail}`
+          })
+          .then((result) => {
+              this.showSnackBar('success',result.data);
+              this.amendmentModal = false;
+            }).catch((err) => {
+              this.showSnackBar('error',err.response.data);
+          });
     },
     updateAllModalForValueChanges(callQueries){
       updateModalAfterChange(this.headerDynamicFieldOriginalSchema,this.headerDynamicFieldModel,this.detailSectionModal,this.footerDynamicFieldModel, this.totalDynamicFieldModel, this.detailSectionData,'header', this.supplier.supplierCode,callQueries);
@@ -1570,6 +1670,22 @@ export default {
         case "option5Right": return localStorage.getItem('option5Right') || 0;
           break;
       }
+    },
+    viewPdf(props){
+      console.log(JSON.stringify(props));
+      let docId = localStorage.getItem('menuDocId') || 0;
+      let docNumber = props[Object.keys(props)[1]] ;
+      httpClient({
+            method: 'GET',
+            url: `${process.env.VUE_APP_API_BASE}getPdfFile?docId=${docId}&docNumber=${docNumber}`,
+          })
+          .then((result) => {
+             ;
+              this.pdfUrl = result.data;
+              this.pdfDailog = true;
+            }).catch((err) => {
+              this.showSnackBar('error','File not available');
+          });
     }
 
     /* ***************** End Common Methods ***************************** */

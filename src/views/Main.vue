@@ -147,9 +147,16 @@ export default {
       // console.log('calling fetch function');
       console.log('env::base::', process.env.VUE_APP_API_BASE);
       // console.log('env::url::', `${process.env.VUE_APP_API_BASE}CompaniesList`);
+      var globalDb = '';
+      if(window.location.hostname == "localhost"){
+        globalDb = 'databaseProperties';
+      }else{
+         globalDb = window.location.hostname;
+      }
+
       httpClient({
         method: 'GET',
-        url: `${process.env.VUE_APP_API_BASE}CompaniesList`
+        url: `${process.env.VUE_APP_API_BASE}CompaniesList?globalDBFile=${globalDb}`
       }).then((response) => {
         if (response.status === 200) {
           this.companyList = response.data;
@@ -208,9 +215,16 @@ export default {
       })*/
     },
     getSelectDatabaseDetails(){
+       var globalDb = '';
+        if(window.location.hostname == "localhost"){
+          globalDb = 'databaseProperties';
+        }else{
+          globalDb = window.location.hostname;
+        }
+
       httpClient({
         method: 'GET',
-        url: `${process.env.VUE_APP_API_BASE}ChangeConnectionString`
+        url: `${process.env.VUE_APP_API_BASE}ChangeConnectionString?globalDbFile=${globalDb}`
       }).then((response) => {
         if(response.status === 200) {
           this.dataBaseDetails.databaseName= response.data.databaseName;

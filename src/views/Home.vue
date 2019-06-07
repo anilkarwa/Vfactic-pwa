@@ -7,8 +7,26 @@
               <v-sheet class="pa-3 primary">
                 <!-- <v-text-field v-model="search"  label="Search.." dark
                   flat solo-inverted hide-details clearable clear-icon="mdi-close-circle-outline"  ></v-text-field> -->
+                  <v-autocomplete
+                    v-model="searchMenuSelect"
+                    :loading="loading"
+                    :items="searchResults"
+                    :search-input.sync="search"
+                    cache-items
+                    class="mx-3"
+                    flat
+                    hide-no-data
+                    hide-details
+                    label="Search Menu..."
+                    solo-inverted
+                    clearable
+                    item-text="menuItemCapiton"
+                    item-value="menuId"
+                    @change="onSearchMenuSelect"
+                  ></v-autocomplete>
               </v-sheet>
               <v-card-text>
+                  
                 <div v-if="menu && menu.length">
                 <b-tree-view :data="menu" nodeLabelProp="menuItemCapiton" :renameNodeOnDblClick="renameMenu" :contextMenuItems="contextMenuItems" @nodeSelect="selectedMenu"></b-tree-view>
                 </div>
@@ -20,6 +38,8 @@
         <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
         <v-toolbar-title class="white--text">{{selectedCompanyName}}</v-toolbar-title>
         <v-spacer></v-spacer>
+        <v-img src="https://www.softvent.com/images/logo.png" max-width="200" max-height="200"></v-img>
+         <v-spacer></v-spacer>
          <v-btn  class="blue darken-1 white--text" @click="changeUser()">Change User</v-btn>
         <v-btn  class="blue darken-1 white--text" @click="userLogout()">Logout</v-btn>
       </v-toolbar>
@@ -73,7 +93,22 @@
         </v-card>
       </v-footer>
 
-
+<ContentLoading></ContentLoading>
+<v-snackbar
+        v-model="snackbar"
+        :color="color"
+        :multi-line="true"
+        :timeout="timeout"
+        :vertical="mode === 'vertical'"
+      >{{ text }}
+        <v-btn
+          dark
+          flat
+          @click="snackbar = false"
+        >
+          Close
+        </v-btn>
+      </v-snackbar>
     </v-app>
   </div>
 </template>
@@ -91,10 +126,12 @@ import StoreIssueNote from "@/components/Transcations/StoreIssueNote.vue";
 import AuthoriseDocument from "@/components/Utilities/AuthoriseDocument.vue";
 import ShortCloseDocument from "@/components/Utilities/ShortCloseDocument.vue";
 import PartyDocTranscationWithOnlyHeader from "@/components/Transcations/PartyDocWithOnlyHeader.vue";
+import ContentLoading from '@/components/FixedViews/Loader/ContentLoading.vue';
 
 export default {
   name: "home",
   components: {
+    ContentLoading,
     PartyMaster,
     GeneralMaster,
     ItemMaster,
@@ -119,7 +156,6 @@ export default {
       currentView: '',
       active: [],
       open: [1,1],
-      search: null,
       caseSensitive: false,
       loggedInUserName :'',
       selectedCompanyName: '',
@@ -134,6 +170,15 @@ export default {
         { text: 'To Date', align: 'center',  value: 'toDate',sortable: false, },
         { text: 'Action', align: 'left',  value: 'active',sortable: false, }
         ],
+      loading: false,
+      searchResults: [],
+      search: null,
+      searchMenuSelect: null,
+      snackbar: false,
+      color: '',
+      mode: '',
+      timeout: 5000,
+      text: '',
     };
   },
   beforeMount: function() {
@@ -152,8 +197,18 @@ export default {
     }
     this.fetchMenu();
   },
+  watch: {
+    search (val) {
+      this.searchMenu(val);
+    }
+  },
   
   methods: {
+    showSnackBar(type,message){
+      this.snackbar = true;
+      this.color = type;
+      this.text = message;
+    },
     fetchMenu: function() {
       let selectedUser = 0;
       if(localStorage.getItem('userId') != null){
@@ -197,7 +252,8 @@ export default {
         this.selecteMenu = selectedMenuRow;
         console.log('selected item= '+JSON.stringify(selectedMenuRow));
         this.processUserRoles(selectedMenuRow.userRights);
-        localStorage.setItem('menuDocId', selectedMenuRow.menuDocId)
+        localStorage.setItem('menuDocId', selectedMenuRow.menuDocId);
+        this.$store.commit('currentPage',selectedMenuRow.menuItemCapiton);
         this.currentView = '';
         let that = this;
         setTimeout(() => 
@@ -205,8 +261,36 @@ export default {
             that.currentView = selectedMenuRow.pageLink;
           },
           100);
+        }else if(selectedMenuRow.pageLink == ""){
+          this.showSnackBar('error',"Page link not set, Contact administrator.");
         }
       }
+    },
+    searchMenu(value){
+      let userID = localStorage.getItem('userId');
+      httpClient({
+        method: "GET",
+        url: `${process.env.VUE_APP_API_BASE}SearchMenu?searchValue=${value}&userID=${userID}`,
+      }).then(res => {
+         this.searchResults =res.data;
+      }).catch((err) => {
+           this.showSnackBar('error',err.response.data);
+        });
+    },
+    onSearchMenuSelect(value){
+      let menu = this.searchResults.find(e => e.menuId == value);
+      if(menu !=null){
+        this.selecteMenu = menu;
+        if(menu.pageLink !=""){
+          this.processUserRoles(menu.userRights);
+          localStorage.setItem('menuDocId', menu.menuDocId);
+          this.$store.commit('currentPage',menu.menuItemCapiton);
+          this.currentView = menu.pageLink;
+        }else{
+          this.showSnackBar('error',"Page link not set, Contact administrator.");
+        }
+      }
+
     },
     changeFinancialYear(){
       this.financialYearDialog =true;
