@@ -127,6 +127,8 @@ import AuthoriseDocument from "@/components/Utilities/AuthoriseDocument.vue";
 import ShortCloseDocument from "@/components/Utilities/ShortCloseDocument.vue";
 import PartyDocTranscationWithOnlyHeader from "@/components/Transcations/PartyDocWithOnlyHeader.vue";
 import ContentLoading from '@/components/FixedViews/Loader/ContentLoading.vue';
+import PostDocEntry from '@/components/Utilities/PostDocEntry.vue';
+import NonPartyNonItemDoc from '@/components/Transcations/NonPartyNonItemDoc.vue';
 
 export default {
   name: "home",
@@ -143,7 +145,9 @@ export default {
     StoreIssueNote,
     AuthoriseDocument,
     ShortCloseDocument,
-    PartyDocTranscationWithOnlyHeader
+    PartyDocTranscationWithOnlyHeader,
+    PostDocEntry,
+    NonPartyNonItemDoc
 
     
     

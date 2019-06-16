@@ -7,7 +7,7 @@ const axiosInstance = axios.create();
 
 axiosInstance.interceptors.request.use(
     config => {
-        if(!config.url.includes('loadDataFromQuery') && !config.url.includes('getSupplierByCode')){
+        if(!config.url.includes('loadDataFromQuery') && !config.url.includes('getSupplierByCode') && !config.url.includes('SearchMenu')){
             store.commit('loader',true);
         }
         

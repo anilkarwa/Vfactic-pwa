@@ -50,7 +50,7 @@ const updateModalAfterChangeMaster = (schemas,model) =>{
                     FieldData = returnFormula(Formula,model).split('^');
                     Formula = FieldData[1];
 
-                    model[p.model]= Math.round(eval(Formula)).toFixed(2).toString();
+                    model[p.model]= parseFloat(Math.round(eval(Formula)).toFixed(2));
                     
                 }
                 else if (formulaSplit[0].trim() == SVTROUND100) {

@@ -143,13 +143,13 @@ const updateModalAfterChange = (schemas,headerModal,detailModal,footerModal,tota
                     FieldData = returnFormula(Formula,headerModal,detailModal,footerModal,totalModal).split('^');
                     Formula = FieldData[1];
                     if(section =="header"){
-                        headerModal[p.model]= Math.round(eval(Formula)).toFixed(2).toString();
+                        headerModal[p.model]= parseFloat(Math.round(eval(Formula)).toFixed(2));
                     }else if(section == "detail"){
-                        detailModal[p.model] =Math.round(eval(Formula)).toFixed(2).toString();
+                        detailModal[p.model] =parseFloat(Math.round(eval(Formula)).toFixed(2));
                     }else if(section == "footer"){
-                        footerModal[p.model] = Math.round(eval(Formula)).toFixed(2).toString();
+                        footerModal[p.model] = parseFloat(Math.round(eval(Formula)).toFixed(2));
                     }else if(section == "total"){
-                        totalModal[p.model]= Math.round(eval(Formula)).toFixed(2).toString();
+                        totalModal[p.model]= parseFloat(Math.round(eval(Formula)).toFixed(2));
                     }
                     
                 }

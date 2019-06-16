@@ -738,7 +738,7 @@ export default {
       this.partyDocHeadersKey = [];
       httpClient({
         method: 'GET',
-        url: `${process.env.VUE_APP_API_BASE}TrnWithOutDetailItem?docID=${docID}`
+        url: `${process.env.VUE_APP_API_BASE}NonPartyNonItem?docID=${docID}`
       })
         .then((result) => {
             if (result.status === 200) {
@@ -775,7 +775,7 @@ export default {
 
       httpClient({
         method: 'GET',
-        url: `${process.env.VUE_APP_API_BASE}TrnWithOutDetailItem?selectedID=${this.selectedID}&docID=${docID}`
+        url: `${process.env.VUE_APP_API_BASE}NonPartyNonItem?selectedID=${this.selectedID}&docID=${docID}`
       })
         .then((result) => {
           this.ediPartyDocModal = true;
@@ -859,7 +859,7 @@ export default {
 
       httpClient({
         method: 'GET',
-        url: `${process.env.VUE_APP_API_BASE}TrnWithOutDetailItem?docID=${docID}&type=0`
+        url: `${process.env.VUE_APP_API_BASE}NonPartyNonItem?docID=${docID}&type=0`
        })
         .then((result) => {
           this.addPartyDocModal = true;
@@ -1008,7 +1008,7 @@ export default {
 
         httpClient({
           method: 'POST',
-          url: `${process.env.VUE_APP_API_BASE}TrnWithOutDetailItem`,
+          url: `${process.env.VUE_APP_API_BASE}NonPartyNonItem`,
           data: updateParams
         })
         .then((result) => {
@@ -1028,7 +1028,7 @@ export default {
 
        httpClient({
         method: 'POST',
-        url: `${process.env.VUE_APP_API_BASE}TrnWithOutDetailItem?query=${query}`,
+        url: `${process.env.VUE_APP_API_BASE}NonPartyNonItem?query=${query}`,
        })
        .then((result) => {
           this.showSnackBar('success',result.data);
@@ -1110,7 +1110,7 @@ export default {
 
           httpClient({
             method: 'PUT',
-            url: `${process.env.VUE_APP_API_BASE}TrnWithOutDetailItem`,
+            url: `${process.env.VUE_APP_API_BASE}NonPartyNonItem`,
             data: updateParams
           })
           .then((result) => {

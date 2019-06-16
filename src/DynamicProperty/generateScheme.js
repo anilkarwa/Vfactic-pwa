@@ -23,7 +23,7 @@ const generateSchema = (schemas, model) => {
                 default: p.default?p.useStdDefault:((p.inputType) =="number" ? 0: ""),
                 //if inputDropdown
                 values: p.values,
-                validator:(p.inputType) =="text" ? VueFormGenerator.validators.string:VueFormGenerator.validators.double,
+                validator:(p.inputType) =="text" ? VueFormGenerator.validators.string:VueFormGenerator.validators.number,
                // readonly: function (model){ return model && (model[conditionsOperand[0]] )== p.readOnlyCompareValue}
                disabled: (!p.readonly)? p.readonly:( (p.readOnlyCondition == "") ? p.readonly:function(model){
 

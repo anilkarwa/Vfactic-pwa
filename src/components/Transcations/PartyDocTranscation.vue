@@ -41,10 +41,9 @@
                 </v-toolbar>
                    <iframe 
                       :src="pdfUrl"
-                      height="600"
                       width="100%"
+                      height="650px"        
                       type="application/pdf"
-                      frameborder="0"
                     ></iframe>
                      <!-- <pdf :src="pdf" :page="1">
                       <template slot="loading">
@@ -165,10 +164,11 @@
                          <v-container fluid grid-list-xl>
                           <div class="actionBlock">
                               <!-- add new row action -->
+                                
                                 <v-dialog v-model="detailModal" scrollable persistent max-width="450px">
                                   <template v-slot:activator="{ on }">
                                     <!-- <v-btn color="primary" dark v-on="on">Open Dialog</v-btn> -->
-                                        <v-btn fab dark small color="indigo" v-on="on"> <v-icon dark>add</v-icon> </v-btn>
+                                    <v-btn fab dark small color="indigo" v-on="on"> <v-icon dark>add</v-icon> </v-btn>
                                   </template>
                                   <v-card>
                                     <v-card-title>
@@ -1544,7 +1544,7 @@ components: {
        if(model){
         for (var property in model) {
           if( typeof model[property] === "number"){
-            model[property]= 0;
+            model[property]= null;
           }
           if(typeof model[property] === "string"){
             model[property] = "";
@@ -1680,7 +1680,7 @@ components: {
             url: `${process.env.VUE_APP_API_BASE}getPdfFile?docId=${docId}&docNumber=${docNumber}`,
           })
           .then((result) => {
-             ;
+             
               this.pdfUrl = result.data;
               this.pdfDailog = true;
             }).catch((err) => {

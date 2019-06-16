@@ -21,12 +21,13 @@ const generateGroupSchema = (schemas, model) => {
                 min: p.min,
                 maxlength: p.max,
                 help: p.help,
+                step:(p.inputType) =="text" ? "": "any",
                 featured: p.featured,
                 inputSelectId: p.comboBoxId,
                 default: p.default?p.useStdDefault:((p.inputType) =="number" ? 0: ""),
                 //if inputDropdown
                 values : p.values,
-                validator: (p.inputType) =="text" ? VueFormGenerator.validators.string:VueFormGenerator.validators.double,
+                validator: (p.inputType) =="text" ? VueFormGenerator.validators.string:VueFormGenerator.validators.number,
                // readonly: function (model){ return model && (model[conditionsOperand[0]] )== p.readOnlyCompareValue}
                disabled: (!p.readonly)? p.readonly:( (p.readOnlyCondition == "") ? p.readonly:function(model){
                         var readOnlyCondition = (p.readOnlyCondition).trim();

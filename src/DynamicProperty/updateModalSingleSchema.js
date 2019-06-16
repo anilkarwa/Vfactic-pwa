@@ -111,7 +111,7 @@ const updateModalSingleSchema = (schemas,model,callQueries) =>{
                     FieldData = returnFormula(Formula,model).split('^');
                     Formula = FieldData[1];
                     
-                    model[p.model]= Math.round(eval(Formula)).toFixed(2).toString();
+                    model[p.model]= parseFloat(Math.round(eval(Formula)).toFixed(2));
                    
                     
                 }
