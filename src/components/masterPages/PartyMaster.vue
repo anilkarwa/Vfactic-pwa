@@ -468,6 +468,7 @@ import generateGroupSchema from '@/DynamicProperty/generateGroupSchema.js'
 import generateNewModal from '@/DynamicProperty/generateNewModal.js'
 import customeValidaton from '@/DynamicProperty/customeValidation.js'
 import updateModalAfterChangeMaster from '@/DynamicProperty/updateModalAfterChangeMaster.js';
+import convertDateWithSchema from '@/DynamicProperty/convertDateWithSchema.js';
 
 export default {
   components:{
@@ -616,6 +617,7 @@ export default {
             this.dynamicFieldModel = this.dynamicModal;
             this.dynamicFieldSchema.fields = generateSchema(this.dynamicShema, this.dynamicModal);
             this.dynamicFieldSchema.groups = generateGroupSchema(this.dynamicShema, this.dynamicModal);
+            convertDateWithSchema(this.dynamicShema,this.dynamicFieldModel, false);
           }
         }).catch((err) => {
           this.showSnackBar('error',err.response.data);
@@ -647,13 +649,17 @@ export default {
     },
     updatePartyMasterData: function() {
       this.validateOnclick();
+      
+      let updateModal = JSON.parse(JSON.stringify(this.dynamicFieldModel));
+      convertDateWithSchema(this.dynamicShema,updateModal, true);
+
       this.editItems[this.staticFields[4]] = typeof(this.editItems[this.staticFields[4]]) === 'object' ? this.editItems[this.staticFields[4]].groupID : this.editItems[this.staticFields[4]];
       this.editItems[this.staticFields[5]] = typeof(this.editItems[this.staticFields[5]]) === 'object' ? this.editItems[this.staticFields[5]].ledgerGroupID : this.editItems[this.staticFields[5]];
       const updateParams = {
         docID: localStorage.getItem('menuDocId') || 0, 
         userID: localStorage.getItem('userId') || 0,
         staticFields: this.editItems,
-        dynamicFields: this.dynamicFieldModel
+        dynamicFields: updateModal
       }
       console.log('Update Params', updateParams);
       /**
@@ -882,11 +888,15 @@ export default {
     addItemRequest: function() {
       this.addFlag = true;
       this.validateOnclick();
+      
+      let newModalData = JSON.parse(JSON.stringify(this.addDynamicFieldModel));
+      convertDateWithSchema(this.dynamicShema,newModalData, true);
+
       const postParams = {
         docID: localStorage.getItem('menuDocId'),
         userID: localStorage.getItem('userId'),
         staticFields: this.addItems,
-        dynamicFields: this.addDynamicFieldModel
+        dynamicFields: newModalData
       }
       if (this.addValidation() && this.isDynamicFormValid ) {
         httpClient({

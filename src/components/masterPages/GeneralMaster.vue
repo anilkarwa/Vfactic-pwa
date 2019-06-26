@@ -261,8 +261,7 @@
                        <v-container fluid grid-list-xl>
                         <v-layout row justify-space-between>
                           <v-flex xs12 sm4 md4>
-                            <span>No data Found</span>
-                       <vue-form-generator id="Form-generator-css" ref="vfg" :schema="addDynamicFieldSchema" :model="addDynamicFieldModel" :options="formOptions"  @validated="onValidatedAdd" ></vue-form-generator>
+                          <vue-form-generator id="Form-generator-css" ref="vfg" :schema="addDynamicFieldSchema" :model="addDynamicFieldModel" :options="formOptions"  @validated="onValidatedAdd" ></vue-form-generator>
                           </v-flex>
                         </v-layout>
                        </v-container>
@@ -322,7 +321,7 @@ import generateGroupSchema from '@/DynamicProperty/generateGroupSchema.js'
 import generateNewModal from '@/DynamicProperty/generateNewModal.js'
 import customeValidaton from '@/DynamicProperty/customeValidation.js'
 import updateModalAfterChangeMaster from '@/DynamicProperty/updateModalAfterChangeMaster.js';
-
+import convertDateWithSchema from '@/DynamicProperty/convertDateWithSchema.js';
 
 export default {
   data: function() {
@@ -459,8 +458,9 @@ export default {
             this.dynamicShema = generalMasterEditFields.dynamicFieldModal.fieldProperties;
             this.dynamicModal = generalMasterEditFields.dynamicFieldModal.modal[0];
             this.dynamicFieldModel =  this.dynamicModal
-            this.dynamicFieldSchema.fields = DynamicFieldSchema(this.dynamicShema,  this.dynamicModal);
+            this.dynamicFieldSchema.fields = generateSchema(this.dynamicShema,  this.dynamicModal);
             this.dynamicFieldSchema.groups = generateGroupSchema(this.dynamicShema,  this.dynamicModal);
+            convertDateWithSchema(this.dynamicShema,this.dynamicFieldModel, false);
           }
         }).catch((err) => {
           this.showSnackBar('error',err.response.data);
@@ -469,11 +469,13 @@ export default {
     updateGeneralMasterData: function() {
       this.validateOnclick();
       console.log('Update params',JSON.stringify(this.editItems));
+      let updateModal = JSON.parse(JSON.stringify(this.dynamicFieldModel));
+      convertDateWithSchema(this.dynamicShema,updateModal, true);
       const updateParam = {
         docID: localStorage.getItem('menuDocId') || 0, 
         userID: localStorage.getItem('userId') || 0,
         staticFields: this.editItems,
-        dynamicFields: this.dynamicFieldModel
+        dynamicFields: updateModal
       }
       if(this.validate() && this.isDynamicFormValid){
       httpClient({
@@ -578,11 +580,13 @@ export default {
     addItemRequest: function() {
       this.isFormSavedOnce = true;
       this.validateOnclick();
+      let newModalData = JSON.parse(JSON.stringify(this.addDynamicFieldModel));
+      convertDateWithSchema(this.dynamicShema,newModalData, true);
       const postParams = {
         docID: localStorage.getItem('menuDocId'),
         userID: localStorage.getItem('userId'),
         staticFields: this.addItems,
-        dynamicFields: this.addDynamicFieldModel
+        dynamicFields: newModalData
       }
 
       if (this.addValidation() && this.isDynamicFormValid) {

@@ -140,6 +140,7 @@
 import httpClient from "@/services/httpClient.js";
 import generatePostDocEntrySchema from "@/DynamicProperty/generatePostDocEntrySchema.js";
 import convertDate from '@/DynamicProperty/dateFormat.js'
+import convertDateWithSchema from '@/DynamicProperty/convertDateWithSchema.js';
 
  export default{
      data:vm =>({
@@ -259,7 +260,7 @@ import convertDate from '@/DynamicProperty/dateFormat.js'
              });  
          },
          editPostDocRow(rowData){
-             this.postDocDynamicModal= rowData;
+             this.postDocDynamicModal=rowData;
              this.detailModal = true;
              console.log("row data="+JSON.stringify(rowData));
          },
@@ -277,8 +278,23 @@ import convertDate from '@/DynamicProperty/dateFormat.js'
                  }
              })
          },
+         convertToDBDateFormate(){
+             let data = JSON.parse(JSON.stringify(this.postDocDynamicModal));
+             this.postDocDynamicSchema.fields.forEach(e=>{
+                 if(e.type =="cleave"){
+                    
+                    if(data[e.model] != "" && data[e.model] !="1900-01-01T00:00:00"){
+                        data[e.model] =  convertDate(data[e.model],true);
+                    }else{
+                        data[e.model]= "01/01/1900";
+                    }
+                 }
+             })
+             return data;
+         },
+         
          savePostDocData(){
-             this.convertToDateFormate(true);
+            let saveData = this.convertToDBDateFormate();
              //prepare save query
              let query = "";
              let fields = this.postDocSaveQuery.split("¦");
@@ -287,7 +303,7 @@ import convertDate from '@/DynamicProperty/dateFormat.js'
                      if(i%2==0){
                          query+=fields[i]+" ";
                      }else{
-                         query += "'"+ this.postDocDynamicModal[fields[i].toUpperCase()]+"' ";
+                         query += "'"+ saveData[fields[i].toUpperCase()]+"' ";
                      }
                  }
                  query +=";";

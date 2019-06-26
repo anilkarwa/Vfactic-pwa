@@ -395,6 +395,7 @@ import generateGroupSchema from '@/DynamicProperty/generateGroupSchema.js'
 import generateNewModal from '@/DynamicProperty/generateNewModal.js'
 import customeValidaton from '@/DynamicProperty/customeValidation.js'
 import updateModalAfterChangeMaster from '@/DynamicProperty/updateModalAfterChangeMaster.js';
+import convertDateWithSchema from '@/DynamicProperty/convertDateWithSchema.js';
 
 export default {
   data: function() {
@@ -524,6 +525,7 @@ export default {
             this.dynamicFieldModel = this.dynamicModal;
             this.dynamicFieldSchema.fields = DynamicFieldSchema(this.dynamicShema, this.dynamicModal);
             this.dynamicFieldSchema.groups = generateGroupSchema(this.dynamicShema, this.dynamicModal);
+            convertDateWithSchema(this.dynamicShema,this.dynamicFieldModel, false);
           }
          
           this.itemMasterModel = true;
@@ -558,11 +560,14 @@ export default {
     },
     updateItemMasterData: function() {
       this.validateOnclick();
+      let updateModal = JSON.parse(JSON.stringify(this.dynamicFieldModel));
+      convertDateWithSchema(this.dynamicShema,updateModal, true);
+
       const updateParams = {
         docID: localStorage.getItem('menuDocId') || 0, // Need to remove 1121 value and put 0 apart of this
         userID: localStorage.getItem('userId') || 0,
         staticFields: this.editedItems,
-        dynamicFields: this.dynamicFieldModel
+        dynamicFields: updateModal
       }
          /**
        * API call for updating the PartyMaster
@@ -684,11 +689,15 @@ export default {
     addItemRequest: function() {
       this.isFormSavedOnce = true;
       this.validateOnclick();
+      
+      let newModalData = JSON.parse(JSON.stringify(this.addDynamicFieldModel));
+      convertDateWithSchema(this.dynamicShema,newModalData, true);
+
       const postParams = {
         docID: localStorage.getItem('menuDocId'),
         userID: localStorage.getItem('userId'),
         staticFields: this.addItems,
-        dynamicFields: this.addDynamicFieldModel
+        dynamicFields: newModalData
       }
       console.log('postParams', JSON.stringify(postParams));
       if (this.addValidation() && this.isDynamicFormValid) {
