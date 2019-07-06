@@ -117,18 +117,20 @@ import httpClient from "@/services/httpClient.js"
 import PartyMaster from "@/components/masterPages/PartyMaster.vue"
 import GeneralMaster from "@/components/masterPages/GeneralMaster.vue"
 import ItemMaster from "@/components/masterPages/ItemMaster.vue"
-import PartyDocTranscation from "@/components/Transcations/PartyDocTranscation.vue"
+import PartyDoc from "@/components/Transcations/PartyDocTranscation.vue"
 import ItemOpenningBalance from "@/components/FixedViews/Items/ItemOpenningBalance.vue";
-import PurchaseBillAgainstPO from "@/components/Transcations/PurchaseBillAgainstPO.vue";
-import TrnWithOutDetailItem from "@/components/Transcations/TrnWithOutDetailItem.vue";
-import StoreIndent from "@/components/Transcations/StoreIndent.vue";
-import StoreIssueNote from "@/components/Transcations/StoreIssueNote.vue";
+import PartyLinkedDoc from "@/components/Transcations/PurchaseBillAgainstPO.vue";
+import PartyNonItemDoc from "@/components/Transcations/TrnWithOutDetailItem.vue";
+import NonPartyDoc from "@/components/Transcations/StoreIndent.vue";
+import NonPartyItemLinkedDoc from "@/components/Transcations/StoreIssueNote.vue";
 import AuthoriseDocument from "@/components/Utilities/AuthoriseDocument.vue";
 import ShortCloseDocument from "@/components/Utilities/ShortCloseDocument.vue";
-import PartyDocTranscationWithOnlyHeader from "@/components/Transcations/PartyDocWithOnlyHeader.vue";
+import NonPartyOnlyHdrDoc from "@/components/Transcations/NonPartyOnlyHdrDoc.vue";
 import ContentLoading from '@/components/FixedViews/Loader/ContentLoading.vue';
 import PostDocEntry from '@/components/Utilities/PostDocEntry.vue';
 import NonPartyNonItemDoc from '@/components/Transcations/NonPartyNonItemDoc.vue';
+import PartyNonItemLinkedDoc from '@/components/Transcations/PartyNonItemLinkedDoc.vue';
+import PartyOnlyHdrDoc from '@/components/Transcations/PartyOnlyHdrDoc.vue';
 
 export default {
   name: "home",
@@ -137,17 +139,19 @@ export default {
     PartyMaster,
     GeneralMaster,
     ItemMaster,
-    PartyDocTranscation,
+    PartyDoc,
     ItemOpenningBalance,
-    PurchaseBillAgainstPO,
-    TrnWithOutDetailItem,
-    StoreIndent,
-    StoreIssueNote,
+    PartyLinkedDoc,
+    PartyNonItemDoc,
+    NonPartyDoc,
+    NonPartyItemLinkedDoc,
     AuthoriseDocument,
     ShortCloseDocument,
-    PartyDocTranscationWithOnlyHeader,
+    NonPartyOnlyHdrDoc,
     PostDocEntry,
-    NonPartyNonItemDoc
+    NonPartyNonItemDoc,
+    PartyNonItemLinkedDoc,
+    PartyOnlyHdrDoc
 
     
     

@@ -699,7 +699,7 @@ export default {
       this.$refs.vfEditHeader.validate();
     },
     updateAllModalForValueChanges(callQueries){
-      updateModalSingleSchema(this.headerDynamicFieldOriginalSchema,this.headerDynamicFieldModel,callQueries);
+      updateModalSingleSchema(this.headerDynamicFieldOriginalSchema,this.headerDynamicFieldModel,callQueries,'');
     },
     showSnackBar(type,message){
       this.snackbar = true;

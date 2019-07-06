@@ -251,19 +251,6 @@
                                     <v-card-text>
                                       <v-container grid-list-md>
                                         <v-layout wrap>
-                                          <v-flex xs12>
-                                            <v-text-field readonly label="Item Name" v-model="detailSectionModal.ITEMCODE"></v-text-field>
-                                            
-                                          </v-flex>
-                                          <v-flex xs12>
-                                            <v-text-field readonly label="Item Name" v-model="detailSectionModal.ITEMNAME"></v-text-field>
-                                          </v-flex>
-                                          <v-flex xs12>
-                                            <v-text-field readonly label="UOM"  v-model="detailSectionModal.UOM"></v-text-field>
-                                          </v-flex>
-                                           <v-flex xs12>
-                                            <v-text-field readonly label="QOH"  v-model="detailSectionModal.QOH"></v-text-field>
-                                          </v-flex>
                                            <v-flex xs12>
                                             <v-text-field readonly :label="dependentPrefix+' No'"  v-model="detailSectionModal[dependentPrefix+'NO']"></v-text-field>
                                           </v-flex>
@@ -515,56 +502,6 @@
                                 <p>{{supplier.city}} {{supplier.pincode}} {{supplier.state}} {{supplier.country}}</p>
                                 </v-flex>
                               </v-layout>
-                              <v-layout>
-                                <v-flex xs4 sm3 md4>
-                                  <v-btn v-if="showAmmendment" color="primary" dark @click="amendmentModal= true" >Amendment</v-btn>
-                                  <div v-if="ammendmentSetOnce">
-                                    <p>Ammendment No : {{ammendmentNo}}<p>
-                                    <p>Ammendment Date : {{ammendmentDate}}</p>
-                                    <p>Details : {{ammendmentDetail}}</p>
-                                  </div>
-                                  <v-dialog v-model="amendmentModal" persistent max-width="600px">
-                                      
-                                      <v-card>
-                                        <v-card-title>
-                                          <span class="headline">Add amendment</span>
-                                        </v-card-title>
-                                        <v-card-text>
-                                          <v-container grid-list-md>
-                                           <v-layout>
-                                             <v-flex sm4>
-                                               <v-btn v-if="incrementAmmendment" color="primary" dark @click="newAmmendment()" >New Ammendment</v-btn>
-                                             </v-flex>
-                                           </v-layout>
-                                            <v-layout wrap>
-                                              <v-flex xs12 sm6>
-                                                <v-text-field label="Date" type="text" readonly v-model="ammendmentDate"></v-text-field>
-                                              </v-flex>
-                                              <v-flex xs12 sm6>
-                                                <v-text-field label="Number" type="text" readonly v-model="ammendmentNo " ></v-text-field>
-                                              </v-flex>
-                                              <v-flex xs12 sm12>
-                                               <v-textarea
-                                                  solo
-                                                  name="input-10-4"
-                                                  label="Description"
-                                                  v-model="ammendmentDetail"
-                                                ></v-textarea>
-                                              </v-flex>
-                                              
-                                            </v-layout>
-                                          </v-container>
-                                          
-                                        </v-card-text>
-                                        <v-card-actions>
-                                          <v-spacer></v-spacer>
-                                          <v-btn color="blue darken-1" flat @click="amendmentModal = false">Close</v-btn>
-                                          <v-btn color="blue darken-1" flat @click="addAmendment()">Save</v-btn>
-                                        </v-card-actions>
-                                      </v-card>
-                                    </v-dialog>
-                                </v-flex>
-                              </v-layout>
                             </v-flex>
                             <v-flex xs12 sm4 md4>
                               <vue-form-generator id="Form-generator-css" ref="vfEditHeader" :schema="headerDynamicFieldSchema" :model="headerDynamicFieldModel" :options="formOptions" @validated="onValidatedHeader"  ></vue-form-generator>
@@ -589,19 +526,6 @@
                                     <v-card-text>
                                       <v-container grid-list-md>
                                         <v-layout wrap>
-                                         <v-flex xs12>
-                                            <v-text-field readonly label="Item Name" v-model="detailSectionModal.ITEMCODE"></v-text-field>
-                                            
-                                          </v-flex>
-                                          <v-flex xs12>
-                                            <v-text-field readonly label="Item Name" v-model="detailSectionModal.ITEMNAME"></v-text-field>
-                                          </v-flex>
-                                          <v-flex xs12>
-                                            <v-text-field readonly label="UOM"  v-model="detailSectionModal.UOM"></v-text-field>
-                                          </v-flex>
-                                           <v-flex xs12>
-                                            <v-text-field readonly label="QOH"  v-model="detailSectionModal.QOH"></v-text-field>
-                                          </v-flex>
                                            <v-flex xs12>
                                             <v-text-field readonly :label="dependentPrefix+' No'"  v-model="detailSectionModal[dependentPrefix+'NO']"></v-text-field>
                                           </v-flex>
@@ -822,13 +746,6 @@ export default {
     },
     pdfDailog:false,
     pdfUrl :'',
-    amendmentModal: false,
-    showAmmendment:false,
-    ammendmentDetail: '',
-    ammendmentNo :0,
-    ammendmentDate:'',
-    incrementAmmendment:true,
-    ammendmentSetOnce: false,
   
  }),
 
@@ -899,42 +816,6 @@ export default {
         },
     deep: true
    },
-  searchItems(value){
-    if(this.selectedSupplier == 0){
-      this.showSnackBar('error','Please select supplier first');
-      return false;
-    }
-    if(value != undefined && value != null && value != ''){
-    httpClient({
-        method: 'GET',
-        url: `${process.env.VUE_APP_API_BASE}getItemByCode?itemCode=${value}`
-      })
-        .then((result) => {
-          this.searchItemResult = result.data;
-        }).catch((err) => {
-
-          this.showSnackBar('error',err.response.data);
-        });
-    }
-  },
-  addSearchItems(value){
-    if(this.selectedSupplier == 0){
-      this.showSnackBar('error','Please select supplier first');
-      return false;
-    }
-    if(value != undefined && value != null && value != ''){
-    httpClient({
-        method: 'GET',
-        url: `${process.env.VUE_APP_API_BASE}getItemByCode?itemCode=${value}`
-      })
-        .then((result) => {
-          this.searchItemResult = result.data;
-        }).catch((err) => {
-
-          this.showSnackBar('error',err.response.data);
-        });
-    }
-  },
   searchSupplier(value){
     if(value != null && value != undefined && value != ''){
     httpClient({
@@ -985,57 +866,10 @@ export default {
       };
     }
   },
-  selectedItem: function(val){
-    let itemData = this.searchItemResult.find(e => e.itemId == val);
-    console.log('selected item='+JSON.stringify(itemData));
-    this.updateAllModalForValueChanges(true);
-    if(itemData != undefined && itemData != null){
-      this.detailSectionModal.ITEMID= itemData.itemId;
-      this.detailSectionModal.ITEMCODE= itemData.itemCode;
-      this.detailSectionModal.ITEMNAME= itemData.itemName;
-      this.detailSectionModal.UOMID = itemData.UOMID;
-      this.detailSectionModal.UOM= itemData.UOM;
-    } else{
-      this.selectedItem = 0;
-      if(this.detailSectionModal.hasOwnProperty('ITEMNAME')){
-        this.detailSectionModal.ITEMNAME = '';
-        this.detailSectionModal.UOMID = 0;
-        this.detailSectionModal.UOM = '';
-      }
-    }
-  },
  },
 
  methods:{
      /* ******************* Main table functions ************************* */
-     loadAmmendment(){
-       const docID =  localStorage.getItem('menuDocId') || 0;
-        httpClient({
-            method: 'GET',
-            url: `${process.env.VUE_APP_API_BASE}Amendments?docId=${docID}&selectedId=${this.selectedID}`
-          })
-            .then((result) => {
-              this.incrementAmmendment = true;
-               this.showAmmendment = result.data.showAmendment;
-               this.ammendmentDetail = result.data.amendmentDetail;
-               this.ammendmentNo = result.data.amendmentNo;
-               this.ammendmentDate = result.data.amendmentDate;
-               this.ammendmentSetOnce = result.data.savedOnce == 'Y'?true:false;
-               if(!this.ammendmentSetOnce){
-                 this.ammendmentNo = 1;
-                 var d = new Date();
-                 this.ammendmentDate = d.toLocaleDateString("en-GB", { // you can skip the first argument
-                                        year: "numeric",
-                                        month: "2-digit",
-                                        day: "2-digit",
-                                      });
-               }
-            }).catch((err) => {
-
-              this.showSnackBar('error',err.response.data);
-            });
-
-     },
      loadPartDocTableData(){
       const docID =  localStorage.getItem('menuDocId') || 0;
       this.partyDocHeaders= [ { text: "Action", align: "center",sortable: false } ],
@@ -1079,12 +913,11 @@ export default {
 
       httpClient({
         method: 'GET',
-        url: `${process.env.VUE_APP_API_BASE}PurchaseBillAgainstPO?selectedID=${this.selectedID}&docID=${docID}`
+        url: `${process.env.VUE_APP_API_BASE}PartyNonItemLinked?selectedID=${this.selectedID}&docID=${docID}`
       })
         .then((result) => {
           this.ediPartyDocModal = true;
           this.prefix =result.data.prefix;
-          
           const pageData = result.data;
           this.selectedPrefix = pageData.mainData.docPrefix;
           this.prefixDropdown = pageData.prefixData;
@@ -1099,7 +932,7 @@ export default {
           this.searchPartyPrefix = pageData.mainData.docPartyPrefix;
 
           //console.log(JSON.stringify(pageData.headerFields.dynamicFieldModal.fieldProperties));
-          if(pageData.headerFields.dynamicFieldModal.modal.length > 0){
+          if(pageData.headerFields.dynamicFieldModal !=null ){
           this.headerDynamicFieldModel = pageData.headerFields.dynamicFieldModal.modal[0];
           this.headerDynamicFieldOriginalSchema = pageData.headerFields.dynamicFieldModal.fieldProperties;
           }
@@ -1114,24 +947,38 @@ export default {
           this.detailSectionData = pageData.detailFields.dynamicFieldModal.modal;
           console.log('detail section data after load='+ JSON.stringify(this.detailSectionData));
 
+         if(pageData.footerFields.dynamicFieldModal !=null){
           this.footerDynamicFieldModel = pageData.footerFields.dynamicFieldModal.modal[0];
           this.footerDynamicFieldOriginalSchema = pageData.footerFields.dynamicFieldModal.fieldProperties;
+         }
           
-
-          this.totalDynamicFieldModel = pageData.totalFields.dynamicFieldModal.modal[0];
-          this.totalDynamicFieldOriginalSchema = pageData.totalFields.dynamicFieldModal.fieldProperties;
+          if(pageData.totalFields.dynamicFieldModal  !=null){
+           this.totalDynamicFieldModel = pageData.totalFields.dynamicFieldModal.modal[0];
+           this.totalDynamicFieldOriginalSchema = pageData.totalFields.dynamicFieldModal.fieldProperties;
+          }
           
 
           //generate schemas
-          this.headerDynamicFieldSchema.fields =  generateSchemaForTransaction(pageData.headerFields.dynamicFieldModal.fieldProperties, this.headerDynamicFieldModel,pageData.detailFields.dynamicFieldModal.modal[0],this.footerDynamicFieldModel, this.totalDynamicFieldModel);
+          if(pageData.headerFields.dynamicFieldModal  !=null){
+           this.headerDynamicFieldSchema.fields =  generateSchemaForTransaction(pageData.headerFields.dynamicFieldModal.fieldProperties, this.headerDynamicFieldModel,pageData.detailFields.dynamicFieldModal.modal[0],this.footerDynamicFieldModel, this.totalDynamicFieldModel);
+          }
           this.detailSectionFieldSchema.fields = generateSchemaForTransaction(pageData.detailFields.dynamicFieldModal.fieldProperties,this.headerDynamicFieldModel, pageData.detailFields.dynamicFieldModal.modal[0],this.footerDynamicFieldModel, this.totalDynamicFieldModel);
-          this.footerDynamicFieldSchema.fields = generateSchemaForTransaction(pageData.footerFields.dynamicFieldModal.fieldProperties,this.headerDynamicFieldModel,pageData.detailFields.dynamicFieldModal.modal[0], this.footerDynamicFieldModel, this.totalDynamicFieldModel);
-          this.totalDynamicFieldSchema.fields = generateSchemaForTransaction(pageData.totalFields.dynamicFieldModal.fieldProperties,this.headerDynamicFieldModel,pageData.detailFields.dynamicFieldModal.modal[0],this.footerDynamicFieldModel, this.totalDynamicFieldModel);
+          if(pageData.footerFields.dynamicFieldModal !=null){
+            this.footerDynamicFieldSchema.fields = generateSchemaForTransaction(pageData.footerFields.dynamicFieldModal.fieldProperties,this.headerDynamicFieldModel,pageData.detailFields.dynamicFieldModal.modal[0], this.footerDynamicFieldModel, this.totalDynamicFieldModel);
+          }
+          if(pageData.totalFields.dynamicFieldModal !=null){
+            this.totalDynamicFieldSchema.fields = generateSchemaForTransaction(pageData.totalFields.dynamicFieldModal.fieldProperties,this.headerDynamicFieldModel,pageData.detailFields.dynamicFieldModal.modal[0],this.footerDynamicFieldModel, this.totalDynamicFieldModel);
+          }
 
-
-          convertDateWithSchema(this.headerDynamicFieldOriginalSchema,this.headerDynamicFieldModel, false);
-          convertDateWithSchema(this.footerDynamicFieldOriginalSchema,this.footerDynamicFieldModel,false);
-          convertDateWithSchema(this.totalDynamicFieldOriginalSchema,this.totalDynamicFieldModel,false);
+          if(pageData.headerFields.dynamicFieldModal !=null){
+            convertDateWithSchema(this.headerDynamicFieldOriginalSchema,this.headerDynamicFieldModel, false);
+          }
+          if(pageData.footerFields.dynamicFieldModal !=null){
+            convertDateWithSchema(this.footerDynamicFieldOriginalSchema,this.footerDynamicFieldModel,false);
+          }
+          if(pageData.totalFields.dynamicFieldModal !=null){
+            convertDateWithSchema(this.totalDynamicFieldOriginalSchema,this.totalDynamicFieldModel,false);
+          }
 
         }).catch((err) => {
 
@@ -1149,19 +996,10 @@ export default {
        this.resetFromVariable();
        this.detailSectionModal = {
          SLNO: 0,
-         ITEMID: 0,
-         ITEMCODE: '',
-         ITEMNAME: '',
-         UOMID:0,
-         ITEMSLNO:0,
-         UOM:'',
-         QOH:0,
-         PONO: '',
-         POQTY: '',
-         CUMQTY:0,
-         PENDQTY:0
-         
+         ITEMSLNO:0
        };
+      
+
        this.detailSectionHeader = [];
        this.detailSectionData = [];
        this.selectedID = 0;
@@ -1176,13 +1014,16 @@ export default {
           this.prefix =result.data.prefix;
           
           const pageData = result.data;
-          this.dependentPrefix = pageData.mainData.dependentPrefix;
           this.prefixDropdown =  pageData.prefixData;
+           this.dependentPrefix = pageData.mainData.dependentPrefix;
           this.loadPendingPartyWise = pageData.mainData.loadPendingPartyWise;
           this.searchPartyTableName = pageData.mainData.docPartyTableName;
           this.searchPartyPrefix = pageData.mainData.docPartyPrefix;
 
-
+          this.detailSectionModal[this.dependentPrefix+"NO"] ="";
+          this.detailSectionModal[this.dependentPrefix+"QTY"]="";
+          this.detailSectionModal["CUMQTY"] = 0;
+          this.detailSectionModal["PENDQTY"] = 0;
          
           if(pageData.headerFields.dynamicFieldModal.modal !=null ){
           this.headerDynamicFieldModel = generateNewModal(pageData.headerFields.dynamicFieldModal.fieldProperties,pageData.headerFields.dynamicFieldModal.modal);
@@ -1276,16 +1117,7 @@ export default {
       this.isDetailRowEditing = true;
       console.log(JSON.stringify(row));
       this.detailSectionModal = row;
-      this.selectedItem = row.ITEMID;
-      this.searchItemResult = [
-        {
-          itemId: row.ITEMID,
-          itemCode:row.ITEMNAME,
-          itemName:row.ITEMNAME,
-          UOMID:row.UOMID,
-          UOM:row.UOM
-        }];
-
+      
       if(isSaveNewRecord){
         this.detailModal = true;
       } else{
@@ -1368,11 +1200,7 @@ export default {
 
        if(this.detailSectionModal.hasOwnProperty('SLNO')){
         if(this.detailSectionModal.SLNO == 0   && !this.detailModal){ this.isDetailSectionValid = true;}
-        else if((this.detailSectionModal.ITEMID == 0 ||this.detailSectionModal.ITEMID == '' || this.detailSectionModal.ITEMID ==null || this.detailSectionModal.ITEMID == undefined)
-        ||(this.detailSectionModal.ITEMNAME == '' || this.detailSectionModal.ITEMNAME == null || this.detailSectionModal.ITEMNAME == undefined)
-        ||(this.detailSectionModal.UOM =='' || this.detailSectionModal.UOM == null || this.detailSectionModal.UOM == undefined) || isValid == false ){
-          this.isDetailSectionValid = false;
-        } else{
+         else{
           this.isDetailSectionValid = true;
         }
       }  else{
@@ -1490,11 +1318,7 @@ export default {
        }
       if(this.detailSectionModal.hasOwnProperty('SLNO')){
         if(this.detailSectionModal.SLNO == 0   && !this.editDetailModal){ this.isDetailSectionValid = true;}
-        else if((this.detailSectionModal.ITEMID == 0 ||this.detailSectionModal.ITEMID == '' || this.detailSectionModal.ITEMID ==null || this.detailSectionModal.ITEMID == undefined)
-        ||(this.detailSectionModal.ITEMNAME == '' || this.detailSectionModal.ITEMNAME == null || this.detailSectionModal.ITEMNAME == undefined)
-        ||(this.detailSectionModal.UOM =='' || this.detailSectionModal.UOM == null || this.detailSectionModal.UOM == undefined) || isValid == false ){
-          this.isDetailSectionValid = false;
-        } else{
+        else{
           this.isDetailSectionValid = true;
         }
       } else{
@@ -1554,19 +1378,12 @@ export default {
       this.dialogLoadPening = false;
       this.loadPendingSelectedData.forEach(e =>{
          this.detailSectionModal.SLNO = this.detailSectionData.length +1;
-         this.detailSectionModal.ITEMID=  e.ITEMID,
-         this.detailSectionModal.ITEMCODE= e.ITEMCODE;
-         this.detailSectionModal.ITEMNAME= e.ITEMNAME;
-         this.detailSectionModal.UOMID= e.UOMID;
          this.detailSectionModal.ITEMSLNO= this.detailSectionData.length +1;
-         this.detailSectionModal.UOM= e.UOMCODE,
-         this.detailSectionModal.QOH= e.QOH;
-         this.detailSectionModal.PONO= e[this.dependentPrefix+ "NO"];
+         this.detailSectionModal[this.dependentPrefix+ "NO"]= e[this.dependentPrefix+ "NO"];
          this.detailSectionModal[this.dependentPrefix+'ID'] = e[this.dependentPrefix+ "ID"];
          this.detailSectionModal[this.dependentPrefix+'ITEMSLNO'] = e.ITEMSLNO;
-         this.detailSectionModal.POQTY= e[this.dependentPrefix+ "QTY"] ;
+         this.detailSectionModal[this.dependentPrefix+ "QTY"]= e[this.dependentPrefix+ "QTY"] ;
          this.detailSectionModal.CUMQTY= e[this.prefix+ "CUMQTY"];
-         this.detailSectionModal['CONVFACT'] = e.CONVFACT;
          this.detailSectionModal.PENDQTY= e.PENDQTY;
 
          this.detailSectionModal[this.prefix+"QTY"] = e.PENDQTY ;
@@ -1732,30 +1549,7 @@ export default {
         country: ''
       };
     },
-    newAmmendment(){
-      this.incrementAmmendment = false;
-      this.ammendmentNo += 1;
-      var d = new Date();
-      this.ammendmentDate = d.toLocaleDateString("en-GB", { // you can skip the first argument
-                            year: "numeric",
-                            month: "2-digit",
-                            day: "2-digit",
-                          });
-    },
-    addAmendment(){
-      var docID = localStorage.getItem('menuDocId') || 0;
-
-      httpClient({
-            method: 'PUT',
-            url: `${process.env.VUE_APP_API_BASE}Amendments?docId=${docID}&selectedId=${this.selectedID}&ammendmentDate=${this.ammendmentDate}&ammendmentNo=${this.ammendmentNo}&ammendmentDetail=${this.ammendmentDetail}`
-          })
-          .then((result) => {
-              this.showSnackBar('success',result.data);
-              this.amendmentModal = false;
-            }).catch((err) => {
-              this.showSnackBar('error',err.response.data);
-          });
-    },
+   
     updateAllModalForValueChanges(callQueries){
       updateModalAfterChange(this.headerDynamicFieldOriginalSchema,this.headerDynamicFieldModel,this.detailSectionModal,this.footerDynamicFieldModel, this.totalDynamicFieldModel, this.detailSectionData,'header', this.supplier.supplierCode,callQueries);
       updateModalAfterChange(this.detailSectionFieldOriginalSchema,this.headerDynamicFieldModel,this.detailSectionModal,this.footerDynamicFieldModel, this.totalDynamicFieldModel, this.detailSectionData,'detail',this.supplier.supplierCode,callQueries);

@@ -3,7 +3,7 @@ import VueFormGenerator from 'vue-form-generator'
 import ConvertNumber2Word from '@/DynamicProperty/NumberToWords.js'
 import httpClient from "@/services/httpClient.js"
 
-const updateModalSingleSchema = (schemas,model,callQueries) =>{
+const updateModalSingleSchema = (schemas,model,callQueries,selectedParty) =>{
     var tempSchema = schemas;
 
     if(tempSchema.length >0){
