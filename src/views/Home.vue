@@ -131,6 +131,8 @@ import PostDocEntry from '@/components/Utilities/PostDocEntry.vue';
 import NonPartyNonItemDoc from '@/components/Transcations/NonPartyNonItemDoc.vue';
 import PartyNonItemLinkedDoc from '@/components/Transcations/PartyNonItemLinkedDoc.vue';
 import PartyOnlyHdrDoc from '@/components/Transcations/PartyOnlyHdrDoc.vue';
+import NonPartyNonItemLinkedDoc from '@/components/Transcations/NonPartyNonItemLinkedDoc.vue';
+import customisedReports from '@/components/Reports/customisedReports.vue';
 
 export default {
   name: "home",
@@ -151,7 +153,9 @@ export default {
     PostDocEntry,
     NonPartyNonItemDoc,
     PartyNonItemLinkedDoc,
-    PartyOnlyHdrDoc
+    PartyOnlyHdrDoc,
+    NonPartyNonItemLinkedDoc,
+    customisedReports
 
     
     
