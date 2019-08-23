@@ -17,6 +17,8 @@ import 'bootstrap/js/dist/collapse.js'
 import 'eonasdan-bootstrap-datetimepicker-npm/build/js/bootstrap-datetimepicker.min.js'
 import 'eonasdan-bootstrap-datetimepicker-npm/build/css/bootstrap-datetimepicker.min.css'
 import 'bootstrap/dist/css/bootstrap.css'
+import "ag-grid-community/dist/styles/ag-grid.css";
+import "ag-grid-community/dist/styles/ag-theme-balham.css";
 
 
 export default {

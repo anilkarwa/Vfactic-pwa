@@ -133,6 +133,11 @@ import PartyNonItemLinkedDoc from '@/components/Transcations/PartyNonItemLinkedD
 import PartyOnlyHdrDoc from '@/components/Transcations/PartyOnlyHdrDoc.vue';
 import NonPartyNonItemLinkedDoc from '@/components/Transcations/NonPartyNonItemLinkedDoc.vue';
 import customisedReports from '@/components/Reports/customisedReports.vue';
+import DynamicFilterReports from '@/components/Reports/DynamicFilterReports/dynamicFilterReports.vue';
+import StaticReports from '@/components/Reports/StaticReports.vue';
+import EMail from '@/components/Others/EMail.vue'
+import Dashboard from '@/components/Others/Dashboard.vue'
+import SMS from '@/components/Others/SMS.vue'
 
 export default {
   name: "home",
@@ -155,7 +160,12 @@ export default {
     PartyNonItemLinkedDoc,
     PartyOnlyHdrDoc,
     NonPartyNonItemLinkedDoc,
-    customisedReports
+    customisedReports,
+    EMail,
+    Dashboard,
+    SMS,
+    DynamicFilterReports,
+    StaticReports
 
     
     

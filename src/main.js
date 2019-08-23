@@ -11,6 +11,8 @@ import fieldInputDropdown from "./CustomFields/fieldInputDropdown.vue";
 import Cleave from 'vue-cleave-component';
 import BootstrapVueTreeview from 'bootstrap-vue-treeview';
 import pdf from 'pdfvuer'
+import 'ag-grid-enterprise';
+
 
 Vue.component("fieldInputDropdown", fieldInputDropdown);
 
