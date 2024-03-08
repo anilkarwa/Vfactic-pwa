@@ -47,7 +47,7 @@
             <v-btn icon dark @click="partyMasterModel = false">
               <v-icon>close</v-icon>
             </v-btn>
-            <v-toolbar-title>{{$store.state.pageName}} - Edit</v-toolbar-title>
+            <v-toolbar-title>Edit Information</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-btn class="blue darken-1 white--text" @click="updatePartyMasterData()">Save</v-btn>
           </v-toolbar>
@@ -186,6 +186,17 @@
                             <b-form-input id="code" v-model="editItems[staticFields[11]]" type="text" :placeholder="`Pin Code`" />
                           </v-flex>
                           <v-flex xs12 sm6 md4>
+                            <label for="code">{{`Email: `}}</label><span class="mandatoryStar">*</span>
+                            <b-form-input id="code" v-model="editItems[staticFields[16]]" type="text"
+                            v-bind:class="{'form-control':true, 'is-invalid' : !validEmail() && emailBlured}"
+                            v-on:blur="emailBlured = true"
+                            aria-describedby="emailLiveFeedback"
+                            :placeholder="`Mail Address`" />
+                            <b-form-invalid-feedback id="emaiLiveFeedback">
+                              This field is required
+                            </b-form-invalid-feedback>
+                          </v-flex>
+                          <v-flex xs12 sm6 md4>
                             <b-form-checkbox
                               id="checkbox1"
                               v-model="editItems[staticFields[14]]"
@@ -244,7 +255,7 @@
             <v-btn icon dark @click="AddItemInpartyMasterModel = false">
               <v-icon>close</v-icon>
             </v-btn>
-            <v-toolbar-title>{{$store.state.pageName}} - Add</v-toolbar-title>
+            <v-toolbar-title>Add Record</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-btn class="blue darken-1 white--text" @click="addItemRequest()">Add</v-btn>
 
@@ -372,6 +383,17 @@
                             </b-form-invalid-feedback>
                           </v-flex>
                           <v-flex xs12 sm6 md4>
+                            <label for="code">{{`Email: `}}</label><span class="mandatoryStar">*</span>
+                            <b-form-input id="code" v-model="addItems[staticFields[13]]" type="text"
+                            v-bind:class="{'form-control':true, 'is-invalid' : !addValidEmail() && emailBlured}"
+                            v-on:blur="emailBlured = true"
+                            aria-describedby="emailLiveFeedback"
+                            :placeholder="`Mail Address`" />
+                            <b-form-invalid-feedback id="emailLiveFeedback">
+                              This field is required
+                            </b-form-invalid-feedback>
+                          </v-flex>
+                          <v-flex xs12 sm6 md4>
                             <label for="code">{{`Pin Code: `}}</label>
                             <b-form-input id="code" v-model="addItems[staticFields[10]]" type="text" :placeholder="`Pin Code`" />
                           </v-flex>
@@ -468,7 +490,6 @@ import generateGroupSchema from '@/DynamicProperty/generateGroupSchema.js'
 import generateNewModal from '@/DynamicProperty/generateNewModal.js'
 import customeValidaton from '@/DynamicProperty/customeValidation.js'
 import updateModalAfterChangeMaster from '@/DynamicProperty/updateModalAfterChangeMaster.js';
-import convertDateWithSchema from '@/DynamicProperty/convertDateWithSchema.js';
 
 export default {
   components:{
@@ -503,6 +524,7 @@ export default {
       groupNameBlured: true,
       ledgerIdBlured: true,
       cityBlured: true,
+      emailBlured: true,
       stateBlured: true,
       countryBlured: true,
       formOptions: {
@@ -617,7 +639,6 @@ export default {
             this.dynamicFieldModel = this.dynamicModal;
             this.dynamicFieldSchema.fields = generateSchema(this.dynamicShema, this.dynamicModal);
             this.dynamicFieldSchema.groups = generateGroupSchema(this.dynamicShema, this.dynamicModal);
-            convertDateWithSchema(this.dynamicShema,this.dynamicFieldModel, false);
           }
         }).catch((err) => {
           this.showSnackBar('error',err.response.data);
@@ -649,17 +670,13 @@ export default {
     },
     updatePartyMasterData: function() {
       this.validateOnclick();
-      
-      let updateModal = JSON.parse(JSON.stringify(this.dynamicFieldModel));
-      convertDateWithSchema(this.dynamicShema,updateModal, true);
-
       this.editItems[this.staticFields[4]] = typeof(this.editItems[this.staticFields[4]]) === 'object' ? this.editItems[this.staticFields[4]].groupID : this.editItems[this.staticFields[4]];
       this.editItems[this.staticFields[5]] = typeof(this.editItems[this.staticFields[5]]) === 'object' ? this.editItems[this.staticFields[5]].ledgerGroupID : this.editItems[this.staticFields[5]];
       const updateParams = {
         docID: localStorage.getItem('menuDocId') || 0, 
         userID: localStorage.getItem('userId') || 0,
         staticFields: this.editItems,
-        dynamicFields: updateModal
+        dynamicFields: this.dynamicFieldModel
       }
       console.log('Update Params', updateParams);
       /**
@@ -682,7 +699,7 @@ export default {
       }
     },
     updateValidation(){
-      return(this.validCode() && this.validName() && this.ValidGroupLedgerid() && this.validSupplierGroup() && this.validAdd1() &&
+      return(this.validCode() && this.validName() && this.ValidGroupLedgerid() && this.validSupplierGroup() && this.validEmail() && this.validAdd1() &&
       this.validCity() && this.validState() && this.validCountry())? true: false;
     },
     validCode: function() {
@@ -706,6 +723,11 @@ export default {
     validSupplierGroup: function() {
       if (this.editItems[this.staticFields[4]]) {
         return (this.editItems[this.staticFields[4]].toString()).length >= 1 ? true : false;
+      } else { return false; }
+    },
+    validEmail: function() {
+      if (this.editItems[this.staticFields[16]]) {
+        return (this.editItems[this.staticFields[16]]).length >= 1 ? true : false;
       } else { return false; }
     },
     validAdd1: function() {
@@ -748,6 +770,7 @@ export default {
       return (this.addValidCode() &&
       this.addValidName() &&
       this.addValidSupplierGroup() &&
+      this.addValidEmail() &&
       this.addValidGroupLedgerid() &&
       this.addValidAdd1() &&
       this.addValidCity() &&
@@ -776,6 +799,15 @@ export default {
       if(this.addFlag) {
         if (this.addItems[this.staticFields[3]]) {
         return (this.addItems[this.staticFields[3]].toString()).length >= 1  ? true : false;
+      } else { return false; }
+      } else{
+        return true;
+      }
+    },
+    addValidEmail: function() {
+      if(this.addFlag) {
+        if (this.addItems[this.staticFields[13]]) {
+        return (this.addItems[this.staticFields[13]]).length >= 1  ? true : false;
       } else { return false; }
       } else{
         return true;
@@ -888,15 +920,11 @@ export default {
     addItemRequest: function() {
       this.addFlag = true;
       this.validateOnclick();
-      
-      let newModalData = JSON.parse(JSON.stringify(this.addDynamicFieldModel));
-      convertDateWithSchema(this.dynamicShema,newModalData, true);
-
       const postParams = {
         docID: localStorage.getItem('menuDocId'),
         userID: localStorage.getItem('userId'),
         staticFields: this.addItems,
-        dynamicFields: newModalData
+        dynamicFields: this.addDynamicFieldModel
       }
       if (this.addValidation() && this.isDynamicFormValid ) {
         httpClient({

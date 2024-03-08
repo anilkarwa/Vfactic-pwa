@@ -425,7 +425,7 @@
                                 <v-flex xs4 sm3 md4>
                                   <v-btn v-if="showAmmendment" color="primary" dark @click="amendmentModal= true" >Amendment</v-btn>
                                   <div v-if="ammendmentSetOnce">
-                                    <p>Ammendment No : {{ammendmentNo}}<p>
+                                    <p>Ammendment No : {{ammendmentNo}}</p>
                                     <p>Ammendment Date : {{ammendmentDate}}</p>
                                     <p>Details : {{ammendmentDetail}}</p>
                                   </div>
@@ -661,11 +661,11 @@ import generateNewModal from '@/DynamicProperty/generateNewModal.js'
 import customeValidaton from '@/DynamicProperty/customeValidation.js'
 import updateModalAfterChange from '@/DynamicProperty/updateModalAfterChange.js'
 import convertDateWithSchema from '@/DynamicProperty/convertDateWithSchema.js';
-import pdf from 'pdfvuer'
+// import pdf from 'pdfvuer'
 
 export default {
 components: {
-    pdf
+    // pdf
 },
  data : vm => ({
    tableSearch: '',

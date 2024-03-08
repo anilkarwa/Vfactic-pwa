@@ -10,7 +10,7 @@ import VueFormGenerator from 'vue-form-generator/dist/vfg.js'
 import fieldInputDropdown from "./CustomFields/fieldInputDropdown.vue";
 import Cleave from 'vue-cleave-component';
 import BootstrapVueTreeview from 'bootstrap-vue-treeview';
-import pdf from 'pdfvuer'
+// import pdf from 'pdfvuer'
 import 'ag-grid-enterprise';
 
 
@@ -35,7 +35,7 @@ Vue.use(VueFormGenerator,{
   }
 })
 Vue.use(BootstrapVueTreeview)
-Vue.use(pdf)
+// Vue.use(pdf)
 
 new Vue({
   router,

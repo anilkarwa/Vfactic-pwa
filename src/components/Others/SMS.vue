@@ -7,8 +7,10 @@
         <v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer>
          <v-dialog v-model="dialog" scrollable max-width="500px" margin-left="1014px">
         <template v-slot:activator="{ on }">
-          
-           <i class="material-icons" dark v-on="on" style="margin-right:5px;font-size: 40px;color:#1976d2;">add_box</i>
+           <v-btn class="mx-2" fab dark small color="primary" v-on="on" >
+        <v-icon dark>add</v-icon>
+      </v-btn>
+           <!--<i class="material-icons" dark v-on="on" style="margin-right:5px;font-size: 40px;color:#1976d2;">add_box</i>-->
         </template>
         <v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer>
         <v-card>
@@ -42,7 +44,7 @@
       </v-data-table>   
           <v-divider></v-divider>
           <v-card-actions>
-            <v-btn color="blue darken-1" text @click="dialog = false">Close</v-btn>
+            <v-spacer></v-spacer><v-btn color="blue darken-1" text @click="dialog = false">Close</v-btn>
           </v-card-actions>
           
            </v-list>
@@ -80,15 +82,11 @@
           ref="message"
           v-model="message"
           name="input-5-2"
-          label="Text..."
-          value="Progressive Web App..."
-          hint="Enter Text Message"
-            persistent-hint
-            box
-        ></v-textarea>
+          label="Enter Text Message.."
+         ></v-textarea>
       </v-flex>
       </v-card-title>   
-        <v-divider class="mt-5"></v-divider>
+        <v-divider class="mt-2"></v-divider>
         <v-card-actions>
           <v-btn flat @click="resetForm">Clear</v-btn>
           <v-spacer></v-spacer>
@@ -194,6 +192,13 @@
         })
           .then((result) => {
             alert('success');
+
+            this.errorMessages = []
+            this.formHasErrors = false
+            Object.keys(this.form).forEach(f => {
+              this.$refs[f].reset()
+            })
+
           }).catch((err) => {
             alert('errors in api');
 
