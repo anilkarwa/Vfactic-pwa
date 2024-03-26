@@ -21,8 +21,7 @@
         <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
         <v-img src="https://www.softvent.com/images/logo.png" max-width="200" max-height="200"></v-img>
          <v-spacer></v-spacer>
-         <!--<v-toolbar-title class="white--text">{{selectedCompanyName}}</v-toolbar-title>-->
-         <v-toolbar-title class="white--text">Working With Softvent</v-toolbar-title>
+         <v-toolbar-title class="white--text">{{selectedCompanyName}}</v-toolbar-title>
          <v-spacer></v-spacer>
           
          <v-dialog v-model="dialog3" width="780px">
