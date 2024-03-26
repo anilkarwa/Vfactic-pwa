@@ -5,8 +5,12 @@
         <v-list dense>
             <v-card  class="mx-auto"   max-width="500" >
               <v-sheet class="pa-3 primary">
-                 <v-autocomplete v-model="search"  label="Search Menu..." dark
-                  flat solo-inverted hide-details clearable clear-icon="mdi-close-circle-outline"  ></v-autocomplete> 
+                 <v-autocomplete v-model="search" :search-input.sync="searchInput" label="Search Menu..." dark :items="searchResults"
+                  flat solo-inverted hide-details clearable 
+                  clear-icon="mdi-close-circle-outline" item-text="menuItemCapiton" 
+                  item-value="menuId"
+                  @change="onSearchMenuSelect"
+                ></v-autocomplete> 
               </v-sheet>
           
               <v-card-text class="menugrad">
@@ -1192,6 +1196,7 @@ export default {
       active: [],
       open: [1,1],
       search: null,
+      searchInput: null,
       caseSensitive: false,
       loggedInUserName :'',
       selectedCompanyName: '',
@@ -1208,7 +1213,6 @@ export default {
         ],
       loading: false,
       searchResults: [],
-      search: null,
       searchMenuSelect: null,
       snackbar: false,
       color: '',
@@ -1231,20 +1235,7 @@ export default {
         rowsPerPage: parseInt(localStorage.getItem('rowPerPageDataTable')) || 5
         },
       headers: [ { text: "Title", align: "left",value:"Title" },{ text: "Description", align: "left",value:"Description" } ],
-    
-      dialogm1: '',
-      dialog: false,
-      notification: [],
-      toggle: [],
-      active: [],
-      Notification: [],
       NotificationTableData: [],
-      tableSearch: '',
-      search: null,
-      pagination: {
-        rowsPerPage: parseInt(localStorage.getItem('rowPerPageDataTable')) || 5
-        },
-      headers: [ { text: "Title", align: "left",value:"Title" },{ text: "Description", align: "left",value:"Description" } ],
         StatisticReport: [],
         StatisticTableData: [], 
         head: [ { text: "Slno", align: "left",value:"Slno" },{ text: "Website", align: "left",value:"Website" } ],
@@ -1293,8 +1284,10 @@ export default {
 
   },
   watch: {
-    search (val) {
-      this.searchMenu(val);
+    searchInput(value) {
+      if (value != undefined && value != null && value != '') { 
+        this.searchMenu(value);
+      }
     }
   },
   
