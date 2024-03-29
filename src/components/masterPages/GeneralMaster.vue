@@ -455,7 +455,7 @@ export default {
           this.staticFields = Object.keys(this.editItems);
          
           if(generalMasterEditFields.dynamicFieldModal != ""){
-            this.dynamicShema = generalMasterEditFields.dynamicFieldModal.fieldProperties;
+            this.dynamicShema = generalMasterEditFields.dynamicFieldModal.fieldProperties || {};
             this.dynamicModal = generalMasterEditFields.dynamicFieldModal.modal[0];
             this.dynamicFieldModel =  this.dynamicModal
             this.dynamicFieldSchema.fields = generateSchema(this.dynamicShema,  this.dynamicModal);
@@ -559,8 +559,8 @@ export default {
         this.preFix = addFieldForGeneralMaster.prefix;
         this.addItems = addFieldForGeneralMaster.staticFieldData;
         this.staticFields = Object.keys(this.addItems);
-        this.dynamicShema =addFieldForGeneralMaster.dynamicFieldModal.fieldProperties;
-        this.dynamicModal = addFieldForGeneralMaster.dynamicFieldModal.modal;
+        this.dynamicShema = addFieldForGeneralMaster.dynamicFieldModal.fieldProperties || {};
+        this.dynamicModal = addFieldForGeneralMaster.dynamicFieldModal.modal || {};
         if(addFieldForGeneralMaster.dynamicFieldModal.modal !=null){
         this.addDynamicFieldSchema.fields = generateSchema(this.dynamicShema, this.dynamicModal);
         this.addDynamicFieldSchema.groups = generateGroupSchema(this.dynamicShema, this.dynamicModal);

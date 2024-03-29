@@ -1335,10 +1335,10 @@ export default {
       let selectedMenuRow = null;
       this.menu.forEach(m =>{
          if(m.children.length > 0){
-            selectedmenu = m.children.find( cm => cm.menuId == id);
+            selectedmenu = m.children.find( cm => cm.menuId == id && cm.menuItemCapiton == treeObject.data.menuItemCapiton);
             if(!selectedmenu){
               m.children.forEach( fc =>{
-                selectedmenu = fc.children.find( sm => sm.menuId == id);
+                selectedmenu = fc.children.find( sm => sm.menuId == id && sm.menuItemCapiton == treeObject.data.menuItemCapiton);
                 if(selectedmenu){
                   selectedMenuRow = selectedmenu;
                 }
@@ -1350,7 +1350,7 @@ export default {
             
          }
       })
-      
+
       if(selectedMenuRow && selectedMenuRow.pageLink !="" &&  selectedMenuRow.pageLink !=null && isSelected){
         this.selecteMenu = selectedMenuRow;
         console.log('selected item= '+JSON.stringify(selectedMenuRow));
