@@ -1,26 +1,25 @@
-import Vue from 'vue'
-import App from './App.vue'
-import Vuetify from 'vuetify'
-import router from './router'
-import store from './store'
-import './registerServiceWorker'
-import BootstrapVue from 'bootstrap-vue'
-import VueFormGenerator from 'vue-form-generator/dist/vfg.js'
+import Vue from "vue";
+import App from "./App.vue";
+import Vuetify from "vuetify";
+import router from "./router";
+import store from "./store";
+import "./registerServiceWorker";
+import BootstrapVue from "bootstrap-vue";
+import VueFormGenerator from "vue-form-generator/dist/vfg.js";
 //import 'vue-form-generator/dist/vfg-core.css'
 import fieldInputDropdown from "./CustomFields/fieldInputDropdown.vue";
-import Cleave from 'vue-cleave-component';
-import BootstrapVueTreeview from 'bootstrap-vue-treeview';
+import Cleave from "vue-cleave-component";
+import BootstrapVueTreeview from "bootstrap-vue-treeview";
 // import pdf from 'pdfvuer'
-import 'ag-grid-enterprise';
-
+import "ag-grid-enterprise";
 
 Vue.component("fieldInputDropdown", fieldInputDropdown);
 
-Vue.config.productionTip = false
-Vue.use(Vuetify)
-Vue.use(BootstrapVue)
-Vue.use(Cleave)
-Vue.use(VueFormGenerator,{
+Vue.config.productionTip = false;
+Vue.use(Vuetify);
+Vue.use(BootstrapVue);
+Vue.use(Cleave);
+Vue.use(VueFormGenerator, {
   validators: {
     firstCustomValidator: (value, field, model) => {
       if (value === "") {
@@ -31,14 +30,14 @@ Vue.use(VueFormGenerator,{
         }
       }
       return null;
-    }
-  }
-})
-Vue.use(BootstrapVueTreeview)
+    },
+  },
+});
+Vue.use(BootstrapVueTreeview);
 // Vue.use(pdf)
 
 new Vue({
   router,
   store,
-  render: h => h(App)
-}).$mount('#app')
+  render: (h) => h(App),
+}).$mount("#app");

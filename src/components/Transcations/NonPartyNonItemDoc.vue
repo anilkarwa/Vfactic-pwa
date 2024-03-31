@@ -1,26 +1,31 @@
 <template>
- <div id="app">
-   <v-app id="inspire">
-     <div class="text-md-center text-lg-center">
-          <v-btn fab dark small color="indigo" @click="loadSchemaForNewPartyDocTranscation" v-if="getCurrentUserRoles('addRight') == '1'"> <v-icon dark>add</v-icon></v-btn>
-        </div>
-        <span v-if="getCurrentUserRoles('addRight') == '1'"> Add New Record</span><br/>
-    <!-- START: Code for Data table -->
-    <v-card>
-      <v-card-title> 
-        <v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer>
-        <v-text-field  v-model="tableSearch" append-icon="search"  label="Search" single-line  hide-details  ></v-text-field>
-      </v-card-title>
-        <v-data-table :headers="partyDocHeaders" :search="tableSearch" :items="partyDocTableData" :pagination.sync="pagination" class="elevation-1">
+  <div id="app">
+    <v-app id="inspire">
+      <div class="text-md-center text-lg-center">
+        <v-btn fab dark small color="indigo" @click="loadSchemaForNewPartyDocTranscation"
+          v-if="getCurrentUserRoles('addRight') == '1'"> <v-icon dark>add</v-icon></v-btn>
+      </div>
+      <span v-if="getCurrentUserRoles('addRight') == '1'"> Add New Record</span><br />
+      <!-- START: Code for Data table -->
+      <v-card>
+        <v-card-title>
+          <v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer>
+          <v-text-field v-model="tableSearch" append-icon="search" label="Search" single-line
+            hide-details></v-text-field>
+        </v-card-title>
+        <v-data-table :headers="partyDocHeaders" :search="tableSearch" :items="partyDocTableData"
+          :pagination.sync="pagination" class="elevation-1">
           <template slot="items" slot-scope="props">
-            <tr >
-            <td class="justify-center layout px-0">
-              <v-icon v-if="getCurrentUserRoles('editRight') == '1'" small class="mr-2" @click="editSelectedPartyDocTranscation(props.item)">edit</v-icon>
-              <v-icon v-if="getCurrentUserRoles('viewRight') == '1'" small class="mr-2" @click="viewPdf(props.item)">picture_as_pdf</v-icon>
-            </td>
-            <td v-for="values in props.item" :key="values.id">
-              {{ values }}
-            </td>
+            <tr>
+              <td class="justify-center layout px-0">
+                <v-icon v-if="getCurrentUserRoles('editRight') == '1'" small class="mr-2"
+                  @click="editSelectedPartyDocTranscation(props.item)">edit</v-icon>
+                <v-icon v-if="getCurrentUserRoles('viewRight') == '1'" small class="mr-2"
+                  @click="viewPdf(props.item)">picture_as_pdf</v-icon>
+              </td>
+              <td v-for="values in props.item" :key="values.id">
+                {{ values }}
+              </td>
             </tr>
           </template>
           <template slot="no-data">
@@ -28,430 +33,436 @@
           </template>
         </v-data-table>
       </v-card>
-        <!-- END: Code for Data table -->
-              <!-- Pdf viewer modal -->
-          <v-dialog v-model="pdfDailog" fullscreen hide-overlay transition="dialog-bottom-transition">
-              <v-card>
-                <v-toolbar dark color="primary">
-                  <v-btn icon dark @click="pdfDailog = false">
-                    <v-icon>close</v-icon>
-                  </v-btn>
-                  <v-toolbar-title>Document Preview</v-toolbar-title>
-                  <v-spacer></v-spacer>
-                </v-toolbar>
-                   <iframe 
-                      :src="pdfUrl"
-                      height="600"
-                      width="100%"
-                      type="application/pdf"
-                      frameborder="0"
-                    ></iframe>
-                     <!-- <pdf :src="pdf" :page="1">
+      <!-- END: Code for Data table -->
+      <!-- Pdf viewer modal -->
+      <v-dialog v-model="pdfDailog" fullscreen hide-overlay transition="dialog-bottom-transition">
+        <v-card>
+          <v-toolbar dark color="primary">
+            <v-btn icon dark @click="pdfDailog = false">
+              <v-icon>close</v-icon>
+            </v-btn>
+            <v-toolbar-title>Document Preview</v-toolbar-title>
+            <v-spacer></v-spacer>
+          </v-toolbar>
+          <iframe :src="pdfUrl" height="600" width="100%" type="application/pdf" frameborder="0"></iframe>
+          <!-- <pdf :src="pdf" :page="1">
                       <template slot="loading">
                         loading content here...
                       </template>
                     </pdf> -->
-              </v-card>
-            </v-dialog>
+        </v-card>
+      </v-dialog>
       <!--End Pdf viewer modal -->
 
-       <!-- Add PartyDoc Transcation Dialog -->
-          <v-dialog  v-model="addPartyDocModal"   fullscreen  hide-overlay  transition="dialog-bottom-transition" >
-           <v-card>
-              <v-toolbar fixed dark color="primary">
-                <v-btn icon dark @click="addPartyDocModal = false">
-                  <v-icon>close</v-icon>
-                </v-btn>
-                <v-toolbar-title>{{$store.state.pageName}} - Add</v-toolbar-title>
-                <v-spacer></v-spacer>
-                <v-btn class="blue darken-1 white--text" @click="savePartyDocHDRTableData()">Add</v-btn>
-              </v-toolbar>
-              <v-container class="spaceFromTop" fluid grid-list-md >
-                <v-layout row wrap>
-                <v-flex xs12 sm12 md12>
-                  <v-expansion-panel expand>
-                    <v-expansion-panel-content>
-                      <template v-slot:header>
-                        <div><h2>Header</h2></div>
-                      </template>
-                      <v-card>
-                        <v-card-text>
-                          <v-container fluid grid-list-x>
+      <!-- Add PartyDoc Transcation Dialog -->
+      <v-dialog v-model="addPartyDocModal" fullscreen hide-overlay transition="dialog-bottom-transition">
+        <v-card>
+          <v-toolbar fixed dark color="primary">
+            <v-btn icon dark @click="addPartyDocModal = false">
+              <v-icon>close</v-icon>
+            </v-btn>
+            <v-toolbar-title>{{ $store.state.pageName }} - Add</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-btn class="blue darken-1 white--text" @click="savePartyDocHDRTableData()">Add</v-btn>
+          </v-toolbar>
+          <v-container class="spaceFromTop" fluid grid-list-md>
+            <v-layout row wrap>
+              <v-flex xs12 sm12 md12>
+                <v-expansion-panel expand>
+                  <v-expansion-panel-content>
+                    <template v-slot:header>
+                      <div>
+                        <h2>Header</h2>
+                      </div>
+                    </template>
+                    <v-card>
+                      <v-card-text>
+                        <v-container fluid grid-list-x>
                           <v-layout row justify-space-between>
                             <v-flex xs12 sm7 md7>
-                              <p>{{prefix}} NO.</p>
+                              <p>{{ prefix }} NO.</p>
                               <v-layout row>
-                              <v-flex xs3 sm3 md3> <v-select v-model="selectedPrefix"  :items="prefixDropdown" label="Prefix" @change="getDocNumber()"  item-text="prefix" item-value="prefix"></v-select></v-flex>
-                              <v-flex xs2 sm2 md2> <v-text-field v-model="partyDOCID"  ></v-text-field> </v-flex>
-                              <v-flex xs3 sm3 md3> 
-                                   <v-menu  reff="datePickerModal" v-model="datePickerModal" :close-on-content-click="false" lazy transition="scale-transition" offset-y
-                                  full-width max-width="290px"  min-width="290px" >
-                                <template v-slot:activator="{ on }">
-                                  <v-text-field v-model="dateFormatted"  label="Date" persistent-hint prepend-icon="event"  @blur="date = parseDate(dateFormatted)"  v-on="on"   ></v-text-field>
-                                </template>
-                                <v-date-picker v-model="date" no-title @input="datePickerModal = false"></v-date-picker>
-                                </v-menu> 
-                              </v-flex>
-                              <v-flex xs3 sm3 md3> <v-text-field v-model="partyDOCNumber"  readonly ></v-text-field></v-flex>
+                                <v-flex xs3 sm3 md3> <v-select v-model="selectedPrefix" :items="prefixDropdown"
+                                    label="Prefix" @change="getDocNumber()" item-text="prefix"
+                                    item-value="prefix"></v-select></v-flex>
+                                <v-flex xs2 sm2 md2> <v-text-field v-model="partyDOCID"></v-text-field> </v-flex>
+                                <v-flex xs3 sm3 md3>
+                                  <v-menu reff="datePickerModal" v-model="datePickerModal"
+                                    :close-on-content-click="false" lazy transition="scale-transition" offset-y
+                                    full-width max-width="290px" min-width="290px">
+                                    <template v-slot:activator="{ on }">
+                                      <v-text-field v-model="dateFormatted" label="Date" persistent-hint
+                                        prepend-icon="event" @blur="date = parseDate(dateFormatted)"
+                                        v-on="on"></v-text-field>
+                                    </template>
+                                    <v-date-picker v-model="date" no-title
+                                      @input="datePickerModal = false"></v-date-picker>
+                                  </v-menu>
+                                </v-flex>
+                                <v-flex xs3 sm3 md3> <v-text-field v-model="partyDOCNumber"
+                                    readonly></v-text-field></v-flex>
                               </v-layout>
 
                             </v-flex>
                             <v-flex xs12 sm4 md4>
-                               <vue-form-generator id="Form-generator-css" ref="vfAddHeader" :schema="headerDynamicFieldSchema" :model="headerDynamicFieldModel" :options="formOptions" @validated="onValidatedAddHeader"  ></vue-form-generator> 
+                              <vue-form-generator id="Form-generator-css" ref="vfAddHeader"
+                                :schema="headerDynamicFieldSchema" :model="headerDynamicFieldModel"
+                                :options="formOptions" @validated="onValidatedAddHeader"></vue-form-generator>
                             </v-flex>
                           </v-layout>
                         </v-container>
-                        </v-card-text>
-                      </v-card>
-                    </v-expansion-panel-content>
+                      </v-card-text>
+                    </v-card>
+                  </v-expansion-panel-content>
 
 
-                    <v-expansion-panel-content>
-                      <template v-slot:header>
-                        <div><h2>Detail</h2></div>
-                      </template>
-                      <v-card>
-                        <v-card-text>
-                         <v-container fluid grid-list-xl>
+                  <v-expansion-panel-content>
+                    <template v-slot:header>
+                      <div>
+                        <h2>Detail</h2>
+                      </div>
+                    </template>
+                    <v-card>
+                      <v-card-text>
+                        <v-container fluid grid-list-xl>
                           <div class="actionBlock">
-                              <!-- add new row action -->
-                                <v-dialog v-model="detailModal" scrollable persistent max-width="450px">
-                                  <template v-slot:activator="{ on }">
-                                    <!-- <v-btn color="primary" dark v-on="on">Open Dialog</v-btn> -->
-                                    <v-btn fab dark small color="indigo" v-on="on"> <v-icon dark>add</v-icon> </v-btn>
-                                  </template>
-                                  <v-card>
-                                    <v-card-title>
-                                      <span class="headline">Item Details</span>
-                                    </v-card-title>
-                                    <v-card-text>
-                                      <v-container grid-list-md>
-                                        <v-layout wrap>
-                                          <v-flex xs12>
-                                           <vue-form-generator id="Form-generator-css" ref="vfAddDetail" :schema="detailSectionFieldSchema" :model="detailSectionModal" :options="formOptions" @validated="onValidatedAddDetailSection"  ></vue-form-generator>
-                                          </v-flex>
-                                        </v-layout>
-                                      </v-container>
-                                      <small>*indicates required field</small>
-                                    </v-card-text>
-                                    <v-card-actions>
-                                      <v-spacer></v-spacer>
-                                      <v-btn color="blue darken-1" flat @click="detailModal = false">Close</v-btn>
-                                      <v-btn color="blue darken-1" flat @click="validateOnclickDetailSaveNewRecord(); saveDetailData(true)">Save</v-btn>
-                                    </v-card-actions>
-                                  </v-card>
-                                </v-dialog>
-                                <!-- speed dial code -->
-                              <div id="create">
-                                  <v-speed-dial v-model="fab" top  direction="right"
-                                    transition="slide-x-reverse-transition" >
-                                    <template v-slot:activator>
-                                      <v-btn v-model="fab" color="blue darken-2" dark small fab  >
-                                        <v-icon>settings_input_composite</v-icon>
-                                        <v-icon>close</v-icon>
-                                      </v-btn>
-                                    </template>
-                                     <v-btn fab  dark  small color="green" @click="moveRowUpwared()">
-                                      <v-icon>arrow_upward</v-icon>
-                                    </v-btn>
-                                    <v-btn  fab  dark  small color="indigo" @click="moveRowDownwared()" >
-                                      <v-icon>arrow_downward</v-icon>
-                                    </v-btn> 
-                                    <v-btn fab  dark small color="red" @click="removeDetailRecord()">
-                                      <v-icon>delete</v-icon>
-                                    </v-btn>
-                                  </v-speed-dial>
-                                  <!--End speed dial code -->
-                              </div>
+                            <!-- add new row action -->
+                            <v-dialog v-model="detailModal" scrollable persistent max-width="450px">
+                              <template v-slot:activator="{ on }">
+                                <!-- <v-btn color="primary" dark v-on="on">Open Dialog</v-btn> -->
+                                <v-btn fab dark small color="indigo" v-on="on"> <v-icon dark>add</v-icon> </v-btn>
+                              </template>
+                              <v-card>
+                                <v-card-title>
+                                  <span class="headline">Item Details</span>
+                                </v-card-title>
+                                <v-card-text>
+                                  <v-container grid-list-md>
+                                    <v-layout wrap>
+                                      <v-flex xs12>
+                                        <vue-form-generator id="Form-generator-css" ref="vfAddDetail"
+                                          :schema="detailSectionFieldSchema" :model="detailSectionModal"
+                                          :options="formOptions"
+                                          @validated="onValidatedAddDetailSection"></vue-form-generator>
+                                      </v-flex>
+                                    </v-layout>
+                                  </v-container>
+                                  <small>*indicates required field</small>
+                                </v-card-text>
+                                <v-card-actions>
+                                  <v-spacer></v-spacer>
+                                  <v-btn color="blue darken-1" flat @click="detailModal = false">Close</v-btn>
+                                  <v-btn color="blue darken-1" flat
+                                    @click="validateOnclickDetailSaveNewRecord(); saveDetailData(true)">Save</v-btn>
+                                </v-card-actions>
+                              </v-card>
+                            </v-dialog>
+                            <!-- speed dial code -->
+                            <div id="create">
+                              <v-speed-dial v-model="fab" top direction="right" transition="slide-x-reverse-transition">
+                                <template v-slot:activator>
+                                  <v-btn v-model="fab" color="blue darken-2" dark small fab>
+                                    <v-icon>settings_input_composite</v-icon>
+                                    <v-icon>close</v-icon>
+                                  </v-btn>
+                                </template>
+                                <v-btn fab dark small color="green" @click="moveRowUpwared()">
+                                  <v-icon>arrow_upward</v-icon>
+                                </v-btn>
+                                <v-btn fab dark small color="indigo" @click="moveRowDownwared()">
+                                  <v-icon>arrow_downward</v-icon>
+                                </v-btn>
+                                <v-btn fab dark small color="red" @click="removeDetailRecord()">
+                                  <v-icon>delete</v-icon>
+                                </v-btn>
+                              </v-speed-dial>
+                              <!--End speed dial code -->
+                            </div>
 
                           </div>
-                          <v-data-table
-                              v-model="selected"
-                              :headers="detailSectionHeader"
-                              :items="detailSectionData"
-                              select-all
-                              item-key="SLNO"
-                              class="elevation-1"
-                              hide-actions
-                            >
-                              <template v-slot:headers="props">
-                                <tr>
-                                  <th></th>
-                                  <th>Edit</th>
-                                  <th
-                                    v-for="header in props.headers"
-                                    :key="header.text"
-                                    :class="['column sortable', 'active']" >
-                                    <b>{{ header.text.toUpperCase() }}</b>
-                                  </th>
-                                </tr>
-                              </template>
-                              <template v-slot:items="props">
-                                <tr :active="props.selected" @click="props.selected = !props.selected">
-                                  <td> <v-checkbox :input-value="props.selected"   primary  hide-details ></v-checkbox>  </td>
-                                  <td> <v-icon samll class="mr-2" @click="editDetailRow(props.item, true)">edit</v-icon></td>
-                                  <template v-for="header in Object.keys(detailSectionModal)">
-                                  <td class="text-xs-left" :key="header" v-if="header !='ITEMID' && header !='ITEMSLNO' && header !='UOMID' && header !=dependentPrefix+'ID' && header !='CONVFACT' && header !=dependentPrefix+'ITEMSLNO'  " >{{ props.item[header] }}</td>
-                                  </template>
-                                </tr>
-                              </template>
-                            </v-data-table>
+                          <v-data-table v-model="selected" :headers="detailSectionHeader" :items="detailSectionData"
+                            select-all item-key="SLNO" class="elevation-1" hide-actions>
+                            <template v-slot:headers="props">
+                              <tr>
+                                <th></th>
+                                <th>Edit</th>
+                                <th v-for="header in props.headers" :key="header.text"
+                                  :class="['column sortable', 'active']">
+                                  <b>{{ header.text.toUpperCase() }}</b>
+                                </th>
+                              </tr>
+                            </template>
+                            <template v-slot:items="props">
+                              <tr :active="props.selected" @click="props.selected = !props.selected">
+                                <td> <v-checkbox :input-value="props.selected" primary hide-details></v-checkbox> </td>
+                                <td> <v-icon samll class="mr-2" @click="editDetailRow(props.item, true)">edit</v-icon>
+                                </td>
+                                <template v-for="header in Object.keys(detailSectionModal)">
+                                  <td class="text-xs-left" :key="header"
+                                    v-if="header != 'ITEMID' && header != 'ITEMSLNO' && header != 'UOMID' && header != dependentPrefix + 'ID' && header != 'CONVFACT' && header != dependentPrefix + 'ITEMSLNO'">
+                                    {{ props.item[header] }}</td>
+                                </template>
+                              </tr>
+                            </template>
+                          </v-data-table>
                         </v-container>
-                        </v-card-text>
-                      </v-card>
-                    </v-expansion-panel-content>
+                      </v-card-text>
+                    </v-card>
+                  </v-expansion-panel-content>
 
-                    <v-expansion-panel-content>
-                      <template v-slot:header>
-                        <div><h2>Footer</h2></div>
-                      </template>
-                      <v-card>
-                        <v-card-text>
-                          <v-container fluid grid-list-xl>
+                  <v-expansion-panel-content>
+                    <template v-slot:header>
+                      <div>
+                        <h2>Footer</h2>
+                      </div>
+                    </template>
+                    <v-card>
+                      <v-card-text>
+                        <v-container fluid grid-list-xl>
                           <v-layout row justify-space-between>
                             <v-flex xs12 sm6 md6>
-                              <vue-form-generator id="Form-generator-css" ref="vfAddFooter" :schema="footerDynamicFieldSchema" :model="footerDynamicFieldModel" :options="formOptions" @validated="onValidatedAddFooter"  ></vue-form-generator>
+                              <vue-form-generator id="Form-generator-css" ref="vfAddFooter"
+                                :schema="footerDynamicFieldSchema" :model="footerDynamicFieldModel"
+                                :options="formOptions" @validated="onValidatedAddFooter"></vue-form-generator>
                             </v-flex>
                             <v-flex xs12 sm4 md4>
-                              <vue-form-generator id="Form-generator-css" ref="vfAddTotal" :schema="totalDynamicFieldSchema" :model="totalDynamicFieldModel" :options="formOptions" @validated="onValidatedAddTotal"  ></vue-form-generator>
+                              <vue-form-generator id="Form-generator-css" ref="vfAddTotal"
+                                :schema="totalDynamicFieldSchema" :model="totalDynamicFieldModel" :options="formOptions"
+                                @validated="onValidatedAddTotal"></vue-form-generator>
                             </v-flex>
                           </v-layout>
                         </v-container>
-                        </v-card-text>
-                      </v-card>
-                    </v-expansion-panel-content>
-                  </v-expansion-panel>
+                      </v-card-text>
+                    </v-card>
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
 
-                </v-flex>
-              </v-layout>
-            </v-container>
-           </v-card>
-          </v-dialog>
-          <!-- End Add Edit PartyDoc Transcation Dialog -->
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-card>
+      </v-dialog>
+      <!-- End Add Edit PartyDoc Transcation Dialog -->
 
-           <!-- Edit PartyDoc Transcation Dialog -->
-          <v-dialog  v-model="ediPartyDocModal"   fullscreen  hide-overlay  transition="dialog-bottom-transition" >
-           <v-card>
-              <v-toolbar fixed dark color="primary">
-                <v-btn icon dark @click="ediPartyDocModal = false">
-                  <v-icon>close</v-icon>
-                </v-btn>
-                <v-toolbar-title>{{$store.state.pageName}} - Edit</v-toolbar-title>
-                <v-spacer></v-spacer>
-                <v-btn  class="blue darken-1 white--text" @click="updatePartyDoc()">Save</v-btn>
-              </v-toolbar>
-              <v-container  class="spaceFromTop" fluid grid-list-md >
-                <v-layout row wrap>
-                <v-flex xs12 sm12 md12>
-                  <v-expansion-panel v-model="panel" expand >
-                     <v-expansion-panel-content>
-                       <v-container fluid grid-list-xl>
-                          <v-layout row justify-space-between>
-                            <v-flex xs12 sm7 md7>
-                              <p>{{prefix}} NO.</p>
-                              <v-layout row>
-                              <v-flex xs3 sm3 md3> <v-select v-model="selectedPrefix"  :items="prefixDropdown" item-value="prefix" item-text="prefix" label="Prefix" readonly ></v-select></v-flex>
-                              <v-flex xs2 sm2 md2> <v-text-field v-model="partyDOCID"  ></v-text-field> </v-flex>
-                              <v-flex xs3 sm3 md3> 
-                                  <!-- <v-menu  ref="datePickerModal" v-model="datePickerModal" :close-on-content-click="false" lazy transition="scale-transition" offset-y
+      <!-- Edit PartyDoc Transcation Dialog -->
+      <v-dialog v-model="ediPartyDocModal" fullscreen hide-overlay transition="dialog-bottom-transition">
+        <v-card>
+          <v-toolbar fixed dark color="primary">
+            <v-btn icon dark @click="ediPartyDocModal = false">
+              <v-icon>close</v-icon>
+            </v-btn>
+            <v-toolbar-title>{{ $store.state.pageName }} - Edit</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-btn class="blue darken-1 white--text" @click="updatePartyDoc()">Save</v-btn>
+          </v-toolbar>
+          <v-container class="spaceFromTop" fluid grid-list-md>
+            <v-layout row wrap>
+              <v-flex xs12 sm12 md12>
+                <v-expansion-panel v-model="panel" expand>
+                  <v-expansion-panel-content>
+                    <v-container fluid grid-list-xl>
+                      <v-layout row justify-space-between>
+                        <v-flex xs12 sm7 md7>
+                          <p>{{ prefix }} NO.</p>
+                          <v-layout row>
+                            <v-flex xs3 sm3 md3> <v-select v-model="selectedPrefix" :items="prefixDropdown"
+                                item-value="prefix" item-text="prefix" label="Prefix" readonly></v-select></v-flex>
+                            <v-flex xs2 sm2 md2> <v-text-field v-model="partyDOCID"></v-text-field> </v-flex>
+                            <v-flex xs3 sm3 md3>
+                              <!-- <v-menu  ref="datePickerModal" v-model="datePickerModal" :close-on-content-click="false" lazy transition="scale-transition" offset-y
                                   full-width max-width="290px"  min-width="290px" >
                                 <template v-slot:activator="{ on }"> -->
-                                  <v-text-field v-model="dateFormatted"  label="Date" readonly  ></v-text-field>
-                                <!-- </template>
+                              <v-text-field v-model="dateFormatted" label="Date" readonly></v-text-field>
+                              <!-- </template>
                                 <v-date-picker v-model="date" no-title @input="datePickerModal = false"></v-date-picker>
                                 </v-menu> -->
-                              </v-flex>
-                              <v-flex xs3 sm3 md3> <v-text-field v-model="partyDOCNumber"  readonly ></v-text-field></v-flex>
-                              </v-layout>
-
-                              <v-layout>
-                                <v-flex xs4 sm3 md4>
-                                  <v-btn v-if="showAmmendment" color="primary" dark @click="amendmentModal= true" >Amendment</v-btn>
-                                  <div v-if="ammendmentSetOnce">
-                                    <p>Ammendment No : {{ammendmentNo}}<p>
-                                    <p>Ammendment Date : {{ammendmentDate}}</p>
-                                    <p>Details : {{ammendmentDetail}}</p>
-                                  </div>
-                                  <v-dialog v-model="amendmentModal" persistent max-width="600px">
-                                      
-                                      <v-card>
-                                        <v-card-title>
-                                          <span class="headline">Add amendment</span>
-                                        </v-card-title>
-                                        <v-card-text>
-                                          <v-container grid-list-md>
-                                           <v-layout>
-                                             <v-flex sm4>
-                                               <v-btn v-if="incrementAmmendment" color="primary" dark @click="newAmmendment()" >New Ammendment</v-btn>
-                                             </v-flex>
-                                           </v-layout>
-                                            <v-layout wrap>
-                                              <v-flex xs12 sm6>
-                                                <v-text-field label="Date" type="text" readonly v-model="ammendmentDate"></v-text-field>
-                                              </v-flex>
-                                              <v-flex xs12 sm6>
-                                                <v-text-field label="Number" type="text" readonly v-model="ammendmentNo " ></v-text-field>
-                                              </v-flex>
-                                              <v-flex xs12 sm12>
-                                               <v-textarea
-                                                  solo
-                                                  name="input-10-4"
-                                                  label="Description"
-                                                  v-model="ammendmentDetail"
-                                                ></v-textarea>
-                                              </v-flex>
-                                              
-                                            </v-layout>
-                                          </v-container>
-                                          
-                                        </v-card-text>
-                                        <v-card-actions>
-                                          <v-spacer></v-spacer>
-                                          <v-btn color="blue darken-1" flat @click="amendmentModal = false">Close</v-btn>
-                                          <v-btn color="blue darken-1" flat @click="addAmendment()">Save</v-btn>
-                                        </v-card-actions>
-                                      </v-card>
-                                    </v-dialog>
-                                </v-flex>
-                              </v-layout>
                             </v-flex>
-                            <v-flex xs12 sm4 md4>
-                              <vue-form-generator id="Form-generator-css" ref="vfEditHeader" :schema="headerDynamicFieldSchema" :model="headerDynamicFieldModel" :options="formOptions" @validated="onValidatedHeader"  ></vue-form-generator>
-                            </v-flex>
+                            <v-flex xs3 sm3 md3> <v-text-field v-model="partyDOCNumber"
+                                readonly></v-text-field></v-flex>
                           </v-layout>
-                        </v-container>
-                     </v-expansion-panel-content>
 
-                     <v-expansion-panel-content>
-                       <v-container fluid grid-list-xl>
-                          <div class="actionBlock">
-                              <!-- add new row action -->
-                                <v-dialog v-model="editDetailModal" scrollable persistent max-width="450px">
-                                  <template v-slot:activator="{ on }">
-                                    <!-- <v-btn color="primary" dark v-on="on">Open Dialog</v-btn> -->
-                                    <v-btn fab dark small color="indigo" v-on="on"> <v-icon dark>add</v-icon> </v-btn> 
-                                  </template>
-                                  <v-card>
-                                    <v-card-title>
-                                      <span class="headline">Item Details</span>
-                                    </v-card-title>
-                                    <v-card-text>
-                                      <v-container grid-list-md>
-                                        <v-layout wrap>
-                                          <v-flex xs12>
-                                          <vue-form-generator id="Form-generator-css" ref="vfEditDetail" :schema="detailSectionFieldSchema" :model="detailSectionModal" :options="formOptions" @validated="onValidatedDetailSection"  ></vue-form-generator>
-                                          </v-flex>
-                                        </v-layout>
-                                      </v-container>
-                                      <small>*indicates required field</small>
-                                    </v-card-text>
-                                    <v-card-actions>
-                                      <v-spacer></v-spacer>
-                                      <v-btn color="blue darken-1" flat @click="editDetailModal = false">Close</v-btn>
-                                      <v-btn color="blue darken-1" flat @click="validateOnclickDetailUpdateRecord();saveDetailData(false)">Save</v-btn>
-                                    </v-card-actions>
-                                  </v-card>
-                                </v-dialog>
-                                <!-- speed dial code -->
-                              <div id="create">
-                                  <v-speed-dial v-model="fab" top  direction="right"
-                                    transition="slide-x-reverse-transition" >
-                                    <template v-slot:activator>
-                                      <v-btn v-model="fab" color="blue darken-2" dark small fab  >
-                                        <v-icon>settings_input_composite</v-icon>
-                                        <v-icon>close</v-icon>
-                                      </v-btn>
-                                    </template>
-                                     <v-btn fab  dark  small color="green" @click="moveRowUpwared()">
-                                      <v-icon>arrow_upward</v-icon>
-                                    </v-btn>
-                                    <v-btn  fab  dark  small color="indigo" @click="moveRowDownwared()" >
-                                      <v-icon>arrow_downward</v-icon>
-                                    </v-btn> 
-                                    <v-btn fab  dark small color="red" @click="removeDetailRecord()">
-                                      <v-icon>delete</v-icon>
-                                    </v-btn>
-                                  </v-speed-dial>
-                                  <!--End speed dial code -->
+                          <v-layout>
+                            <v-flex xs4 sm3 md4>
+                              <v-btn v-if="showAmmendment" color="primary" dark
+                                @click="amendmentModal = true">Amendment</v-btn>
+                              <div v-if="ammendmentSetOnce">
+                                <p>Ammendment No : {{ ammendmentNo }}</p>
+                                <p>Ammendment Date : {{ ammendmentDate }}</p>
+                                <p>Details : {{ ammendmentDetail }}</p>
                               </div>
+                              <v-dialog v-model="amendmentModal" persistent max-width="600px">
 
-                          </div>
-                          <v-data-table
-                              v-model="selected"
-                              :headers="detailSectionHeader"
-                              :items="detailSectionData"
-                              select-all
-                              item-key="SLNO"
-                              class="elevation-1"
-                              hide-actions
-                            >
-                              <template v-slot:headers="props">
-                                <tr>
-                                  <th></th>
-                                  <th>Edit</th>
-                                  <th
-                                    v-for="header in props.headers"
-                                    :key="header.text"
-                                    :class="['column sortable', 'active']" >
-                                    <b>{{ header.text.toUpperCase() }}</b>
-                                  </th>
-                                </tr>
-                              </template>
-                              <template v-slot:items="props">
-                                <tr :active="props.selected" @click="props.selected = !props.selected">
-                                  <td> <v-checkbox :input-value="props.selected"  primary  hide-details ></v-checkbox></td>
-                                 <td> <v-icon small class="mr-2" @click="editDetailRow(props.item, false)">edit</v-icon></td>
-                                    
-                                  <template v-for="header in Object.keys(detailSectionModal)">
-                                  <td class="text-xs-left" :key="header" v-if="header !='ITEMID' && header !='UOMID' && header !='ITEMSLNO' && header !=dependentPrefix+'ID' && header !='CONVFACT' && header !=dependentPrefix+'ITEMSLNO'" >{{ props.item[header] }}</td>
-                                  </template>
-                                </tr>
-                              </template>
-                            </v-data-table>
-                        </v-container>
-                     </v-expansion-panel-content>
+                                <v-card>
+                                  <v-card-title>
+                                    <span class="headline">Add amendment</span>
+                                  </v-card-title>
+                                  <v-card-text>
+                                    <v-container grid-list-md>
+                                      <v-layout>
+                                        <v-flex sm4>
+                                          <v-btn v-if="incrementAmmendment" color="primary" dark
+                                            @click="newAmmendment()">New
+                                            Ammendment</v-btn>
+                                        </v-flex>
+                                      </v-layout>
+                                      <v-layout wrap>
+                                        <v-flex xs12 sm6>
+                                          <v-text-field label="Date" type="text" readonly
+                                            v-model="ammendmentDate"></v-text-field>
+                                        </v-flex>
+                                        <v-flex xs12 sm6>
+                                          <v-text-field label="Number" type="text" readonly
+                                            v-model="ammendmentNo"></v-text-field>
+                                        </v-flex>
+                                        <v-flex xs12 sm12>
+                                          <v-textarea solo name="input-10-4" label="Description"
+                                            v-model="ammendmentDetail"></v-textarea>
+                                        </v-flex>
 
-                     <v-expansion-panel-content>
-                       <v-container fluid grid-list-xl>
-                          <v-layout row justify-space-between>
-                            <v-flex xs12 sm6 md6>
-                              <vue-form-generator id="Form-generator-css" ref="vfEditFooter" :schema="footerDynamicFieldSchema" :model="footerDynamicFieldModel" :options="formOptions" @validated="onValidatedFooter"  ></vue-form-generator>
-                            </v-flex>
-                            <v-flex xs12 sm4 md4>
-                              <vue-form-generator id="Form-generator-css" ref="vfEditTotal" :schema="totalDynamicFieldSchema" :model="totalDynamicFieldModel" :options="formOptions" @validated="onValidatedTotal"  ></vue-form-generator>
+                                      </v-layout>
+                                    </v-container>
+
+                                  </v-card-text>
+                                  <v-card-actions>
+                                    <v-spacer></v-spacer>
+                                    <v-btn color="blue darken-1" flat @click="amendmentModal = false">Close</v-btn>
+                                    <v-btn color="blue darken-1" flat @click="addAmendment()">Save</v-btn>
+                                  </v-card-actions>
+                                </v-card>
+                              </v-dialog>
                             </v-flex>
                           </v-layout>
-                        </v-container>
-                     </v-expansion-panel-content>
+                        </v-flex>
+                        <v-flex xs12 sm4 md4>
+                          <vue-form-generator id="Form-generator-css" ref="vfEditHeader"
+                            :schema="headerDynamicFieldSchema" :model="headerDynamicFieldModel" :options="formOptions"
+                            @validated="onValidatedHeader"></vue-form-generator>
+                        </v-flex>
+                      </v-layout>
+                    </v-container>
+                  </v-expansion-panel-content>
+
+                  <v-expansion-panel-content>
+                    <v-container fluid grid-list-xl>
+                      <div class="actionBlock">
+                        <!-- add new row action -->
+                        <v-dialog v-model="editDetailModal" scrollable persistent max-width="450px">
+                          <template v-slot:activator="{ on }">
+                            <!-- <v-btn color="primary" dark v-on="on">Open Dialog</v-btn> -->
+                            <v-btn fab dark small color="indigo" v-on="on"> <v-icon dark>add</v-icon> </v-btn>
+                          </template>
+                          <v-card>
+                            <v-card-title>
+                              <span class="headline">Item Details</span>
+                            </v-card-title>
+                            <v-card-text>
+                              <v-container grid-list-md>
+                                <v-layout wrap>
+                                  <v-flex xs12>
+                                    <vue-form-generator id="Form-generator-css" ref="vfEditDetail"
+                                      :schema="detailSectionFieldSchema" :model="detailSectionModal"
+                                      :options="formOptions" @validated="onValidatedDetailSection"></vue-form-generator>
+                                  </v-flex>
+                                </v-layout>
+                              </v-container>
+                              <small>*indicates required field</small>
+                            </v-card-text>
+                            <v-card-actions>
+                              <v-spacer></v-spacer>
+                              <v-btn color="blue darken-1" flat @click="editDetailModal = false">Close</v-btn>
+                              <v-btn color="blue darken-1" flat
+                                @click="validateOnclickDetailUpdateRecord(); saveDetailData(false)">Save</v-btn>
+                            </v-card-actions>
+                          </v-card>
+                        </v-dialog>
+                        <!-- speed dial code -->
+                        <div id="create">
+                          <v-speed-dial v-model="fab" top direction="right" transition="slide-x-reverse-transition">
+                            <template v-slot:activator>
+                              <v-btn v-model="fab" color="blue darken-2" dark small fab>
+                                <v-icon>settings_input_composite</v-icon>
+                                <v-icon>close</v-icon>
+                              </v-btn>
+                            </template>
+                            <v-btn fab dark small color="green" @click="moveRowUpwared()">
+                              <v-icon>arrow_upward</v-icon>
+                            </v-btn>
+                            <v-btn fab dark small color="indigo" @click="moveRowDownwared()">
+                              <v-icon>arrow_downward</v-icon>
+                            </v-btn>
+                            <v-btn fab dark small color="red" @click="removeDetailRecord()">
+                              <v-icon>delete</v-icon>
+                            </v-btn>
+                          </v-speed-dial>
+                          <!--End speed dial code -->
+                        </div>
+
+                      </div>
+                      <v-data-table v-model="selected" :headers="detailSectionHeader" :items="detailSectionData"
+                        select-all item-key="SLNO" class="elevation-1" hide-actions>
+                        <template v-slot:headers="props">
+                          <tr>
+                            <th></th>
+                            <th>Edit</th>
+                            <th v-for="header in props.headers" :key="header.text"
+                              :class="['column sortable', 'active']">
+                              <b>{{ header.text.toUpperCase() }}</b>
+                            </th>
+                          </tr>
+                        </template>
+                        <template v-slot:items="props">
+                          <tr :active="props.selected" @click="props.selected = !props.selected">
+                            <td> <v-checkbox :input-value="props.selected" primary hide-details></v-checkbox></td>
+                            <td> <v-icon small class="mr-2" @click="editDetailRow(props.item, false)">edit</v-icon></td>
+
+                            <template v-for="header in Object.keys(detailSectionModal)">
+                              <td class="text-xs-left" :key="header"
+                                v-if="header != 'ITEMID' && header != 'UOMID' && header != 'ITEMSLNO' && header != dependentPrefix + 'ID' && header != 'CONVFACT' && header != dependentPrefix + 'ITEMSLNO'">
+                                {{ props.item[header] }}</td>
+                            </template>
+                          </tr>
+                        </template>
+                      </v-data-table>
+                    </v-container>
+                  </v-expansion-panel-content>
+
+                  <v-expansion-panel-content>
+                    <v-container fluid grid-list-xl>
+                      <v-layout row justify-space-between>
+                        <v-flex xs12 sm6 md6>
+                          <vue-form-generator id="Form-generator-css" ref="vfEditFooter"
+                            :schema="footerDynamicFieldSchema" :model="footerDynamicFieldModel" :options="formOptions"
+                            @validated="onValidatedFooter"></vue-form-generator>
+                        </v-flex>
+                        <v-flex xs12 sm4 md4>
+                          <vue-form-generator id="Form-generator-css" ref="vfEditTotal"
+                            :schema="totalDynamicFieldSchema" :model="totalDynamicFieldModel" :options="formOptions"
+                            @validated="onValidatedTotal"></vue-form-generator>
+                        </v-flex>
+                      </v-layout>
+                    </v-container>
+                  </v-expansion-panel-content>
 
 
-                  </v-expansion-panel>
-                </v-flex>
-              </v-layout>
-            </v-container>
-           </v-card>
-          </v-dialog>
-          <!--End Edit PartyDoc Transcation Dialog -->
+                </v-expansion-panel>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-card>
+      </v-dialog>
+      <!--End Edit PartyDoc Transcation Dialog -->
 
-         <v-snackbar
-        v-model="snackbar"
-        :color="color"
-        :multi-line="true"
-        :timeout="timeout"
-        :vertical="mode === 'vertical'"
-      >{{ text }}
-        <v-btn
-          dark
-          flat
-          @click="snackbar = false"
-        >
+      <v-snackbar v-model="snackbar" :color="color" :multi-line="true" :timeout="timeout"
+        :vertical="mode === 'vertical'">{{
+            text }}
+        <v-btn dark flat @click="snackbar = false">
           Close
         </v-btn>
       </v-snackbar>
-   </v-app>
- </div>
+    </v-app>
+  </div>
 
- </template>
+</template>
 
 <script>
 
@@ -464,284 +475,284 @@ import convertDateWithSchema from '@/DynamicProperty/convertDateWithSchema.js';
 
 export default {
 
- data : vm => ({
-   tableSearch: '',
-   pendingTableSearch: '',
-   loadPendingSearch: '',
-   loadPendingData: [],
-   loadPendingHeaders: [],
-   loadPendingSelectedData: [],
-   selectedPendingRowID: 0,
-   partyDOCID: 0,
-   partyDOCNumber: 0,
-   prefix: '',
-   selectedPrefix: '',
-   prefixDropdown: [],
-   panel: [true, true, true],
-   items: 3,
-   fab: false,
-   date: new Date().toISOString().substr(0, 10),
-   dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
-   selected: [],
-   partyDocHeaders: [ { text: "Edit", align: "center" } ],
-   partyDocTableData: [],
-   searchItemsLoading: false,
-   searchItems: null,
-   addSearchItems: null,
-   searchSupplier: null,
-   addSearchSupplier:null,
-   searchItemResult: [],
-   detailModal: false,
-   editDetailModal: false,
-   datePickerModal: false,
-   addPartyDocModal: false,
-   ediPartyDocModal:false,
-   selectedSupplier:0,
-   supplier:{
-     supplierId:0,
-     supplierCode:'',
-     supplierName: '',
-     address1:'',
-     address2: '',
-     address3: '',
-     address4: '',
-     city: '',
-     pincode: '',
-     state: '',
-     country: ''
-   },
-   searchSupplierResult: [],
-  formOptions: {
+  data: vm => ({
+    tableSearch: '',
+    pendingTableSearch: '',
+    loadPendingSearch: '',
+    loadPendingData: [],
+    loadPendingHeaders: [],
+    loadPendingSelectedData: [],
+    selectedPendingRowID: 0,
+    partyDOCID: 0,
+    partyDOCNumber: 0,
+    prefix: '',
+    selectedPrefix: '',
+    prefixDropdown: [],
+    panel: [true, true, true],
+    items: 3,
+    fab: false,
+    date: new Date().toISOString().substr(0, 10),
+    dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
+    selected: [],
+    partyDocHeaders: [{ text: "Edit", align: "center" }],
+    partyDocTableData: [],
+    searchItemsLoading: false,
+    searchItems: null,
+    addSearchItems: null,
+    searchSupplier: null,
+    addSearchSupplier: null,
+    searchItemResult: [],
+    detailModal: false,
+    editDetailModal: false,
+    datePickerModal: false,
+    addPartyDocModal: false,
+    ediPartyDocModal: false,
+    selectedSupplier: 0,
+    supplier: {
+      supplierId: 0,
+      supplierCode: '',
+      supplierName: '',
+      address1: '',
+      address2: '',
+      address3: '',
+      address4: '',
+      city: '',
+      pincode: '',
+      state: '',
+      country: ''
+    },
+    searchSupplierResult: [],
+    formOptions: {
       validateAfterLoad: true,
       validateAfterChanged: true,
       validateAsync: true,
-      validationErrorCLass :"error"
+      validationErrorCLass: "error"
     },
-    headerDynamicFieldOriginalSchema:{},
+    headerDynamicFieldOriginalSchema: {},
     detailSectionFieldOriginalSchema: {},
     footerDynamicFieldOriginalSchema: {},
     totalDynamicFieldOriginalSchema: {},
-   headerDynamicFieldSchema: {
-       fields: [],
-       groups:[]
-   },
-   headerDynamicFieldModel: {},
-   footerDynamicFieldSchema: {
-       fields: [],
-       groups:[]
-   },
-   footerDynamicFieldModel: {},
-   totalDynamicFieldSchema: {
-       fields: [],
-       groups:[]
-   },
-   totalDynamicFieldModel: {},
-   detailSectionHeader: [],
-   detailSectionData: [],
-   selectedItem:0,
-   detailSectionModal:{},
-   detailSectionDynamicModal: {},
+    headerDynamicFieldSchema: {
+      fields: [],
+      groups: []
+    },
+    headerDynamicFieldModel: {},
+    footerDynamicFieldSchema: {
+      fields: [],
+      groups: []
+    },
+    footerDynamicFieldModel: {},
+    totalDynamicFieldSchema: {
+      fields: [],
+      groups: []
+    },
+    totalDynamicFieldModel: {},
+    detailSectionHeader: [],
+    detailSectionData: [],
+    selectedItem: 0,
+    detailSectionModal: {},
+    detailSectionDynamicModal: {},
 
-   detailSectionFieldSchema: {
-    fields: [],
-    groups:[]
-   },
+    detailSectionFieldSchema: {
+      fields: [],
+      groups: []
+    },
     snackbar: false,
     color: '',
     mode: '',
     timeout: 5000,
     text: '',
-    updatedingAnyModal:false,
-    selectedID:0,
+    updatedingAnyModal: false,
+    selectedID: 0,
     isDynamicHeaderFormValid: true,
     isDynamicFooterFormValid: true,
     isDynamicTotalFormValid: true,
     isDetailSectionValid: true,
-    isDetailRowEditing : false,
+    isDetailRowEditing: false,
     dependentPrefix: '',
     dialogLoadPening: false,
     loadPendingPartyWise: false,
     searchPartyPrefix: '',
     searchPartyTableName: '',
     pagination: {
-        rowsPerPage: parseInt(localStorage.getItem('rowPerPageDataTable')) || 5
+      rowsPerPage: parseInt(localStorage.getItem('rowPerPageDataTable')) || 5
     },
-    pdfDailog:false,
-    pdfUrl :'',
+    pdfDailog: false,
+    pdfUrl: '',
     amendmentModal: false,
-    showAmmendment:false,
+    showAmmendment: false,
     ammendmentDetail: '',
-    ammendmentNo :0,
-    ammendmentDate:'',
-    incrementAmmendment:true,
+    ammendmentNo: 0,
+    ammendmentDate: '',
+    incrementAmmendment: true,
     ammendmentSetOnce: false,
-  
- }),
+
+  }),
 
   beforeMount() {
-   this.panel = [...Array(this.items).keys()].map(_ => true);
-   this.loadPartDocTableData();
- },
- computed: {
- computedDateFormatted () {
+    this.panel = [...Array(this.items).keys()].map(_ => true);
+    this.loadPartDocTableData();
+  },
+  computed: {
+    computedDateFormatted() {
       return this.formatDate(this.date)
     }
- },
+  },
   watch: {
-   pagination: {
-    handler () {
-      localStorage.setItem('rowPerPageDataTable',this.pagination.rowsPerPage);
+    pagination: {
+      handler() {
+        localStorage.setItem('rowPerPageDataTable', this.pagination.rowsPerPage);
+      },
+      deep: true
     },
-    deep: true
-  },
-  date (val) {
+    date(val) {
       this.dateFormatted = this.formatDate(this.date)
-  },
-   headerDynamicFieldModel:{
-     handler(val, oldVal){
-       let that = this;
-          //setTimeout(function () {
-            if(!that.updatedingAnyModal){
-              that.updatedingAnyModal = true;
-              that.updatedingAnyModal= that.updateAllModalForValueChanges(false);
-            }
+    },
+    headerDynamicFieldModel: {
+      handler(val, oldVal) {
+        let that = this;
+        //setTimeout(function () {
+        if (!that.updatedingAnyModal) {
+          that.updatedingAnyModal = true;
+          that.updatedingAnyModal = that.updateAllModalForValueChanges(false);
+        }
         //  }, 2000);
-        },
-    deep: true
-   },
-   detailSectionModal:{
-     handler(val, oldVal){
-       let that = this;
-          //setTimeout(function () {
-            if(!that.updatedingAnyModal){
-              that.updatedingAnyModal = true;
-              that.updatedingAnyModal= that.updateAllModalForValueChanges(false);
-            }
-         // }, 2000);
-        },
-    deep: true
-   },
-   footerDynamicFieldModel:{
-     handler(val, oldVal){
-       let that = this;
-         // setTimeout(function () {
-            if(!that.updatedingAnyModal){
-              that.updatedingAnyModal = true;
-              that.updatedingAnyModal= that.updateAllModalForValueChanges(false);
-            }
-         // }, 2000);
-        },
-    deep: true
-   },
-   totalDynamicFieldModel: {
-     handler(val, oldVal){
-       let that = this;
-         // setTimeout(function () {
-            if(!that.updatedingAnyModal){
-              that.updatedingAnyModal = true;
-              that.updatedingAnyModal= that.updateAllModalForValueChanges(false);
-            }
+      },
+      deep: true
+    },
+    detailSectionModal: {
+      handler(val, oldVal) {
+        let that = this;
+        //setTimeout(function () {
+        if (!that.updatedingAnyModal) {
+          that.updatedingAnyModal = true;
+          that.updatedingAnyModal = that.updateAllModalForValueChanges(false);
+        }
+        // }, 2000);
+      },
+      deep: true
+    },
+    footerDynamicFieldModel: {
+      handler(val, oldVal) {
+        let that = this;
+        // setTimeout(function () {
+        if (!that.updatedingAnyModal) {
+          that.updatedingAnyModal = true;
+          that.updatedingAnyModal = that.updateAllModalForValueChanges(false);
+        }
+        // }, 2000);
+      },
+      deep: true
+    },
+    totalDynamicFieldModel: {
+      handler(val, oldVal) {
+        let that = this;
+        // setTimeout(function () {
+        if (!that.updatedingAnyModal) {
+          that.updatedingAnyModal = true;
+          that.updatedingAnyModal = that.updateAllModalForValueChanges(false);
+        }
         //  }, 2000);
-        },
-    deep: true
-   },
-  searchItems(value){
-    if(this.selectedSupplier == 0){
-      this.showSnackBar('error','Please select supplier first');
-      return false;
-    }
-    if(value != undefined && value != null && value != ''){
-    httpClient({
-        method: 'GET',
-        url: `${process.env.VUE_APP_API_BASE}getItemByCode?itemCode=${value}`
-      })
-        .then((result) => {
-          this.searchItemResult = result.data;
-        }).catch((err) => {
-
-          this.showSnackBar('error',err.response.data);
-        });
-    }
-  },
-  addSearchItems(value){
-    if(this.selectedSupplier == 0){
-      this.showSnackBar('error','Please select supplier first');
-      return false;
-    }
-    if(value != undefined && value != null && value != ''){
-    httpClient({
-        method: 'GET',
-        url: `${process.env.VUE_APP_API_BASE}getItemByCode?itemCode=${value}`
-      })
-        .then((result) => {
-          this.searchItemResult = result.data;
-        }).catch((err) => {
-
-          this.showSnackBar('error',err.response.data);
-        });
-    }
-  },
-  selectedItem: function(val){
-    let itemData = this.searchItemResult.find(e => e.itemId == val);
-    console.log('selected item='+JSON.stringify(itemData));
-    this.updateAllModalForValueChanges(true);
-    if(itemData != undefined && itemData != null){
-      this.detailSectionModal.ITEMID= itemData.itemId;
-      this.detailSectionModal.ITEMCODE= itemData.itemCode;
-      this.detailSectionModal.ITEMNAME= itemData.itemName;
-      this.detailSectionModal.UOMID = itemData.UOMID;
-      this.detailSectionModal.UOM= itemData.UOM;
-    } else{
-      this.selectedItem = 0;
-      if(this.detailSectionModal.hasOwnProperty('ITEMNAME')){
-        this.detailSectionModal.ITEMNAME = '';
-        this.detailSectionModal.UOMID = 0;
-        this.detailSectionModal.UOM = '';
+      },
+      deep: true
+    },
+    searchItems(value) {
+      if (this.selectedSupplier == 0) {
+        this.showSnackBar('error', 'Please select supplier first');
+        return false;
       }
-    }
-  },
- },
-
- methods:{
-     /* ******************* Main table functions ************************* */
-     loadAmmendment(){
-       const docID =  localStorage.getItem('menuDocId') || 0;
+      if (value != undefined && value != null && value != '') {
         httpClient({
-            method: 'GET',
-            url: `${process.env.VUE_APP_API_BASE}Amendments?docId=${docID}&selectedId=${this.selectedID}`
-          })
-            .then((result) => {
-              this.incrementAmmendment = true;
-               this.showAmmendment = result.data.showAmendment;
-               this.ammendmentDetail = result.data.amendmentDetail;
-               this.ammendmentNo = result.data.amendmentNo;
-               this.ammendmentDate = result.data.amendmentDate;
-               this.ammendmentSetOnce = result.data.savedOnce == 'Y'?true:false;
-               if(!this.ammendmentSetOnce){
-                 this.ammendmentNo = 1;
-                 var d = new Date();
-                 this.ammendmentDate = d.toLocaleDateString("en-GB", { // you can skip the first argument
-                                        year: "numeric",
-                                        month: "2-digit",
-                                        day: "2-digit",
-                                      });
-               }
-            }).catch((err) => {
+          method: 'GET',
+          url: `${process.env.VUE_APP_API_BASE}getItemByCode?itemCode=${value}`
+        })
+          .then((result) => {
+            this.searchItemResult = result.data;
+          }).catch((err) => {
 
-              this.showSnackBar('error',err.response.data);
+            this.showSnackBar('error', err.response.data);
+          });
+      }
+    },
+    addSearchItems(value) {
+      if (this.selectedSupplier == 0) {
+        this.showSnackBar('error', 'Please select supplier first');
+        return false;
+      }
+      if (value != undefined && value != null && value != '') {
+        httpClient({
+          method: 'GET',
+          url: `${process.env.VUE_APP_API_BASE}getItemByCode?itemCode=${value}`
+        })
+          .then((result) => {
+            this.searchItemResult = result.data;
+          }).catch((err) => {
+
+            this.showSnackBar('error', err.response.data);
+          });
+      }
+    },
+    selectedItem: function (val) {
+      let itemData = this.searchItemResult.find(e => e.itemId == val);
+      console.log('selected item=' + JSON.stringify(itemData));
+      this.updateAllModalForValueChanges(true);
+      if (itemData != undefined && itemData != null) {
+        this.detailSectionModal.ITEMID = itemData.itemId;
+        this.detailSectionModal.ITEMCODE = itemData.itemCode;
+        this.detailSectionModal.ITEMNAME = itemData.itemName;
+        this.detailSectionModal.UOMID = itemData.UOMID;
+        this.detailSectionModal.UOM = itemData.UOM;
+      } else {
+        this.selectedItem = 0;
+        if (this.detailSectionModal.hasOwnProperty('ITEMNAME')) {
+          this.detailSectionModal.ITEMNAME = '';
+          this.detailSectionModal.UOMID = 0;
+          this.detailSectionModal.UOM = '';
+        }
+      }
+    },
+  },
+
+  methods: {
+    /* ******************* Main table functions ************************* */
+    loadAmmendment() {
+      const docID = localStorage.getItem('menuDocId') || 0;
+      httpClient({
+        method: 'GET',
+        url: `${process.env.VUE_APP_API_BASE}Amendments?docId=${docID}&selectedId=${this.selectedID}`
+      })
+        .then((result) => {
+          this.incrementAmmendment = true;
+          this.showAmmendment = result.data.showAmendment;
+          this.ammendmentDetail = result.data.amendmentDetail;
+          this.ammendmentNo = result.data.amendmentNo;
+          this.ammendmentDate = result.data.amendmentDate;
+          this.ammendmentSetOnce = result.data.savedOnce == 'Y' ? true : false;
+          if (!this.ammendmentSetOnce) {
+            this.ammendmentNo = 1;
+            var d = new Date();
+            this.ammendmentDate = d.toLocaleDateString("en-GB", { // you can skip the first argument
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
             });
+          }
+        }).catch((err) => {
 
-     },
-     loadPartDocTableData(){
-      const docID =  localStorage.getItem('menuDocId') || 0;
-      this.partyDocHeaders= [ { text: "Action", align: "center",sortable: false } ],
-      this.partyDocHeadersKey = [];
+          this.showSnackBar('error', err.response.data);
+        });
+
+    },
+    loadPartDocTableData() {
+      const docID = localStorage.getItem('menuDocId') || 0;
+      this.partyDocHeaders = [{ text: "Action", align: "center", sortable: false }],
+        this.partyDocHeadersKey = [];
       httpClient({
         method: 'GET',
         url: `${process.env.VUE_APP_API_BASE}NonPartyNonItem?docID=${docID}`
       })
         .then((result) => {
-            if (result.status === 200) {
+          if (result.status === 200) {
             const pageData = result.data;
             /**
              * Logic for putting data into data table::
@@ -749,29 +760,28 @@ export default {
             this.preFix = pageData.prefix;
             let partyDocHeadersKey = Object.keys(pageData.tableData[0]);
             partyDocHeadersKey.forEach(element => {
-            this.partyDocHeaders.push({ text: element, align: "center", value: element })
+              this.partyDocHeaders.push({ text: element, align: "center", value: element })
             })
             this.partyDocTableData = pageData.tableData;
           }
         }).catch((err) => {
 
-          this.showSnackBar('error',err.response.data);
+          this.showSnackBar('error', err.response.data);
         });
     },
-     editSelectedPartyDocTranscation(params){
+    editSelectedPartyDocTranscation(params) {
 
-       if(this.getCurrentUserRoles('editRight') != '1')
-       {
-         this.showSnackBar('error',"You do not have edit rights on the page.");
-         return
-       }
+      if (this.getCurrentUserRoles('editRight') != '1') {
+        this.showSnackBar('error', "You do not have edit rights on the page.");
+        return
+      }
 
-       this.resetFromVariable();
-       this.detailSectionModal = {};
-       this.detailSectionHeader = [];
-       this.detailSectionData = [];
-       this.selectedID = params[Object.keys(params)[0]];
-       const docID =  localStorage.getItem('menuDocId') || 0;
+      this.resetFromVariable();
+      this.detailSectionModal = {};
+      this.detailSectionHeader = [];
+      this.detailSectionData = [];
+      this.selectedID = params[Object.keys(params)[0]];
+      const docID = localStorage.getItem('menuDocId') || 0;
 
       httpClient({
         method: 'GET',
@@ -779,13 +789,13 @@ export default {
       })
         .then((result) => {
           this.ediPartyDocModal = true;
-          this.prefix =result.data.prefix;
-          
+          this.prefix = result.data.prefix;
+
           const pageData = result.data;
           // main data load
           this.partyDOCNumber = pageData.mainData.printPONO;
           this.date = new Date(this.parseDate(pageData.mainData.PODate)).toISOString().substr(0, 10);
-          this.loadPendingPartyWise= pageData.mainData.loadPendingPartyWise;
+          this.loadPendingPartyWise = pageData.mainData.loadPendingPartyWise;
           this.dependentPrefix = pageData.mainData.dependentPrefix;
           this.searchPartyTableName = pageData.mainData.docPartyTableName;
           this.searchPartyPrefix = pageData.mainData.docPartyPrefix;
@@ -793,179 +803,179 @@ export default {
           this.prefixDropdown = pageData.prefixData;
 
           //console.log(JSON.stringify(pageData.headerFields.dynamicFieldModal.fieldProperties));
-          if(pageData.headerFields.dynamicFieldModal !=null){
-          this.headerDynamicFieldModel = pageData.headerFields.dynamicFieldModal.modal[0];
-          this.headerDynamicFieldOriginalSchema = pageData.headerFields.dynamicFieldModal.fieldProperties;
+          if (pageData.headerFields.dynamicFieldModal != null) {
+            this.headerDynamicFieldModel = pageData.headerFields.dynamicFieldModal.modal[0];
+            this.headerDynamicFieldOriginalSchema = pageData.headerFields.dynamicFieldModal.fieldProperties;
           }
-          
-         
+
+
           let modalData = JSON.parse(JSON.stringify(pageData.detailFields.dynamicFieldModal.modal[0]));
-          this.detailSectionModal =JSON.parse(JSON.stringify(generateNewModal(pageData.detailFields.dynamicFieldModal.fieldProperties,modalData)));
+          this.detailSectionModal = JSON.parse(JSON.stringify(generateNewModal(pageData.detailFields.dynamicFieldModal.fieldProperties, modalData)));
           this.detailSectionFieldOriginalSchema = pageData.detailFields.dynamicFieldModal.fieldProperties;
-          
+
 
           this.generateDetailSectionTableHeader(this.detailSectionModal);
           this.detailSectionData = pageData.detailFields.dynamicFieldModal.modal;
-          console.log('detail section data after load='+ JSON.stringify(this.detailSectionData));
+          console.log('detail section data after load=' + JSON.stringify(this.detailSectionData));
 
-         if(pageData.footerFields.dynamicFieldModal != null){
-          this.footerDynamicFieldModel = pageData.footerFields.dynamicFieldModal.modal[0];
-          this.footerDynamicFieldOriginalSchema = pageData.footerFields.dynamicFieldModal.fieldProperties;
-         }
-          
-          if(pageData.totalFields.dynamicFieldModal !=null){
-           this.totalDynamicFieldModel = pageData.totalFields.dynamicFieldModal.modal[0];
-           this.totalDynamicFieldOriginalSchema = pageData.totalFields.dynamicFieldModal.fieldProperties;
-          }
-          
-
-           //generate schemas
-         
-          this.detailSectionFieldSchema.fields = generateSchemaForTransaction(pageData.detailFields.dynamicFieldModal.fieldProperties,this.headerDynamicFieldModel, pageData.detailFields.dynamicFieldModal.modal[0],this.footerDynamicFieldModel, this.totalDynamicFieldModel);
-          
-          if(pageData.headerFields.dynamicFieldModal !=null){
-           this.headerDynamicFieldSchema.fields =  generateSchemaForTransaction(pageData.headerFields.dynamicFieldModal.fieldProperties, this.headerDynamicFieldModel,pageData.detailFields.dynamicFieldModal.modal[0],this.footerDynamicFieldModel, this.totalDynamicFieldModel);
-           convertDateWithSchema(this.headerDynamicFieldOriginalSchema,this.headerDynamicFieldModel, false);
+          if (pageData.footerFields.dynamicFieldModal != null) {
+            this.footerDynamicFieldModel = pageData.footerFields.dynamicFieldModal.modal[0];
+            this.footerDynamicFieldOriginalSchema = pageData.footerFields.dynamicFieldModal.fieldProperties;
           }
 
-          if(pageData.footerFields.dynamicFieldModal !=null) {
-             this.footerDynamicFieldSchema.fields = generateSchemaForTransaction(pageData.footerFields.dynamicFieldModal.fieldProperties,this.headerDynamicFieldModel,pageData.detailFields.dynamicFieldModal.modal[0], this.footerDynamicFieldModel, this.totalDynamicFieldModel);
-             convertDateWithSchema(this.footerDynamicFieldOriginalSchema,this.footerDynamicFieldModel,false);
+          if (pageData.totalFields.dynamicFieldModal != null) {
+            this.totalDynamicFieldModel = pageData.totalFields.dynamicFieldModal.modal[0];
+            this.totalDynamicFieldOriginalSchema = pageData.totalFields.dynamicFieldModal.fieldProperties;
           }
-          if(pageData.totalFields.dynamicFieldModal !=null){
-            this.totalDynamicFieldSchema.fields = generateSchemaForTransaction(pageData.totalFields.dynamicFieldModal.fieldProperties,this.headerDynamicFieldModel,pageData.detailFields.dynamicFieldModal.modal[0],this.footerDynamicFieldModel, this.totalDynamicFieldModel);
-            convertDateWithSchema(this.totalDynamicFieldOriginalSchema,this.totalDynamicFieldModel,false);
+
+
+          //generate schemas
+
+          this.detailSectionFieldSchema.fields = generateSchemaForTransaction(pageData.detailFields.dynamicFieldModal.fieldProperties, this.headerDynamicFieldModel, pageData.detailFields.dynamicFieldModal.modal[0], this.footerDynamicFieldModel, this.totalDynamicFieldModel);
+
+          if (pageData.headerFields.dynamicFieldModal != null) {
+            this.headerDynamicFieldSchema.fields = generateSchemaForTransaction(pageData.headerFields.dynamicFieldModal.fieldProperties, this.headerDynamicFieldModel, pageData.detailFields.dynamicFieldModal.modal[0], this.footerDynamicFieldModel, this.totalDynamicFieldModel);
+            convertDateWithSchema(this.headerDynamicFieldOriginalSchema, this.headerDynamicFieldModel, false);
+          }
+
+          if (pageData.footerFields.dynamicFieldModal != null) {
+            this.footerDynamicFieldSchema.fields = generateSchemaForTransaction(pageData.footerFields.dynamicFieldModal.fieldProperties, this.headerDynamicFieldModel, pageData.detailFields.dynamicFieldModal.modal[0], this.footerDynamicFieldModel, this.totalDynamicFieldModel);
+            convertDateWithSchema(this.footerDynamicFieldOriginalSchema, this.footerDynamicFieldModel, false);
+          }
+          if (pageData.totalFields.dynamicFieldModal != null) {
+            this.totalDynamicFieldSchema.fields = generateSchemaForTransaction(pageData.totalFields.dynamicFieldModal.fieldProperties, this.headerDynamicFieldModel, pageData.detailFields.dynamicFieldModal.modal[0], this.footerDynamicFieldModel, this.totalDynamicFieldModel);
+            convertDateWithSchema(this.totalDynamicFieldOriginalSchema, this.totalDynamicFieldModel, false);
           }
 
         }).catch((err) => {
 
-          this.showSnackBar('error',err.response.data);
+          this.showSnackBar('error', err.response.data);
         });
-     },
+    },
 
     /* *******************End  Main table functions ************************* */
 
 
     /* ****************** New Record Save Functions ************************* */
 
-  loadSchemaForNewPartyDocTranscation(){
-       this.getDocNumber();
-       this.resetFromVariable();
-       this.detailSectionModal = {
-         SLNO: 0,
-         ITEMSLNO:0,    
-       };
-       this.detailSectionHeader = [];
-       this.detailSectionData = [];
-       this.selectedID = 0;
-       const docID =  localStorage.getItem('menuDocId') || 0;
+    loadSchemaForNewPartyDocTranscation() {
+      this.getDocNumber();
+      this.resetFromVariable();
+      this.detailSectionModal = {
+        SLNO: 0,
+        ITEMSLNO: 0,
+      };
+      this.detailSectionHeader = [];
+      this.detailSectionData = [];
+      this.selectedID = 0;
+      const docID = localStorage.getItem('menuDocId') || 0;
 
       httpClient({
         method: 'GET',
         url: `${process.env.VUE_APP_API_BASE}NonPartyNonItem?docID=${docID}&type=0`
-       })
+      })
         .then((result) => {
           this.addPartyDocModal = true;
-          this.prefix =result.data.prefix;
-          
+          this.prefix = result.data.prefix;
+
           const pageData = result.data;
 
-          this.prefixDropdown =  pageData.prefixData;
+          this.prefixDropdown = pageData.prefixData;
           this.loadPendingPartyWise = pageData.mainData.loadPendingPartyWise;
           this.searchPartyTableName = pageData.mainData.docPartyTableName;
           this.searchPartyPrefix = pageData.mainData.docPartyPrefix;
 
 
-         
-          if(pageData.headerFields.dynamicFieldModal !=null ){
-          this.headerDynamicFieldModel = generateNewModal(pageData.headerFields.dynamicFieldModal.fieldProperties,pageData.headerFields.dynamicFieldModal.modal);
-          this.headerDynamicFieldOriginalSchema = pageData.headerFields.dynamicFieldModal.fieldProperties;
-          
+
+          if (pageData.headerFields.dynamicFieldModal != null) {
+            this.headerDynamicFieldModel = generateNewModal(pageData.headerFields.dynamicFieldModal.fieldProperties, pageData.headerFields.dynamicFieldModal.modal);
+            this.headerDynamicFieldOriginalSchema = pageData.headerFields.dynamicFieldModal.fieldProperties;
+
           }
-          this.detailSectionDynamicModal = JSON.parse(JSON.stringify(generateNewModal(pageData.detailFields.dynamicFieldModal.fieldProperties,pageData.detailFields.dynamicFieldModal.modal)));
-          this.detailSectionModal = {...this.detailSectionModal,...this.detailSectionDynamicModal};
+          this.detailSectionDynamicModal = JSON.parse(JSON.stringify(generateNewModal(pageData.detailFields.dynamicFieldModal.fieldProperties, pageData.detailFields.dynamicFieldModal.modal)));
+          this.detailSectionModal = { ...this.detailSectionModal, ...this.detailSectionDynamicModal };
           this.detailSectionFieldOriginalSchema = pageData.detailFields.dynamicFieldModal.fieldProperties;
-          
+
 
           this.generateDetailSectionTableHeader(this.detailSectionModal);
 
 
-         if(pageData.footerFields.dynamicFieldModal !=null){
-          
-          this.footerDynamicFieldModel =generateNewModal(pageData.footerFields.dynamicFieldModal.fieldProperties, pageData.footerFields.dynamicFieldModal.modal);
-          this.footerDynamicFieldOriginalSchema = pageData.footerFields.dynamicFieldModal.fieldProperties;
-          
-         }
-         if(pageData.totalFields.dynamicFieldModal !=null){
-          this.totalDynamicFieldModel =generateNewModal(pageData.totalFields.dynamicFieldModal.fieldProperties,pageData.totalFields.dynamicFieldModal.modal);
-          this.totalDynamicFieldOriginalSchema = pageData.totalFields.dynamicFieldModal.fieldProperties;
-          
-         }
+          if (pageData.footerFields.dynamicFieldModal != null) {
 
-         //generate schemas
-          this.headerDynamicFieldSchema.fields = generateSchemaForTransaction(pageData.headerFields.dynamicFieldModal.fieldProperties, this.headerDynamicFieldModel,pageData.detailFields.dynamicFieldModal.modal, this.footerDynamicFieldModel, this.totalDynamicFieldModel);
-          this.detailSectionFieldSchema.fields = generateSchemaForTransaction(pageData.detailFields.dynamicFieldModal.fieldProperties,this.headerDynamicFieldModel, pageData.detailFields.dynamicFieldModal.modal, this.footerDynamicFieldModel, this.totalDynamicFieldModel);
-          this.footerDynamicFieldSchema.fields = generateSchemaForTransaction(pageData.footerFields.dynamicFieldModal.fieldProperties,this.headerDynamicFieldModel,pageData.detailFields.dynamicFieldModal.modal, this.footerDynamicFieldModel, this.totalDynamicFieldModel);
-          this.totalDynamicFieldSchema.fields = generateSchemaForTransaction(pageData.totalFields.dynamicFieldModal.fieldProperties,this.headerDynamicFieldModel,pageData.detailFields.dynamicFieldModal.modal, this.footerDynamicFieldModel, this.totalDynamicFieldModel);
+            this.footerDynamicFieldModel = generateNewModal(pageData.footerFields.dynamicFieldModal.fieldProperties, pageData.footerFields.dynamicFieldModal.modal);
+            this.footerDynamicFieldOriginalSchema = pageData.footerFields.dynamicFieldModal.fieldProperties;
+
+          }
+          if (pageData.totalFields.dynamicFieldModal != null) {
+            this.totalDynamicFieldModel = generateNewModal(pageData.totalFields.dynamicFieldModal.fieldProperties, pageData.totalFields.dynamicFieldModal.modal);
+            this.totalDynamicFieldOriginalSchema = pageData.totalFields.dynamicFieldModal.fieldProperties;
+
+          }
+
+          //generate schemas
+          this.headerDynamicFieldSchema.fields = generateSchemaForTransaction(pageData.headerFields.dynamicFieldModal.fieldProperties, this.headerDynamicFieldModel, pageData.detailFields.dynamicFieldModal.modal, this.footerDynamicFieldModel, this.totalDynamicFieldModel);
+          this.detailSectionFieldSchema.fields = generateSchemaForTransaction(pageData.detailFields.dynamicFieldModal.fieldProperties, this.headerDynamicFieldModel, pageData.detailFields.dynamicFieldModal.modal, this.footerDynamicFieldModel, this.totalDynamicFieldModel);
+          this.footerDynamicFieldSchema.fields = generateSchemaForTransaction(pageData.footerFields.dynamicFieldModal.fieldProperties, this.headerDynamicFieldModel, pageData.detailFields.dynamicFieldModal.modal, this.footerDynamicFieldModel, this.totalDynamicFieldModel);
+          this.totalDynamicFieldSchema.fields = generateSchemaForTransaction(pageData.totalFields.dynamicFieldModal.fieldProperties, this.headerDynamicFieldModel, pageData.detailFields.dynamicFieldModal.modal, this.footerDynamicFieldModel, this.totalDynamicFieldModel);
 
         }).catch((err) => {
 
-          this.showSnackBar('error',err.response.data);
+          this.showSnackBar('error', err.response.data);
         });
-     },
-     getDocNumber(){
-       const docID =  localStorage.getItem('menuDocId') || 0;
+    },
+    getDocNumber() {
+      const docID = localStorage.getItem('menuDocId') || 0;
 
-        httpClient({
-          method: 'GET',
-          url: `${process.env.VUE_APP_API_BASE}getDocNumber?docID=${docID}&prefix=${this.selectedPrefix}`
-        })
+      httpClient({
+        method: 'GET',
+        url: `${process.env.VUE_APP_API_BASE}getDocNumber?docID=${docID}&prefix=${this.selectedPrefix}`
+      })
         .then((result) => {
 
-            this.partyDOCNumber = result.data;
+          this.partyDOCNumber = result.data;
 
-            }).catch((err) => {
+        }).catch((err) => {
 
-            this.showSnackBar('error',err.response.data);
+          this.showSnackBar('error', err.response.data);
         });
-     },
-     generateDetailSectionTableHeader(model){
-        for (var property in model) {
-          if(property != "ITEMID" && property != "UOMID" && property != "ITEMSLNO" && property != "CONVFACT" && property != this.dependentPrefix+"ID" && property != this.dependentPrefix+"ITEMSLNO" ){
-            this.detailSectionHeader.push({text: property,value: property});
-          }
-        }
-     },
-     saveDetailData(isSaveNewRecord){
-        if(!this.isDetailRowEditing){
-          this.detailSectionModal.SLNO = this.detailSectionData.length + 1;
-          this.detailSectionModal.ITEMSLNO = this.detailSectionData.length + 1;
-        }
-      
-        let data = JSON.parse(JSON.stringify(this.detailSectionModal));
-        let that = this;
-        setTimeout(function(){
-          if(that.isDetailSectionValid){
-                if(isSaveNewRecord){
-                  that.detailModal = false;
-                } else{ 
-                  that.editDetailModal = false;
-                }
-                if(!that.isDetailRowEditing){
-                  that.detailSectionData.push(data);
-                } else{
-                  that.isDetailRowEditing = false;
-                  that.selected = [];
-                  that.detailSectionData =JSON.parse(JSON.stringify(that.detailSectionData));
-                }
-              
-              that.resetDetailSectionModal(that.detailSectionModal);
-              } else{
-              that.showSnackBar('error','Please fill all mandatory fields');
-              }
-        }, 500);     
     },
-    editDetailRow(row, isSaveNewRecord){
+    generateDetailSectionTableHeader(model) {
+      for (var property in model) {
+        if (property != "ITEMID" && property != "UOMID" && property != "ITEMSLNO" && property != "CONVFACT" && property != this.dependentPrefix + "ID" && property != this.dependentPrefix + "ITEMSLNO") {
+          this.detailSectionHeader.push({ text: property, value: property });
+        }
+      }
+    },
+    saveDetailData(isSaveNewRecord) {
+      if (!this.isDetailRowEditing) {
+        this.detailSectionModal.SLNO = this.detailSectionData.length + 1;
+        this.detailSectionModal.ITEMSLNO = this.detailSectionData.length + 1;
+      }
+
+      let data = JSON.parse(JSON.stringify(this.detailSectionModal));
+      let that = this;
+      setTimeout(function () {
+        if (that.isDetailSectionValid) {
+          if (isSaveNewRecord) {
+            that.detailModal = false;
+          } else {
+            that.editDetailModal = false;
+          }
+          if (!that.isDetailRowEditing) {
+            that.detailSectionData.push(data);
+          } else {
+            that.isDetailRowEditing = false;
+            that.selected = [];
+            that.detailSectionData = JSON.parse(JSON.stringify(that.detailSectionData));
+          }
+
+          that.resetDetailSectionModal(that.detailSectionModal);
+        } else {
+          that.showSnackBar('error', 'Please fill all mandatory fields');
+        }
+      }, 500);
+    },
+    editDetailRow(row, isSaveNewRecord) {
       this.isDetailRowEditing = true;
       console.log(JSON.stringify(row));
       this.detailSectionModal = row;
@@ -973,38 +983,38 @@ export default {
       this.searchItemResult = [
         {
           itemId: row.ITEMID,
-          itemCode:row.ITEMNAME,
-          itemName:row.ITEMNAME,
-          UOMID:row.UOMID,
-          UOM:row.UOM
+          itemCode: row.ITEMNAME,
+          itemName: row.ITEMNAME,
+          UOMID: row.UOMID,
+          UOM: row.UOM
         }];
 
-      if(isSaveNewRecord){
+      if (isSaveNewRecord) {
         this.detailModal = true;
-      } else{
+      } else {
         this.editDetailModal = true;
       }
     },
-    savePartyDocHDRTableData(){
+    savePartyDocHDRTableData() {
       this.validateOnclickSaveNewRecord();
-      if(this.validateStaticFields() && this.isDynamicHeaderFormValid && this.isDynamicFooterFormValid && this.isDynamicTotalFormValid && this.detailSectionData.length > 0){
+      if (this.validateStaticFields() && this.isDynamicHeaderFormValid && this.isDynamicFooterFormValid && this.isDynamicTotalFormValid && this.detailSectionData.length > 0) {
 
-        let partDocFixedFields ={};
-        partDocFixedFields[this.prefix+"NO"] = this.partyDOCNumber;
-        partDocFixedFields["Print"+this.prefix+"NO"] = this.partyDOCNumber;
-        partDocFixedFields[this.prefix+"Date"]=this.parseAsDBDate(this.dateFormatted);
+        let partDocFixedFields = {};
+        partDocFixedFields[this.prefix + "NO"] = this.partyDOCNumber;
+        partDocFixedFields["Print" + this.prefix + "NO"] = this.partyDOCNumber;
+        partDocFixedFields[this.prefix + "Date"] = this.parseAsDBDate(this.dateFormatted);
 
-        let header =JSON.parse(JSON.stringify(this.headerDynamicFieldModel));
-        let footer =JSON.parse(JSON.stringify(this.footerDynamicFieldModel));
+        let header = JSON.parse(JSON.stringify(this.headerDynamicFieldModel));
+        let footer = JSON.parse(JSON.stringify(this.footerDynamicFieldModel));
         let total = JSON.parse(JSON.stringify(this.totalDynamicFieldModel));
-        convertDateWithSchema(this.headerDynamicFieldOriginalSchema,header, true);
-        convertDateWithSchema(this.footerDynamicFieldOriginalSchema, footer,true);
-        convertDateWithSchema(this.totalDynamicFieldOriginalSchema,total,true);
+        convertDateWithSchema(this.headerDynamicFieldOriginalSchema, header, true);
+        convertDateWithSchema(this.footerDynamicFieldOriginalSchema, footer, true);
+        convertDateWithSchema(this.totalDynamicFieldOriginalSchema, total, true);
 
-          partDocFixedFields = {...partDocFixedFields,...header,...footer,...total};
-        
+        partDocFixedFields = { ...partDocFixedFields, ...header, ...footer, ...total };
+
         const updateParams = {
-          docID: localStorage.getItem('menuDocId') || 0, 
+          docID: localStorage.getItem('menuDocId') || 0,
           userID: localStorage.getItem('userId') || 0,
           hdrFields: partDocFixedFields
         }
@@ -1014,71 +1024,71 @@ export default {
           url: `${process.env.VUE_APP_API_BASE}NonPartyNonItem`,
           data: updateParams
         })
-        .then((result) => {
+          .then((result) => {
             this.savePartyDocDTLTableData(result.data);
           }).catch((err) => {
-            this.showSnackBar('error',err.response.data);
-        });
-      }else{
-        this.showSnackBar('error','Please fill all mandatory fields');
+            this.showSnackBar('error', err.response.data);
+          });
+      } else {
+        this.showSnackBar('error', 'Please fill all mandatory fields');
       }
 
     },
-    savePartyDocDTLTableData(selectedId){
+    savePartyDocDTLTableData(selectedId) {
 
-       let query= this.createDetailSectionQueries(selectedId)
-      const docID =  localStorage.getItem('menuDocId') || 0;
+      let query = this.createDetailSectionQueries(selectedId)
+      const docID = localStorage.getItem('menuDocId') || 0;
 
-       httpClient({
+      httpClient({
         method: 'POST',
         url: `${process.env.VUE_APP_API_BASE}NonPartyNonItem?query=${query}`,
-       })
-       .then((result) => {
-          this.showSnackBar('success',result.data);
+      })
+        .then((result) => {
+          this.showSnackBar('success', result.data);
           this.addPartyDocModal = false;
           this.loadPartDocTableData();
         }).catch((err) => {
-          this.showSnackBar('error',err.response.data);
-       });
+          this.showSnackBar('error', err.response.data);
+        });
     },
 
-     onValidatedAddDetailSection:function(isValid,error){
-        console.log("Validation detil section result: ", isValid, ", Errors:", error);
-      if(this.detailSectionFieldOriginalSchema != null){
-           customeValidaton(this.detailSectionFieldOriginalSchema,this.detailSectionFieldSchema.fields,this.detailSectionFieldSchema.groups,this.detailSectionModal);
-       }
+    onValidatedAddDetailSection: function (isValid, error) {
+      console.log("Validation detil section result: ", isValid, ", Errors:", error);
+      if (this.detailSectionFieldOriginalSchema != null) {
+        customeValidaton(this.detailSectionFieldOriginalSchema, this.detailSectionFieldSchema.fields, this.detailSectionFieldSchema.groups, this.detailSectionModal);
+      }
 
-       if(this.detailSectionModal.hasOwnProperty('SLNO')){
-        if(this.detailSectionModal.SLNO == 0   && !this.detailModal){ this.isDetailSectionValid = true;}
-      }  else{
-        if(this.detailSectionData.length == 0){
+      if (this.detailSectionModal.hasOwnProperty('SLNO')) {
+        if (this.detailSectionModal.SLNO == 0 && !this.detailModal) { this.isDetailSectionValid = true; }
+      } else {
+        if (this.detailSectionData.length == 0) {
           this.isDetailSectionValid = false;
-        }else{
+        } else {
           this.isDetailSectionValid = true;
         }
-        
+
       }
       return this.isDetailSectionValid;
     },
-    onValidatedAddHeader: function(isValid, error) {
+    onValidatedAddHeader: function (isValid, error) {
       console.log("Validation add header result: ", isValid, ", Errors:", error);
-       if(this.headerDynamicFieldOriginalSchema != null){
-           customeValidaton(this.headerDynamicFieldOriginalSchema,this.headerDynamicFieldSchema.fields,this.headerDynamicFieldSchema.groups,this.headerDynamicFieldModel);
-       }
+      if (this.headerDynamicFieldOriginalSchema != null) {
+        customeValidaton(this.headerDynamicFieldOriginalSchema, this.headerDynamicFieldSchema.fields, this.headerDynamicFieldSchema.groups, this.headerDynamicFieldModel);
+      }
       this.isDynamicHeaderFormValid = isValid;
     },
-    onValidatedAddFooter: function(isValid, error) {
+    onValidatedAddFooter: function (isValid, error) {
       console.log("Validation add footer result: ", isValid, ", Errors:", error);
-       if(this.footerDynamicFieldOriginalSchema != null){
-           customeValidaton(this.footerDynamicFieldOriginalSchema,this.footerDynamicFieldSchema.fields,this.footerDynamicFieldSchema.groups,this.footerDynamicFieldModel);
-       }
+      if (this.footerDynamicFieldOriginalSchema != null) {
+        customeValidaton(this.footerDynamicFieldOriginalSchema, this.footerDynamicFieldSchema.fields, this.footerDynamicFieldSchema.groups, this.footerDynamicFieldModel);
+      }
       this.isDynamicFooterFormValid = isValid;
     },
-    onValidatedAddTotal: function(isValid, error) {
+    onValidatedAddTotal: function (isValid, error) {
       console.log("Validation add total result: ", isValid, ", Errors:", error);
-       if(this.totalDynamicFieldOriginalSchema != null){
-           customeValidaton(this.totalDynamicFieldOriginalSchema,this.totalDynamicFieldSchema.fields,this.totalDynamicFieldSchema.groups,this.totalDynamicFieldModel);
-       }
+      if (this.totalDynamicFieldOriginalSchema != null) {
+        customeValidaton(this.totalDynamicFieldOriginalSchema, this.totalDynamicFieldSchema.fields, this.totalDynamicFieldSchema.groups, this.totalDynamicFieldModel);
+      }
       this.isDynamicTotalFormValid = isValid;
     },
 
@@ -1087,77 +1097,77 @@ export default {
 
 
     /* ****************** Update Record Function ************************** */
-    updatePartyDoc(){
+    updatePartyDoc() {
 
-     this.validateOnclickUpdateRecord();
-      if(this.validateStaticFields() && this.isDynamicHeaderFormValid && this.isDynamicFooterFormValid  && this.isDynamicTotalFormValid  && this.detailSectionData.length > 0){
+      this.validateOnclickUpdateRecord();
+      if (this.validateStaticFields() && this.isDynamicHeaderFormValid && this.isDynamicFooterFormValid && this.isDynamicTotalFormValid && this.detailSectionData.length > 0) {
 
-          let partDocFixedFields ={};
+        let partDocFixedFields = {};
 
-          let header =JSON.parse(JSON.stringify(this.headerDynamicFieldModel));
-          let footer =JSON.parse(JSON.stringify(this.footerDynamicFieldModel));
-          let total = JSON.parse(JSON.stringify(this.totalDynamicFieldModel));
-          convertDateWithSchema(this.headerDynamicFieldOriginalSchema,header, true);
-          convertDateWithSchema(this.footerDynamicFieldOriginalSchema, footer,true);
-          convertDateWithSchema(this.totalDynamicFieldOriginalSchema,total,true);
+        let header = JSON.parse(JSON.stringify(this.headerDynamicFieldModel));
+        let footer = JSON.parse(JSON.stringify(this.footerDynamicFieldModel));
+        let total = JSON.parse(JSON.stringify(this.totalDynamicFieldModel));
+        convertDateWithSchema(this.headerDynamicFieldOriginalSchema, header, true);
+        convertDateWithSchema(this.footerDynamicFieldOriginalSchema, footer, true);
+        convertDateWithSchema(this.totalDynamicFieldOriginalSchema, total, true);
 
-          partDocFixedFields = {...partDocFixedFields,...header,...footer,...total};
-          
-          const updateParams = {
-            docID: localStorage.getItem('menuDocId') || 0, 
-            userID: localStorage.getItem('userId') || 0,
-            selectedId : this.selectedID,
-            hdrFields: partDocFixedFields,
-            dtlFields: this.createDetailSectionQueries(this.selectedID)
-          }
+        partDocFixedFields = { ...partDocFixedFields, ...header, ...footer, ...total };
 
-          httpClient({
-            method: 'PUT',
-            url: `${process.env.VUE_APP_API_BASE}NonPartyNonItem`,
-            data: updateParams
-          })
+        const updateParams = {
+          docID: localStorage.getItem('menuDocId') || 0,
+          userID: localStorage.getItem('userId') || 0,
+          selectedId: this.selectedID,
+          hdrFields: partDocFixedFields,
+          dtlFields: this.createDetailSectionQueries(this.selectedID)
+        }
+
+        httpClient({
+          method: 'PUT',
+          url: `${process.env.VUE_APP_API_BASE}NonPartyNonItem`,
+          data: updateParams
+        })
           .then((result) => {
-              this.showSnackBar('success',result.data);
-            }).catch((err) => {
-              this.showSnackBar('error',err.response.data);
+            this.showSnackBar('success', result.data);
+          }).catch((err) => {
+            this.showSnackBar('error', err.response.data);
           });
-      } else{
-        this.showSnackBar('error','Please fill all mandatory fields!');
+      } else {
+        this.showSnackBar('error', 'Please fill all mandatory fields!');
       }
 
     },
-    onValidatedHeader: function(isValid, error) {
+    onValidatedHeader: function (isValid, error) {
       console.log("Validation result: ", isValid, ", Errors:", error);
-       if(this.headerDynamicFieldOriginalSchema != null){
-           customeValidaton(this.headerDynamicFieldOriginalSchema,this.headerDynamicFieldSchema.fields,this.headerDynamicFieldSchema.groups,this.headerDynamicFieldModel);
-       }
+      if (this.headerDynamicFieldOriginalSchema != null) {
+        customeValidaton(this.headerDynamicFieldOriginalSchema, this.headerDynamicFieldSchema.fields, this.headerDynamicFieldSchema.groups, this.headerDynamicFieldModel);
+      }
       this.isDynamicHeaderFormValid = isValid;
     },
-    onValidatedFooter: function(isValid, error) {
+    onValidatedFooter: function (isValid, error) {
       console.log("Validation result: ", isValid, ", Errors:", error);
-       if(this.footerDynamicFieldOriginalSchema != null){
-           customeValidaton(this.footerDynamicFieldOriginalSchema,this.footerDynamicFieldSchema.fields,this.footerDynamicFieldSchema.groups,this.footerDynamicFieldModel);
-       }
+      if (this.footerDynamicFieldOriginalSchema != null) {
+        customeValidaton(this.footerDynamicFieldOriginalSchema, this.footerDynamicFieldSchema.fields, this.footerDynamicFieldSchema.groups, this.footerDynamicFieldModel);
+      }
       this.isDynamicFooterFormValid = isValid;
     },
-    onValidatedTotal: function(isValid, error) {
+    onValidatedTotal: function (isValid, error) {
       console.log("Validation result: ", isValid, ", Errors:", error);
-       if(this.totalDynamicFieldOriginalSchema != null){
-           customeValidaton(this.totalDynamicFieldOriginalSchema,this.totalDynamicFieldSchema.fields,this.totalDynamicFieldSchema.groups,this.totalDynamicFieldModel);
-       }
+      if (this.totalDynamicFieldOriginalSchema != null) {
+        customeValidaton(this.totalDynamicFieldOriginalSchema, this.totalDynamicFieldSchema.fields, this.totalDynamicFieldSchema.groups, this.totalDynamicFieldModel);
+      }
       this.isDynamicTotalFormValid = isValid;
     },
-    onValidatedDetailSection:function(isValid,error){
-      console.log('detail section validation='+isValid);
-      if(this.detailSectionFieldOriginalSchema != null){
-           customeValidaton(this.detailSectionFieldOriginalSchema,this.detailSectionFieldSchema.fields,this.detailSectionFieldSchema.groups,this.detailSectionModal);
-       }
-      if(this.detailSectionModal.hasOwnProperty('SLNO')){
-        if(this.detailSectionModal.SLNO == 0   && !this.editDetailModal){ this.isDetailSectionValid = true;}
-      } else{
-        if(this.detailSectionData.length == 0){
+    onValidatedDetailSection: function (isValid, error) {
+      console.log('detail section validation=' + isValid);
+      if (this.detailSectionFieldOriginalSchema != null) {
+        customeValidaton(this.detailSectionFieldOriginalSchema, this.detailSectionFieldSchema.fields, this.detailSectionFieldSchema.groups, this.detailSectionModal);
+      }
+      if (this.detailSectionModal.hasOwnProperty('SLNO')) {
+        if (this.detailSectionModal.SLNO == 0 && !this.editDetailModal) { this.isDetailSectionValid = true; }
+      } else {
+        if (this.detailSectionData.length == 0) {
           this.isDetailSectionValid = false;
-        }else{
+        } else {
           this.isDetailSectionValid = true;
         }
       }
@@ -1167,67 +1177,67 @@ export default {
     /* ****************** End Update Record Funtion *********************** */
 
     /* ***************** Common Methods ********************************* */
-    validateStaticFields(){
-      if(this.dateFormatted =="" || this.dateFormatted == null || this.dateFormatted == undefined){
+    validateStaticFields() {
+      if (this.dateFormatted == "" || this.dateFormatted == null || this.dateFormatted == undefined) {
         return false;
       }
       return true;
     },
-    createDetailSectionQueries(selecteId){
-      let finalQuery ="";
+    createDetailSectionQueries(selecteId) {
+      let finalQuery = "";
       this.detailSectionData.forEach(element => {
-        let Columns="",Values="";
-       let query="insert into TrnDtl"+this.prefix+" (";
+        let Columns = "", Values = "";
+        let query = "insert into TrnDtl" + this.prefix + " (";
         for (var key in element) {
-          if(key !='ITEMCODE' && key !='UOM' && key !='QOH' && key !='CONVFACT' && key !=this.dependentPrefix+'QTY' && key !=this.dependentPrefix+'NO' && key !='CUMQTY' && key !='PENDQTY' && key !='ITEMROWID' && key !='DOCQTY'){
-            if(key!='StkQty'){
-              Columns+= key;
-              Columns+=",";
-              Values += "'"+element[key]+"'";
+          if (key != 'ITEMCODE' && key != 'UOM' && key != 'QOH' && key != 'CONVFACT' && key != this.dependentPrefix + 'QTY' && key != this.dependentPrefix + 'NO' && key != 'CUMQTY' && key != 'PENDQTY' && key != 'ITEMROWID' && key != 'DOCQTY') {
+            if (key != 'StkQty') {
+              Columns += key;
+              Columns += ",";
+              Values += "'" + element[key] + "'";
               Values += ","
-            }else{
-               Columns+= key;
-               Columns+=",";
-               Values += "'"+element[this.prefix+'QTY'] * element['CONVFACT'] +"'";
-               Values += ","
+            } else {
+              Columns += key;
+              Columns += ",";
+              Values += "'" + element[this.prefix + 'QTY'] * element['CONVFACT'] + "'";
+              Values += ","
             }
           }
         }
-       
 
-        query += Columns+" "+ this.prefix+"ID) values("+Values+""+selecteId+");"
-        finalQuery +=query;
+
+        query += Columns + " " + this.prefix + "ID) values(" + Values + "" + selecteId + ");"
+        finalQuery += query;
       });
 
       return finalQuery;
     },
-    resetDetailSectionModal(model){
-      this.selectedItem= 0;
-       if(model){
+    resetDetailSectionModal(model) {
+      this.selectedItem = 0;
+      if (model) {
         for (var property in model) {
-          if( typeof model[property] === "number"){
-            model[property]= 0;
+          if (typeof model[property] === "number") {
+            model[property] = 0;
           }
-          if(typeof model[property] === "string"){
+          if (typeof model[property] === "string") {
             model[property] = "";
           }
         }
-       }
-     },
-     resetFromVariable(){
+      }
+    },
+    resetFromVariable() {
       this.partyDOCID = "";
       this.partyDOCNumber = "";
       this.prefixDropdown = [];
-      this.preFix= "";
-      this.selectedItem =0;
+      this.preFix = "";
+      this.selectedItem = 0;
       this.searchItemResult = [];
       this.searchSupplierResult = [];
-      this.selectedSupplier ="";
+      this.selectedSupplier = "";
       this.supplier = {
-        supplierId:0,
-        supplierCode:'',
+        supplierId: 0,
+        supplierCode: '',
         supplierName: '',
-        address1:'',
+        address1: '',
         address2: '',
         address3: '',
         address4: '',
@@ -1237,76 +1247,76 @@ export default {
         country: ''
       };
     },
-    newAmmendment(){
+    newAmmendment() {
       this.incrementAmmendment = false;
       this.ammendmentNo += 1;
       var d = new Date();
       this.ammendmentDate = d.toLocaleDateString("en-GB", { // you can skip the first argument
-                            year: "numeric",
-                            month: "2-digit",
-                            day: "2-digit",
-                          });
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      });
     },
-    addAmendment(){
+    addAmendment() {
       var docID = localStorage.getItem('menuDocId') || 0;
 
       httpClient({
-            method: 'PUT',
-            url: `${process.env.VUE_APP_API_BASE}Amendments?docId=${docID}&selectedId=${this.selectedID}&ammendmentDate=${this.ammendmentDate}&ammendmentNo=${this.ammendmentNo}&ammendmentDetail=${this.ammendmentDetail}`
-          })
-          .then((result) => {
-              this.showSnackBar('success',result.data);
-              this.amendmentModal = false;
-            }).catch((err) => {
-              this.showSnackBar('error',err.response.data);
-          });
+        method: 'PUT',
+        url: `${process.env.VUE_APP_API_BASE}Amendments?docId=${docID}&selectedId=${this.selectedID}&ammendmentDate=${this.ammendmentDate}&ammendmentNo=${this.ammendmentNo}&ammendmentDetail=${this.ammendmentDetail}`
+      })
+        .then((result) => {
+          this.showSnackBar('success', result.data);
+          this.amendmentModal = false;
+        }).catch((err) => {
+          this.showSnackBar('error', err.response.data);
+        });
     },
-    updateAllModalForValueChanges(callQueries){
-      updateModalAfterChange(this.headerDynamicFieldOriginalSchema,this.headerDynamicFieldModel,this.detailSectionModal,this.footerDynamicFieldModel, this.totalDynamicFieldModel, this.detailSectionData,'header', this.supplier.supplierCode,callQueries);
-      updateModalAfterChange(this.detailSectionFieldOriginalSchema,this.headerDynamicFieldModel,this.detailSectionModal,this.footerDynamicFieldModel, this.totalDynamicFieldModel, this.detailSectionData,'detail',this.supplier.supplierCode,callQueries);
-      updateModalAfterChange(this.footerDynamicFieldOriginalSchema,this.headerDynamicFieldModel,this.detailSectionModal,this.footerDynamicFieldModel, this.totalDynamicFieldModel, this.detailSectionData,'footer',this.supplier.supplierCode,callQueries);
-      updateModalAfterChange(this.totalDynamicFieldOriginalSchema,this.headerDynamicFieldModel,this.detailSectionModal,this.footerDynamicFieldModel, this.totalDynamicFieldModel, this.detailSectionData,'total',this.supplier.supplierCode,callQueries);
+    updateAllModalForValueChanges(callQueries) {
+      updateModalAfterChange(this.headerDynamicFieldOriginalSchema, this.headerDynamicFieldModel, this.detailSectionModal, this.footerDynamicFieldModel, this.totalDynamicFieldModel, this.detailSectionData, 'header', this.supplier.supplierCode, callQueries);
+      updateModalAfterChange(this.detailSectionFieldOriginalSchema, this.headerDynamicFieldModel, this.detailSectionModal, this.footerDynamicFieldModel, this.totalDynamicFieldModel, this.detailSectionData, 'detail', this.supplier.supplierCode, callQueries);
+      updateModalAfterChange(this.footerDynamicFieldOriginalSchema, this.headerDynamicFieldModel, this.detailSectionModal, this.footerDynamicFieldModel, this.totalDynamicFieldModel, this.detailSectionData, 'footer', this.supplier.supplierCode, callQueries);
+      updateModalAfterChange(this.totalDynamicFieldOriginalSchema, this.headerDynamicFieldModel, this.detailSectionModal, this.footerDynamicFieldModel, this.totalDynamicFieldModel, this.detailSectionData, 'total', this.supplier.supplierCode, callQueries);
     },
-    validateOnclickSaveNewRecord: function($event) {
-     console.log('Validating', this.$refs);
+    validateOnclickSaveNewRecord: function ($event) {
+      console.log('Validating', this.$refs);
       this.$refs.vfAddHeader.validate();
       this.$refs.vfAddFooter.validate();
       this.$refs.vfAddTotal.validate();
     },
-    validateOnclickDetailSaveNewRecord(){
+    validateOnclickDetailSaveNewRecord() {
       var error = this.$refs.vfAddDetail.validate();
     },
-    validateOnclickUpdateRecord: function($event) {
-     console.log('Validating', this.$refs);
+    validateOnclickUpdateRecord: function ($event) {
+      console.log('Validating', this.$refs);
       this.$refs.vfEditHeader.validate();
       this.$refs.vfEditFooter.validate();
       this.$refs.vfEditTotal.validate();
     },
-    validateOnclickDetailUpdateRecord(){
+    validateOnclickDetailUpdateRecord() {
       var error = this.$refs.vfEditDetail.validate();
     },
-    showSnackBar(type,message){
+    showSnackBar(type, message) {
       this.snackbar = true;
       this.color = type;
       this.text = message;
     },
-   formatDate (date) {
+    formatDate(date) {
       if (!date) return null
       const [year, month, day] = date.split('-')
       return `${day}/${month}/${year}`
     },
-    parseDate (date) {
+    parseDate(date) {
       if (!date) return null
       const [day, month, year] = date.split('/')
       return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
     },
-    parseAsDBDate(date){
+    parseAsDBDate(date) {
       if (!date) return null
       const [days, months, years] = date.split('/')
       return `${months}/${days}/${years}`
     },
-    getCurrentUserRoles(type){
-      switch(type){
+    getCurrentUserRoles(type) {
+      switch (type) {
         case "addRight": return localStorage.getItem('addRight') || 0;
           break;
         case "editRight": return localStorage.getItem('editRight') || 0;
@@ -1333,45 +1343,43 @@ export default {
           break;
       }
     },
-    viewPdf(props){
+    viewPdf(props) {
       console.log(JSON.stringify(props));
       let docId = localStorage.getItem('menuDocId') || 0;
-      let docNumber = props[Object.keys(props)[1]] ;
+      let docNumber = props[Object.keys(props)[1]];
       httpClient({
-            method: 'GET',
-            url: `${process.env.VUE_APP_API_BASE}getPdfFile?docId=${docId}&docNumber=${docNumber}`,
-          })
-          .then((result) => {
-             ;
-              this.pdfUrl = result.data;
-              this.pdfDailog = true;
-            }).catch((err) => {
-              this.showSnackBar('error','File not available');
-          });
+        method: 'GET',
+        url: `${process.env.VUE_APP_API_BASE}getPdfFile?docId=${docId}&docNumber=${docNumber}`,
+      })
+        .then((result) => {
+          ;
+          this.pdfUrl = result.data;
+          this.pdfDailog = true;
+        }).catch((err) => {
+          this.showSnackBar('error', 'File not available');
+        });
     }
 
     /* ***************** End Common Methods ***************************** */
- }
+  }
 
 }
 
 </script>
 
 <style>
-
-.actionBlock{
- position: relative;
+.actionBlock {
+  position: relative;
 }
 
 #create .v-speed-dial {
- position: absolute;
- top: 0px;
- left: 68px;
+  position: absolute;
+  top: 0px;
+  left: 68px;
 }
 
 #create .v-btn--floating {
- position: relative;
+  position: relative;
 
 }
-
 </style>
