@@ -1,86 +1,83 @@
 <template>
   <div id="app">
     <v-app id="inspire">
-        <div class="text-md-center text-lg-center" v-if="getCurrentUserRoles('addRight') == '1'">
-          <v-btn  fab dark small color="indigo" @click="addItemInPartyMaster"> <v-icon dark>add</v-icon></v-btn>
-         
-        </div>
-       <span v-if="getCurrentUserRoles('addRight') == '1'"> Add New Record</span><br/>
+      <div class="text-md-center text-lg-center" v-if="getCurrentUserRoles('addRight') == '1'">
+        <v-btn fab dark small color="indigo" @click="addItemInPartyMaster"> <v-icon dark>add</v-icon></v-btn>
+
+      </div>
+      <span v-if="getCurrentUserRoles('addRight') == '1'"> Add New Record</span><br />
       <!-- START: Code for Supplier Group Master Table data -->
       <v-card>
-      <v-card-title> 
-        <v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer>
-        <v-text-field  v-model="tableSearch" append-icon="search"  label="Search" single-line  hide-details  ></v-text-field>
-      </v-card-title>
-      <v-data-table :headers="headers" :search="tableSearch" :items="generalMasterTableData" :pagination.sync="pagination"  class="elevation-1">
-        <template slot="items" slot-scope="props">
-          <tr >
-          <td class="justify-center layout px-0">
-            <v-icon v-if="getCurrentUserRoles('editRight') == '1'"  small class="mr-2" @click="editGeneralMasterData(props.item)">edit</v-icon>
-            <v-icon v-if="getCurrentUserRoles('deleteRight') == '1'" small @click="openDeleteConfirmatinModal(props.item)">delete</v-icon>
-          </td>
-          <td v-for="values in props.item" :key="values.id">
-            {{ values }}
-          </td>
-          </tr>
-        </template>
-        <template slot="no-data">
-          <v-btn color="primary">Reset</v-btn>
-        </template>
-      </v-data-table>
+        <v-card-title>
+          <v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer>
+          <v-text-field v-model="tableSearch" append-icon="search" label="Search" single-line
+            hide-details></v-text-field>
+        </v-card-title>
+        <v-data-table :headers="headers" :search="tableSearch" :items="generalMasterTableData"
+          :pagination.sync="pagination" class="elevation-1">
+          <template slot="items" slot-scope="props">
+            <tr>
+              <td class="justify-center layout px-0">
+                <v-icon v-if="getCurrentUserRoles('editRight') == '1'" small class="mr-2"
+                  @click="editGeneralMasterData(props.item)">edit</v-icon>
+                <v-icon v-if="getCurrentUserRoles('deleteRight') == '1'" small
+                  @click="openDeleteConfirmatinModal(props.item)">delete</v-icon>
+              </td>
+              <td v-for="values in props.item" :key="values.id">
+                {{ values }}
+              </td>
+            </tr>
+          </template>
+          <template slot="no-data">
+            <v-btn color="primary">Reset</v-btn>
+          </template>
+        </v-data-table>
       </v-card>
       <!-- END: Code for Supplier Group Master Table data -->
       <!-- START: dialog box model code -->
-      <v-dialog
-        v-model="generalMasterModel"
-        fullscreen
-        hide-overlay
-        transition="dialog-bottom-transition"
-       >
+      <v-dialog v-model="generalMasterModel" fullscreen hide-overlay transition="dialog-bottom-transition">
         <v-card>
           <v-toolbar fixed dark color="primary">
             <v-btn icon dark @click="generalMasterModel = false">
               <v-icon>close</v-icon>
             </v-btn>
-            <v-toolbar-title>{{$store.state.pageName}} - Edit</v-toolbar-title>
+            <v-toolbar-title>{{ $store.state.pageName }} - Edit</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-btn class="blue darken-1 white--text" @click="updateGeneralMasterData()">Save</v-btn>
           </v-toolbar>
-           <v-container class="spaceFromTop" fluid grid-list-md >
-          <v-layout row wrap>
-            <v-flex xs12>
-              <v-expansion-panel popout>
-                <v-expansion-panel-content>
-                  <div slot="header">Details</div>
-                  <v-card>
-                    <v-card-text>
-                      <v-container fluid grid-list-xl>
-                        <v-layout row >
-                          <v-flex xs12 sm6 md4>
-                            <label for="code">{{`${preFix} Code: `}}</label><span class="mandatoryStar">*</span>
-                            <b-form-input id="code" v-model="editItems[staticFields[1]]" type="text"
-                            v-bind:class="{'form-control':true, 'is-invalid' : !validCode() && codeBlured}"
-                            v-on:blur="codeBlured = true"
-                            aria-describedby="codeLiveFeedback"
-                            :placeholder="`${preFix} Code`" />
-                            <b-form-invalid-feedback id="codeLiveFeedback">
-                              This field is required
-                            </b-form-invalid-feedback>
-                          </v-flex>
-                          <v-flex xs12 sm6 md4>
-                            <label for="code">{{`${preFix} Name: `}}</label><span class="mandatoryStar">*</span>
-                            <b-form-input id="code" v-model="editItems[staticFields[2]]" type="text"
-                            v-bind:class="{'form-control':true, 'is-invalid' : !validName() && nameBlured}"
-                            v-on:blur="nameBlured = true"
-                            aria-describedby="nameLiveFeedback"
-                            :placeholder="`${preFix} Name`" />
-                            <b-form-invalid-feedback id="nameLiveFeedback">
-                              This field is required
-                            </b-form-invalid-feedback>
-                          </v-flex>
-                        </v-layout>
-                        <v-layout row >
-                          <!-- <v-flex xs12 sm6 md4>
+          <v-container class="spaceFromTop" fluid grid-list-md>
+            <v-layout row wrap>
+              <v-flex xs12>
+                <v-expansion-panel popout>
+                  <v-expansion-panel-content>
+                    <div slot="header">Details</div>
+                    <v-card>
+                      <v-card-text>
+                        <v-container fluid grid-list-xl>
+                          <v-layout row>
+                            <v-flex xs12 sm6 md4>
+                              <label for="code">{{ `${preFix} Code: ` }}</label><span class="mandatoryStar">*</span>
+                              <b-form-input id="code" v-model="editItems[staticFields[1]]" type="text"
+                                v-bind:class="{ 'form-control': true, 'is-invalid': !validCode() && codeBlured }"
+                                v-on:blur="codeBlured = true" aria-describedby="codeLiveFeedback"
+                                :placeholder="`${preFix} Code`" />
+                              <b-form-invalid-feedback id="codeLiveFeedback">
+                                This field is required
+                              </b-form-invalid-feedback>
+                            </v-flex>
+                            <v-flex xs12 sm6 md4>
+                              <label for="code">{{ `${preFix} Name: ` }}</label><span class="mandatoryStar">*</span>
+                              <b-form-input id="code" v-model="editItems[staticFields[2]]" type="text"
+                                v-bind:class="{ 'form-control': true, 'is-invalid': !validName() && nameBlured }"
+                                v-on:blur="nameBlured = true" aria-describedby="nameLiveFeedback"
+                                :placeholder="`${preFix} Name`" />
+                              <b-form-invalid-feedback id="nameLiveFeedback">
+                                This field is required
+                              </b-form-invalid-feedback>
+                            </v-flex>
+                          </v-layout>
+                          <v-layout row>
+                            <!-- <v-flex xs12 sm6 md4>
                             <label for="code">{{`Added On: `}}</label>
                             <b-form-input id="code" v-model="editItems[staticFields[3]]" type="text" :placeholder="`Added On`" readonly />
                           </v-flex>
@@ -96,48 +93,44 @@
                             <label for="code">{{`Changed By: `}}</label>
                             <b-form-input id="code" v-model="editItems[staticFields[6]]" type="text" :placeholder="`Changed By`" readonly />
                           </v-flex> -->
-                          <v-flex xs12 sm6 md4>
-                            <b-form-checkbox
-                              id="checkbox1"
-                              v-model="editItems[staticFields[7]]"
-                            >
-                              in Active ?
-                            </b-form-checkbox>
-                          </v-flex>
-                          <v-flex xs12 sm6 md4>
-                            <b-form-checkbox
-                              id="checkbox2"
-                              v-model="editItems[staticFields[8]]"
-                            >
-                              is Authorised ?
-                            </b-form-checkbox>
-                          </v-flex>
-                        </v-layout>
-                      </v-container>
-                      <!-- END: UOM master detail -->
-                    </v-card-text>
-                  </v-card>
-                </v-expansion-panel-content>
-                <v-expansion-panel-content>
-                  <div slot="header">Other Information</div>
-                  <v-card>
-                    <v-card-text>
-                      <!-- START: Code for dynamic fields -->
-                       <v-container fluid grid-list-xl>
-                        <v-layout row justify-space-between>
-                          <v-flex xs12 sm4 md4>
-                      <vue-form-generator id="Form-generator-css" ref="vfg" :schema="dynamicFieldSchema" :model="dynamicFieldModel" :options="formOptions" @validated="onValidated"  ></vue-form-generator>
-                          </v-flex>
-                        </v-layout>
-                       </v-container>
-                      <!-- END: Code for dynamic fields -->
-                    </v-card-text>
-                  </v-card>
-                </v-expansion-panel-content>
-              </v-expansion-panel>
-            </v-flex>
-          </v-layout>
-           </v-container>
+                            <v-flex xs12 sm6 md4>
+                              <b-form-checkbox id="checkbox1" v-model="editItems[staticFields[7]]">
+                                in Active ?
+                              </b-form-checkbox>
+                            </v-flex>
+                            <v-flex xs12 sm6 md4>
+                              <b-form-checkbox id="checkbox2" v-model="editItems[staticFields[8]]">
+                                is Authorised ?
+                              </b-form-checkbox>
+                            </v-flex>
+                          </v-layout>
+                        </v-container>
+                        <!-- END: UOM master detail -->
+                      </v-card-text>
+                    </v-card>
+                  </v-expansion-panel-content>
+                  <v-expansion-panel-content>
+                    <div slot="header">Other Information</div>
+                    <v-card>
+                      <v-card-text>
+                        <!-- START: Code for dynamic fields -->
+                        <v-container fluid grid-list-xl>
+                          <v-layout row justify-space-between>
+                            <v-flex xs12 sm4 md4>
+                              <vue-form-generator id="Form-generator-css" ref="vfg" :schema="dynamicFieldSchema"
+                                :model="dynamicFieldModel" :options="formOptions"
+                                @validated="onValidated"></vue-form-generator>
+                            </v-flex>
+                          </v-layout>
+                        </v-container>
+                        <!-- END: Code for dynamic fields -->
+                      </v-card-text>
+                    </v-card>
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
+              </v-flex>
+            </v-layout>
+          </v-container>
         </v-card>
       </v-dialog>
       <!-- END: dialog box model code -->
@@ -154,7 +147,7 @@
           <v-card-title class="headline">Delete Request ?</v-card-title>
 
           <v-card-text>Are you sure ? you wanna delete this. <br>
-          <!-- Supplier Group Master Name: <span style="color: red">{{ deleteItem.SupplierGroupMasterName }}</span> -->
+            <!-- Supplier Group Master Name: <span style="color: red">{{ deleteItem.SupplierGroupMasterName }}</span> -->
           </v-card-text>
 
           <v-card-actions>
@@ -168,70 +161,63 @@
       </v-dialog>
       <!-- END: warning model dialog box -->
       <!-- START: dialog box model code For Adding the new Item -->
-      <v-dialog
-        v-model="addGeneralMasterModel"
-        fullscreen
-        hide-overlay
-        transition="dialog-bottom-transition"
-       >
+      <v-dialog v-model="addGeneralMasterModel" fullscreen hide-overlay transition="dialog-bottom-transition">
         <v-card>
           <v-toolbar fixed dark color="primary">
             <v-btn icon dark @click="addGeneralMasterModel = false">
               <v-icon>close</v-icon>
             </v-btn>
-            <v-toolbar-title>{{$store.state.pageName}} - Add</v-toolbar-title>
+            <v-toolbar-title>{{ $store.state.pageName }} - Add</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-btn class="blue darken-1 white--text" @click="addItemRequest()">Add</v-btn>
           </v-toolbar>
-           <v-container class="spaceFromTop" fluid grid-list-md >
-          <v-layout row wrap>
-            <v-flex xs12>
-              <v-expansion-panel popout>
-                <v-expansion-panel-content>
-                  <div slot="header">Details</div>
-                  <v-card>
-                    <v-card-text>
-                      <v-container fluid grid-list-xl>
-                        <v-layout row >
-                          <v-flex xs12 sm6 md4>
-                            <label for="code">{{`${preFix} Code: `}}</label><span class="mandatoryStar">*</span>
-                            <b-form-input id="code" v-model="addItems[staticFields[0]]" type="text"
-                            v-bind:class="{'form-control':true, 'is-invalid' : !validAddCode() && codeBlured}"
-                            v-on:blur="codeBlured = true"
-                            aria-describedby="codeLiveFeedback"
-                            :placeholder="`${preFix} Code`" />
-                            <b-form-invalid-feedback id="codeLiveFeedback">
-                              This field is required
-                            </b-form-invalid-feedback>
-                          </v-flex>
-                          <v-flex xs12 sm6 md4>
-                            <label for="code">{{`${preFix} Name: `}}</label><span class="mandatoryStar">*</span>
-                            <b-form-input id="code" v-model="addItems[staticFields[1]]" type="text"
-                            v-bind:class="{'form-control':true, 'is-invalid' : !validAddName() && nameBlured}"
-                            v-on:blur="nameBlured = true"
-                            aria-describedby="nameLiveFeedback"
-                            :placeholder="`${preFix} Name`" />
-                            <b-form-invalid-feedback id="nameLiveFeedback">
-                              This field is required
-                            </b-form-invalid-feedback>
-                          </v-flex>
-                          <!-- <v-flex xs12 sm6 md4>
+          <v-container class="spaceFromTop" fluid grid-list-md>
+            <v-layout row wrap>
+              <v-flex xs12>
+                <v-expansion-panel popout>
+                  <v-expansion-panel-content>
+                    <div slot="header">Details</div>
+                    <v-card>
+                      <v-card-text>
+                        <v-container fluid grid-list-xl>
+                          <v-layout row>
+                            <v-flex xs12 sm6 md4>
+                              <label for="code">{{ `${preFix} Code: ` }}</label><span class="mandatoryStar">*</span>
+                              <b-form-input id="code" v-model="addItems[staticFields[0]]" type="text"
+                                v-bind:class="{ 'form-control': true, 'is-invalid': !validAddCode() && codeBlured }"
+                                v-on:blur="codeBlured = true" aria-describedby="codeLiveFeedback"
+                                :placeholder="`${preFix} Code`" />
+                              <b-form-invalid-feedback id="codeLiveFeedback">
+                                This field is required
+                              </b-form-invalid-feedback>
+                            </v-flex>
+                            <v-flex xs12 sm6 md4>
+                              <label for="code">{{ `${preFix} Name: ` }}</label><span class="mandatoryStar">*</span>
+                              <b-form-input id="code" v-model="addItems[staticFields[1]]" type="text"
+                                v-bind:class="{ 'form-control': true, 'is-invalid': !validAddName() && nameBlured }"
+                                v-on:blur="nameBlured = true" aria-describedby="nameLiveFeedback"
+                                :placeholder="`${preFix} Name`" />
+                              <b-form-invalid-feedback id="nameLiveFeedback">
+                                This field is required
+                              </b-form-invalid-feedback>
+                            </v-flex>
+                            <!-- <v-flex xs12 sm6 md4>
                             <label for="code">{{`Added On: `}}</label>
                             <b-form-input id="code" v-model="editItems[staticFields[3]]" type="text" :placeholder="`Added On`" readonly />
                           </v-flex> -->
-                          <!-- <v-flex xs12 sm6 md4>
+                            <!-- <v-flex xs12 sm6 md4>
                             <label for="code">{{`Added By: `}}</label>
                             <b-form-input id="code" v-model="editItems[staticFields[4]]" type="text" :placeholder="`Added By`" readonly />
                           </v-flex> -->
-                          <!-- <v-flex xs12 sm6 md4>
+                            <!-- <v-flex xs12 sm6 md4>
                             <label for="code">{{`Changed On: `}}</label>
                             <b-form-input id="code" v-model="editItems[staticFields[5]]" type="text" :placeholder="`Changed On`"  readonly />
                           </v-flex> -->
-                          <!-- <v-flex xs12 sm6 md4>
+                            <!-- <v-flex xs12 sm6 md4>
                             <label for="code">{{`Changed By: `}}</label>
                             <b-form-input id="code" v-model="editItems[staticFields[6]]" type="text" :placeholder="`Changed By`" readonly />
                           </v-flex> -->
-                          <!-- <v-flex xs12 sm6 md4>
+                            <!-- <v-flex xs12 sm6 md4>
                             <b-form-checkbox
                               id="checkbox1"
                               v-model="editItems[staticFields[7]]"
@@ -239,7 +225,7 @@
                               in Active ?
                             </b-form-checkbox>
                           </v-flex> -->
-                          <!-- <v-flex xs12 sm6 md4>
+                            <!-- <v-flex xs12 sm6 md4>
                             <b-form-checkbox
                               id="checkbox1"
                               v-model="editItems[staticFields[8]]"
@@ -247,37 +233,39 @@
                               is Authorised ?
                             </b-form-checkbox>
                           </v-flex> -->
-                        </v-layout>
-                      </v-container>
-                      <!-- END: UOM master detail -->
-                    </v-card-text>
-                  </v-card>
-                </v-expansion-panel-content>
-                <v-expansion-panel-content>
-                  <div slot="header">Other Information</div>
-                  <v-card>
-                    <v-card-text>
-                      <!-- START: Code for dynamic fields -->
-                       <v-container fluid grid-list-xl>
-                        <v-layout row justify-space-between>
-                          <v-flex xs12 sm4 md4>
-                          <vue-form-generator id="Form-generator-css" ref="vfg" :schema="addDynamicFieldSchema" :model="addDynamicFieldModel" :options="formOptions"  @validated="onValidatedAdd" ></vue-form-generator>
-                          </v-flex>
-                        </v-layout>
-                       </v-container>
-                      <!-- END: Code for dynamic fields -->
-                    </v-card-text>
-                  </v-card>
-                </v-expansion-panel-content>
-              </v-expansion-panel>
-            </v-flex>
-          </v-layout>
-           </v-container>
+                          </v-layout>
+                        </v-container>
+                        <!-- END: UOM master detail -->
+                      </v-card-text>
+                    </v-card>
+                  </v-expansion-panel-content>
+                  <v-expansion-panel-content>
+                    <div slot="header">Other Information</div>
+                    <v-card>
+                      <v-card-text>
+                        <!-- START: Code for dynamic fields -->
+                        <v-container fluid grid-list-xl>
+                          <v-layout row justify-space-between>
+                            <v-flex xs12 sm4 md4>
+                              <vue-form-generator id="Form-generator-css" ref="vfg" :schema="addDynamicFieldSchema"
+                                :model="addDynamicFieldModel" :options="formOptions"
+                                @validated="onValidatedAdd"></vue-form-generator>
+                            </v-flex>
+                          </v-layout>
+                        </v-container>
+                        <!-- END: Code for dynamic fields -->
+                      </v-card-text>
+                    </v-card>
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
+              </v-flex>
+            </v-layout>
+          </v-container>
         </v-card>
       </v-dialog>
       <!-- END: dialog box model code For Adding the new Item-->
       <!-- Delete confirm dialog model -->
-      <v-dialog v-model="deleteModal"  max-width="290">
+      <v-dialog v-model="deleteModal" max-width="290">
         <v-card>
           <v-card-title class="headline">Delete selected record?</v-card-title>
           <v-card-text>
@@ -285,28 +273,20 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="red darken-1"  flat="flat"  @click="deleteModal = false" >
+            <v-btn color="red darken-1" flat="flat" @click="deleteModal = false">
               Cancel
             </v-btn>
-            <v-btn  color="green darken-1" flat="flat"  @click="deleteGeneralMasterRequest()">
+            <v-btn color="green darken-1" flat="flat" @click="deleteGeneralMasterRequest()">
               Delete
             </v-btn>
           </v-card-actions>
         </v-card>
-       </v-dialog>
-       <!-- End delete dailog modal -->
-      <v-snackbar
-        v-model="snackbar"
-        :color="color"
-        :multi-line="true"
-        :timeout="timeout"
-        :vertical="mode === 'vertical'"
-      >{{ text }}
-        <v-btn
-          dark
-          flat
-          @click="snackbar = false"
-        >
+      </v-dialog>
+      <!-- End delete dailog modal -->
+      <v-snackbar v-model="snackbar" :color="color" :multi-line="true" :timeout="timeout"
+        :vertical="mode === 'vertical'">{{
+        text }}
+        <v-btn dark flat @click="snackbar = false">
           Close
         </v-btn>
       </v-snackbar>
@@ -324,9 +304,9 @@ import updateModalAfterChangeMaster from '@/DynamicProperty/updateModalAfterChan
 import convertDateWithSchema from '@/DynamicProperty/convertDateWithSchema.js';
 
 export default {
-  data: function() {
+  data: function () {
     return {
-      headers: [ { text: "Edit", align: "center" } ],
+      headers: [{ text: "Edit", align: "center" }],
       generalMasterHeadersKey: [],
       generalMasterTableData: [],
       preFix: null,
@@ -342,7 +322,7 @@ export default {
       deleteItems: '',
       dynamicFieldSchema: {
         fields: [],
-        groups:[]
+        groups: []
       },
       dynamicFieldModel: {},
       dynamicFieldOptions: {},
@@ -350,7 +330,7 @@ export default {
         fields: [],
         groups: []
       },
-     addDynamicFieldModel: {},
+      addDynamicFieldModel: {},
       codeBlured: true,
       nameBlured: true,
       formOptions: {
@@ -366,51 +346,51 @@ export default {
       mode: '',
       timeout: 5000,
       text: '',
-      dynamicShema:{},
+      dynamicShema: {},
       dynamicModal: {},
       deleteModal: false,
-      deleteSelectedId:0,
+      deleteSelectedId: 0,
       pagination: {
         rowsPerPage: parseInt(localStorage.getItem('rowPerPageDataTable')) || 5
       },
     }
   },
-  beforeMount: function() {
+  beforeMount: function () {
     this.loadGeneralMaster();
   },
-  watch:{
-    dynamicFieldModel:{
-     handler(val, oldVal){
+  watch: {
+    dynamicFieldModel: {
+      handler(val, oldVal) {
         this.updateEditModalForValueChanges();
-        },
-    deep: true
-   },
-   addDynamicFieldModel:{
-     handler(val, oldVal){
-        this.updateAddModalForValueChanges();
-        },
-    deep: true
-   },
-   pagination: {
-    handler () {
-      localStorage.setItem('rowPerPageDataTable',this.pagination.rowsPerPage);
+      },
+      deep: true
     },
-    deep: true
-  }
+    addDynamicFieldModel: {
+      handler(val, oldVal) {
+        this.updateAddModalForValueChanges();
+      },
+      deep: true
+    },
+    pagination: {
+      handler() {
+        localStorage.setItem('rowPerPageDataTable', this.pagination.rowsPerPage);
+      },
+      deep: true
+    }
 
   },
   methods: {
-    showSnackBar(type,message){
+    showSnackBar(type, message) {
       this.snackbar = true;
       this.color = type;
       this.text = message;
     },
-    loadGeneralMaster: function() {
+    loadGeneralMaster: function () {
       /**
        * Code for loading the party master data
        */
-      const docID =  localStorage.getItem('menuDocId') || 0;
-      this.headers = [ { text: "Action", align: "center",sortable: false } ];
+      const docID = localStorage.getItem('menuDocId') || 0;
+      this.headers = [{ text: "Action", align: "center", sortable: false }];
       httpClient({
         method: 'GET',
         url: `${process.env.VUE_APP_API_BASE}GeneralMaster?docID=${docID}`
@@ -430,15 +410,14 @@ export default {
           /**
            * When API call failed: check error in browser console::
            */
-          this.showSnackBar('error',err.response.data);
+          this.showSnackBar('error', err.response.data);
         });
     },
-    editGeneralMasterData: function(params) {
-      if(this.getCurrentUserRoles('editRight') != '1')
-       {
-         this.showSnackBar('error',"You do not have edit rights on the page.");
-         return
-       }
+    editGeneralMasterData: function (params) {
+      if (this.getCurrentUserRoles('editRight') != '1') {
+        this.showSnackBar('error', "You do not have edit rights on the page.");
+        return
+      }
 
       this.generalMasterModel = true;
       const docID = localStorage.getItem('menuDocId') || 0;
@@ -453,57 +432,57 @@ export default {
           this.preFix = generalMasterEditFields.prefix;
           this.editItems = generalMasterEditFields.staticFieldData[0];
           this.staticFields = Object.keys(this.editItems);
-         
-          if(generalMasterEditFields.dynamicFieldModal != ""){
-            this.dynamicShema = generalMasterEditFields.dynamicFieldModal.fieldProperties;
+
+          if (generalMasterEditFields.dynamicFieldModal != "") {
+            this.dynamicShema = generalMasterEditFields.dynamicFieldModal.fieldProperties || {};
             this.dynamicModal = generalMasterEditFields.dynamicFieldModal.modal[0];
-            this.dynamicFieldModel =  this.dynamicModal
-            this.dynamicFieldSchema.fields = generateSchema(this.dynamicShema,  this.dynamicModal);
-            this.dynamicFieldSchema.groups = generateGroupSchema(this.dynamicShema,  this.dynamicModal);
-            convertDateWithSchema(this.dynamicShema,this.dynamicFieldModel, false);
+            this.dynamicFieldModel = this.dynamicModal
+            this.dynamicFieldSchema.fields = generateSchema(this.dynamicShema, this.dynamicModal);
+            this.dynamicFieldSchema.groups = generateGroupSchema(this.dynamicShema, this.dynamicModal);
+            convertDateWithSchema(this.dynamicShema, this.dynamicFieldModel, false);
           }
         }).catch((err) => {
-          this.showSnackBar('error',err.response.data);
+          this.showSnackBar('error', err.response.data);
         });
     },
-    updateGeneralMasterData: function() {
+    updateGeneralMasterData: function () {
       this.validateOnclick();
-      console.log('Update params',JSON.stringify(this.editItems));
+      console.log('Update params', JSON.stringify(this.editItems));
       let updateModal = JSON.parse(JSON.stringify(this.dynamicFieldModel));
-      convertDateWithSchema(this.dynamicShema,updateModal, true);
+      convertDateWithSchema(this.dynamicShema, updateModal, true);
       const updateParam = {
-        docID: localStorage.getItem('menuDocId') || 0, 
+        docID: localStorage.getItem('menuDocId') || 0,
         userID: localStorage.getItem('userId') || 0,
         staticFields: this.editItems,
         dynamicFields: updateModal
       }
-      if(this.validate() && this.isDynamicFormValid){
-      httpClient({
-        method: 'PUT',
-        url: `${process.env.VUE_APP_API_BASE}GeneralMaster`,
-        data: updateParam
-      })
-        .then((result) => {
-        this.showSnackBar('success',result.data);
-        this.loadGeneralMaster();
-        }).catch((err) => {
-          this.showSnackBar('error',err.response.data);
-        });
-      }else{
-         this.showSnackBar('error','Please fill mandatory fields!');
+      if (this.validate() && this.isDynamicFormValid) {
+        httpClient({
+          method: 'PUT',
+          url: `${process.env.VUE_APP_API_BASE}GeneralMaster`,
+          data: updateParam
+        })
+          .then((result) => {
+            this.showSnackBar('success', result.data);
+            this.loadGeneralMaster();
+          }).catch((err) => {
+            this.showSnackBar('error', err.response.data);
+          });
+      } else {
+        this.showSnackBar('error', 'Please fill mandatory fields!');
       }
     },
-    openDeleteConfirmatinModal(params){
+    openDeleteConfirmatinModal(params) {
       this.deleteSelectedId = params[Object.keys(params)[0]];
-      this.deleteModal =true;
+      this.deleteModal = true;
     },
-    deleteGeneralMasterRequest(){
+    deleteGeneralMasterRequest() {
       const selectedID = this.deleteSelectedId;
-      const docID = localStorage.getItem('menuDocId') || 0; 
+      const docID = localStorage.getItem('menuDocId') || 0;
       const userID = localStorage.getItem('userId') || 0;
-       /**
-       * Delete Item in party Master
-       */
+      /**
+      * Delete Item in party Master
+      */
       httpClient({
         method: 'DELETE',
         url: `${process.env.VUE_APP_API_BASE}GeneralMaster?selectedID=${selectedID}&docID=${docID}&userID=${userID}`
@@ -511,45 +490,45 @@ export default {
         .then((result) => {
           this.deleteModal = false;
           this.deleteSelectedId = 0;
-          this.showSnackBar('success',result.data);
+          this.showSnackBar('success', result.data);
           this.loadGeneralMaster();
         }).catch((err) => {
-          this.showSnackBar('error',err.response.data);
+          this.showSnackBar('error', err.response.data);
         });
 
       // this.warningDialog = true;
     },
-    validCode: function() {
+    validCode: function () {
       if (this.editItems[this.staticFields[1]]) {
         return (this.editItems[this.staticFields[1]].toString()).length >= 1 ? true : false;
       } else { return false; }
     },
-    validAddCode: function() {
-      if(this.isFormSavedOnce){
-      if (this.addItems[this.staticFields[0]]) {
-        return (this.addItems[this.staticFields[0]].toString()).length >= 1 ? true : false;
-      } else { return false; }
-      }else { return true;}
+    validAddCode: function () {
+      if (this.isFormSavedOnce) {
+        if (this.addItems[this.staticFields[0]]) {
+          return (this.addItems[this.staticFields[0]].toString()).length >= 1 ? true : false;
+        } else { return false; }
+      } else { return true; }
     },
-    validName: function() {
+    validName: function () {
       if (this.editItems[this.staticFields[2]]) {
         return (this.editItems[this.staticFields[2]].toString()).length >= 1 ? true : false;
       } else { return false; }
     },
-    validAddName: function() {
-      if(this.isFormSavedOnce){
-      if (this.addItems[this.staticFields[1]]) {
-        return (this.addItems[this.staticFields[1]].toString()).length >= 1 ? true : false;
-      } else { return false; }
-       }else { return true;}
+    validAddName: function () {
+      if (this.isFormSavedOnce) {
+        if (this.addItems[this.staticFields[1]]) {
+          return (this.addItems[this.staticFields[1]].toString()).length >= 1 ? true : false;
+        } else { return false; }
+      } else { return true; }
     },
-    validate: function() {
+    validate: function () {
       return (this.validCode() && this.validName()) ? true : false;
     },
-    addValidation: function() {
+    addValidation: function () {
       (this.validAddCode() && this.validAddName()) ? true : false;
     },
-    addItemInPartyMaster: function() {
+    addItemInPartyMaster: function () {
       const docID = localStorage.getItem('menuDocId') || 0;
       httpClient({
         method: 'GET',
@@ -559,29 +538,29 @@ export default {
         this.preFix = addFieldForGeneralMaster.prefix;
         this.addItems = addFieldForGeneralMaster.staticFieldData;
         this.staticFields = Object.keys(this.addItems);
-        this.dynamicShema =addFieldForGeneralMaster.dynamicFieldModal.fieldProperties;
-        this.dynamicModal = addFieldForGeneralMaster.dynamicFieldModal.modal;
-        if(addFieldForGeneralMaster.dynamicFieldModal.modal !=null){
-        this.addDynamicFieldSchema.fields = generateSchema(this.dynamicShema, this.dynamicModal);
-        this.addDynamicFieldSchema.groups = generateGroupSchema(this.dynamicShema, this.dynamicModal);
-        this.addDynamicFieldModel = generateNewModal(this.dynamicShema,this.dynamicModal)
+        this.dynamicShema = addFieldForGeneralMaster.dynamicFieldModal.fieldProperties || {};
+        this.dynamicModal = addFieldForGeneralMaster.dynamicFieldModal.modal || {};
+        if (addFieldForGeneralMaster.dynamicFieldModal.modal != null) {
+          this.addDynamicFieldSchema.fields = generateSchema(this.dynamicShema, this.dynamicModal);
+          this.addDynamicFieldSchema.groups = generateGroupSchema(this.dynamicShema, this.dynamicModal);
+          this.addDynamicFieldModel = generateNewModal(this.dynamicShema, this.dynamicModal)
         }
         this.addGeneralMasterModel = true;
       }).catch((err) => {
-        this.showSnackBar('error',err.response.data);
+        this.showSnackBar('error', err.response.data);
 
       });
     },
-     addValidation: function() {
+    addValidation: function () {
       return (
-      this.validAddName() &&
-      this.validAddCode()) ? true : false;
+        this.validAddName() &&
+        this.validAddCode()) ? true : false;
     },
-    addItemRequest: function() {
+    addItemRequest: function () {
       this.isFormSavedOnce = true;
       this.validateOnclick();
       let newModalData = JSON.parse(JSON.stringify(this.addDynamicFieldModel));
-      convertDateWithSchema(this.dynamicShema,newModalData, true);
+      convertDateWithSchema(this.dynamicShema, newModalData, true);
       const postParams = {
         docID: localStorage.getItem('menuDocId'),
         userID: localStorage.getItem('userId'),
@@ -590,46 +569,46 @@ export default {
       }
 
       if (this.addValidation() && this.isDynamicFormValid) {
-      httpClient({
-        method: 'POST',
-        url: `${process.env.VUE_APP_API_BASE}GeneralMaster`,
-        data: postParams
-      }).then((result) => {
-        this.showSnackBar('success',result.data);
-        this.addGeneralMasterModel = false;
-        this.loadGeneralMaster();
-      }).catch((err) => {
-        this.showSnackBar('error',err.response.data);
-      });
-      } else{
-        this.showSnackBar('error','Please fill all mandatory field.')
+        httpClient({
+          method: 'POST',
+          url: `${process.env.VUE_APP_API_BASE}GeneralMaster`,
+          data: postParams
+        }).then((result) => {
+          this.showSnackBar('success', result.data);
+          this.addGeneralMasterModel = false;
+          this.loadGeneralMaster();
+        }).catch((err) => {
+          this.showSnackBar('error', err.response.data);
+        });
+      } else {
+        this.showSnackBar('error', 'Please fill all mandatory field.')
       }
     },
-    onValidatedAdd: function(isValid, errors) {
-      if(this.dynamicShema != null){
-     customeValidaton(this.dynamicShema,this.addDynamicFieldSchema.fields,this.addDynamicFieldSchema.groups,this.addDynamicFieldModel);
+    onValidatedAdd: function (isValid, errors) {
+      if (this.dynamicShema != null) {
+        customeValidaton(this.dynamicShema, this.addDynamicFieldSchema.fields, this.addDynamicFieldSchema.groups, this.addDynamicFieldModel);
       }
       console.log("Validation result: ", isValid, ", Errors:", errors);
       this.isDynamicFormValid = isValid;
     },
-     onValidated: function(isValid, errors) {
-       if(this.dynamicShema != null){
-       customeValidaton(this.dynamicShema,this.dynamicFieldSchema.fields,this.dynamicFieldSchema.groups,this.dynamicFieldModel);
-       }
+    onValidated: function (isValid, errors) {
+      if (this.dynamicShema != null) {
+        customeValidaton(this.dynamicShema, this.dynamicFieldSchema.fields, this.dynamicFieldSchema.groups, this.dynamicFieldModel);
+      }
       console.log("Validation result: ", isValid, ", Errors:", errors);
       this.isDynamicFormValid = isValid;
     },
-    validateOnclick: function($event) {
+    validateOnclick: function ($event) {
       var errors = this.$refs.vfg.validate();
     },
-    updateEditModalForValueChanges(){
-      updateModalAfterChangeMaster(this.dynamicShema,this.dynamicFieldModel);
+    updateEditModalForValueChanges() {
+      updateModalAfterChangeMaster(this.dynamicShema, this.dynamicFieldModel);
     },
-    updateAddModalForValueChanges(){
-      updateModalAfterChangeMaster(this.dynamicShema,this.addDynamicFieldModel);
+    updateAddModalForValueChanges() {
+      updateModalAfterChangeMaster(this.dynamicShema, this.addDynamicFieldModel);
     },
-    getCurrentUserRoles(type){
-      switch(type){
+    getCurrentUserRoles(type) {
+      switch (type) {
         case "addRight": return localStorage.getItem('addRight') || 0;
           break;
         case "editRight": return localStorage.getItem('editRight') || 0;
@@ -659,6 +638,4 @@ export default {
   }
 }
 </script>
-<style>
-
-</style>
+<style></style>
