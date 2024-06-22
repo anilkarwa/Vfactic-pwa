@@ -6,20 +6,22 @@
       </div>
       Add New Record
       <!-- START: Code for Supplier Group Master Table data -->
-      <v-data-table :headers="itemTableHeader" :items="itemTableData" class="elevation-1">
+      <AgGridWrapper :columns="itemTableHeader" :rows="itemTableData" :editRowData="editItemOpenningBalance"
+        :deleteConfirmation="deleteGeneralMasterRequest"></AgGridWrapper>
+      <!-- <v-data-table :headers="itemTableHeader" :items="itemTableData" class="elevation-1">
         <template slot="items" slot-scope="props">
           <td class="justify-center layout px-0">
             <v-icon small class="mr-2" @click="editItemOpenningBalance(props.item)">edit</v-icon>
-            <!-- <v-icon small @click="deleteGeneralMasterRequest(props.item)">delete</v-icon> -->
+            <v-icon small @click="deleteGeneralMasterRequest(props.item)">delete</v-icon>
           </td>
           <td v-for="values in props.item" :key="values.id">
             {{ values }}
           </td>
         </template>
-        <template slot="no-data">
+<template slot="no-data">
           <v-btn color="primary">Reset</v-btn>
         </template>
-      </v-data-table>
+</v-data-table> -->
       <!-- END: Code for Supplier Group Master Table data -->
 
       <!-- Edit PartyDoc Transcation Dialog -->
@@ -240,9 +242,12 @@
 <script>
 
 import httpClient from "@/services/httpClient.js";
+import AgGridWrapper from "../../Shared/AgGridWrapper.vue";
 
 export default {
-
+  components: {
+    AgGridWrapper,
+  },
   data: vm => ({
     addFromValid: true,
     updateFromValid: true,

@@ -10,13 +10,15 @@
       <!-- </v-layout> -->
       <span v-if="getCurrentUserRoles('addRight') == '1'"> Add New Record</span> <br />
       <!-- START: Code for Data table -->
-      <v-card>
+      <AgGridWrapper :columns="headers" :rows="partyMasterTableData" :editRowData="editPartyMasterData"
+        :deleteConfirmation="openDeleteConfirmatinModal"></AgGridWrapper>
+      <!-- <v-card>
         <v-card-title>
           <v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer>
           <v-text-field v-model="tableSearch" append-icon="search" label="Search" single-line
             hide-details></v-text-field>
-        </v-card-title>
-        <v-data-table :headers="headers" :search="tableSearch" :items="partyMasterTableData"
+        </v-card-title> -->
+      <!-- <v-data-table :headers="headers" :search="tableSearch" :items="partyMasterTableData"
           :pagination.sync="pagination" class="elevation-1">
           <template slot="items" slot-scope="props">
             <tr>
@@ -31,14 +33,14 @@
               </td>
             </tr>
           </template>
-          <template slot="no-data">
+<template slot="no-data">
             <v-btn color="primary">Reset</v-btn>
           </template>
-          <v-alert v-slot:no-results :value="true" color="error" icon="warning">
-            Your search for "{{ tableSearch }}" found no results.
-          </v-alert>
-        </v-data-table>
-      </v-card>
+<v-alert v-slot:no-results :value="true" color="error" icon="warning">
+  Your search for "{{ tableSearch }}" found no results.
+</v-alert>
+</v-data-table> -->
+      <!-- </v-card> -->
       <!-- END: Code for Data table -->
       <!-- START: Dialog box Model code for Party Master Static and Dynamic Field -->
       <v-dialog v-model="partyMasterModel" fullscreen hide-overlay transition="dialog-bottom-transition">
@@ -461,10 +463,12 @@ import generateGroupSchema from '@/DynamicProperty/generateGroupSchema.js'
 import generateNewModal from '@/DynamicProperty/generateNewModal.js'
 import customeValidaton from '@/DynamicProperty/customeValidation.js'
 import updateModalAfterChangeMaster from '@/DynamicProperty/updateModalAfterChangeMaster.js';
+import AgGridWrapper from "../Shared/AgGridWrapper.vue"
 
 export default {
   components: {
-    "vue-form-generator": VueFormGenerator.component
+    "vue-form-generator": VueFormGenerator.component,
+    AgGridWrapper,
   },
   data: vm => ({
     headers: [{ text: "Edit", align: "center" }],

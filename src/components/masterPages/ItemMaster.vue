@@ -7,13 +7,15 @@
       </div>
       <span v-if="getCurrentUserRoles('addRight') == '1'"> Add New Record</span>
       <!-- START: table -->
-      <v-card>
+      <AgGridWrapper :columns="headers" :rows="itemMasterDataTable" :editRowData="editItemMasterData"
+        :deleteConfirmation="openDeleteConfirmatinModal"></AgGridWrapper>
+      <!-- <v-card>
         <v-card-title>
           <v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer>
           <v-text-field v-model="tableSearch" append-icon="search" label="Search" single-line
             hide-details></v-text-field>
-        </v-card-title>
-        <v-data-table :headers="headers" :search="tableSearch" :items="itemMasterDataTable"
+        </v-card-title> -->
+      <!-- <v-data-table :headers="headers" :search="tableSearch" :items="itemMasterDataTable"
           :pagination.sync="pagination" class="elevation-1">
           <template slot="items" slot-scope="props">
             <tr>
@@ -28,11 +30,11 @@
               </td>
             </tr>
           </template>
-          <template slot="no-data">
+<template slot="no-data">
             <v-btn color="primary">Reset</v-btn>
           </template>
-        </v-data-table>
-      </v-card>
+</v-data-table> -->
+      <!-- </v-card> -->
       <!-- END: table -->
       <!-- START: dialog box model code -->
       <v-dialog v-model="itemMasterModel" fullscreen hide-overlay transition="dialog-bottom-transition">
@@ -368,8 +370,12 @@ import generateNewModal from '@/DynamicProperty/generateNewModal.js'
 import customeValidaton from '@/DynamicProperty/customeValidation.js'
 import updateModalAfterChangeMaster from '@/DynamicProperty/updateModalAfterChangeMaster.js';
 import convertDateWithSchema from '@/DynamicProperty/convertDateWithSchema.js';
+import AgGridWrapper from "../Shared/AgGridWrapper.vue";
 
 export default {
+  components: {
+    AgGridWrapper,
+  },
   data: function () {
     return {
       headers: [{ text: "Edit", align: "center" }],
@@ -464,6 +470,7 @@ export default {
             this.itemMasterHeadersKey.forEach(element => {
               this.headers.push({ text: element, align: "center", value: element })
             })
+            console.log('this.headers :', this.headers);
           }).catch((err) => {
             this.showSnackBar('error', err.response.data);
           });

@@ -7,13 +7,16 @@
       </div>
       <span v-if="getCurrentUserRoles('addRight') == '1'"> Add New Record</span><br />
       <!-- START: Code for Supplier Group Master Table data -->
-      <v-card>
+      <AgGridWrapper :columns="headers" :rows="generalMasterTableData" :editRowData="editGeneralMasterData"
+        :deleteConfirmation="openDeleteConfirmatinModal">
+      </AgGridWrapper>
+      <!-- <v-card>
         <v-card-title>
           <v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer>
           <v-text-field v-model="tableSearch" append-icon="search" label="Search" single-line
             hide-details></v-text-field>
-        </v-card-title>
-        <v-data-table :headers="headers" :search="tableSearch" :items="generalMasterTableData"
+        </v-card-title> -->
+      <!-- <v-data-table :headers="headers" :search="tableSearch" :items="generalMasterTableData"
           :pagination.sync="pagination" class="elevation-1">
           <template slot="items" slot-scope="props">
             <tr>
@@ -28,11 +31,11 @@
               </td>
             </tr>
           </template>
-          <template slot="no-data">
+<template slot="no-data">
             <v-btn color="primary">Reset</v-btn>
           </template>
-        </v-data-table>
-      </v-card>
+</v-data-table> -->
+      <!-- </v-card> -->
       <!-- END: Code for Supplier Group Master Table data -->
       <!-- START: dialog box model code -->
       <v-dialog v-model="generalMasterModel" fullscreen hide-overlay transition="dialog-bottom-transition">
@@ -285,7 +288,7 @@
       <!-- End delete dailog modal -->
       <v-snackbar v-model="snackbar" :color="color" :multi-line="true" :timeout="timeout"
         :vertical="mode === 'vertical'">{{
-        text }}
+          text }}
         <v-btn dark flat @click="snackbar = false">
           Close
         </v-btn>
@@ -302,8 +305,12 @@ import generateNewModal from '@/DynamicProperty/generateNewModal.js'
 import customeValidaton from '@/DynamicProperty/customeValidation.js'
 import updateModalAfterChangeMaster from '@/DynamicProperty/updateModalAfterChangeMaster.js';
 import convertDateWithSchema from '@/DynamicProperty/convertDateWithSchema.js';
+import AgGridWrapper from '../Shared/AgGridWrapper.vue'
 
 export default {
+  components: {
+    AgGridWrapper
+  },
   data: function () {
     return {
       headers: [{ text: "Edit", align: "center" }],
@@ -434,7 +441,7 @@ export default {
           this.staticFields = Object.keys(this.editItems);
 
           if (generalMasterEditFields.dynamicFieldModal != "") {
-            this.dynamicShema = generalMasterEditFields.dynamicFieldModal.fieldProperties || {};
+            this.dynamicShema = generalMasterEditFields.dynamicFieldModal.fieldProperties;
             this.dynamicModal = generalMasterEditFields.dynamicFieldModal.modal[0];
             this.dynamicFieldModel = this.dynamicModal
             this.dynamicFieldSchema.fields = generateSchema(this.dynamicShema, this.dynamicModal);
@@ -538,8 +545,8 @@ export default {
         this.preFix = addFieldForGeneralMaster.prefix;
         this.addItems = addFieldForGeneralMaster.staticFieldData;
         this.staticFields = Object.keys(this.addItems);
-        this.dynamicShema = addFieldForGeneralMaster.dynamicFieldModal.fieldProperties || {};
-        this.dynamicModal = addFieldForGeneralMaster.dynamicFieldModal.modal || {};
+        this.dynamicShema = addFieldForGeneralMaster.dynamicFieldModal.fieldProperties;
+        this.dynamicModal = addFieldForGeneralMaster.dynamicFieldModal.modal;
         if (addFieldForGeneralMaster.dynamicFieldModal.modal != null) {
           this.addDynamicFieldSchema.fields = generateSchema(this.dynamicShema, this.dynamicModal);
           this.addDynamicFieldSchema.groups = generateGroupSchema(this.dynamicShema, this.dynamicModal);

@@ -1,0 +1,38 @@
+.ag-header-cell-text {
+  color: white !important;
+}
+
+.ag-theme-alpine .ag-icon {
+  font-size: 24px !important;
+}
+
+.ag-theme-alpine {
+  font-size: 16px !important;
+}
+
+.ag-theme-alpine .ag-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ag-filter-filter {
+  padding: 5px;
+  margin: 5px;
+}
+
+.ag-floating-filter-input {
+  background-color: #4286f4 !important;
+}
+
+.ag-header-row {
+  background-color: #4286f4 !important;
+}
+
+.ag-column-tool-panel-column {
+  height: 28px !important;
+}
+
+.ag-input-wrapper {
+  overflow: visible !important;
+}

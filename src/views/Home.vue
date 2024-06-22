@@ -531,17 +531,15 @@
 
       <v-content>
         <v-container fluid>
-          <v-layout justify-center align-center>
-            <v-flex shrink>
-              <div v-if="selecteMenu">
-                <h1>{{ selecteMenu.menuItemCapiton }} </h1>
-                <component v-bind:is="currentView"></component>
-              </div>
-              <div v-else>
-                <h1>Dashboard</h1>
-              </div>
-            </v-flex>
-          </v-layout>
+          <v-flex shrink>
+            <div v-if="selecteMenu">
+              <h1>{{ selecteMenu.menuItemCapiton }} </h1>
+              <component v-bind:is="currentView" :menu="selecteMenu"></component>
+            </div>
+            <div v-else>
+              <h1>Dashboard</h1>
+            </div>
+          </v-flex>
         </v-container>
       </v-content>
 
@@ -1087,7 +1085,7 @@
       <ContentLoading></ContentLoading>
       <v-snackbar v-model="snackbar" :color="color" :multi-line="true" :timeout="timeout"
         :vertical="mode === 'vertical'">{{
-        text }}
+          text }}
         <v-btn dark flat @click="snackbar = false">
           Close
         </v-btn>
