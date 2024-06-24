@@ -6,8 +6,8 @@
       </div>
       Add New Record
       <!-- START: Code for Supplier Group Master Table data -->
-      <AgGridWrapper :columns="itemTableHeader" :rows="itemTableData" :editRowData="editItemOpenningBalance"
-        :deleteConfirmation="deleteGeneralMasterRequest"></AgGridWrapper>
+      <AgGridWrapper :columns="itemTableHeader" :rows="itemTableData" :editRowData="editItemOpenningBalance">
+      </AgGridWrapper>
       <!-- <v-data-table :headers="itemTableHeader" :items="itemTableData" class="elevation-1">
         <template slot="items" slot-scope="props">
           <td class="justify-center layout px-0">
@@ -28,14 +28,13 @@
       <v-dialog v-model="addItemOpenningBalanceModal" fullscreen hide-overlay transition="dialog-bottom-transition">
         <v-card>
           <v-toolbar fixed dark color="primary">
-            <v-btn icon dark @click="addItemOpenningBalanceModal = false">
+            <v-btn icon dark @click="loadItemOpenningBalanceTableData()">
               <v-icon>close</v-icon>
             </v-btn>
             <v-toolbar-title>Add Record</v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-toolbar-items>
-              <v-btn dark flat @click="saveNewItemOpenningBalanceRecord()">Save</v-btn>
-            </v-toolbar-items>
+            <v-btn class="blue darken-1 white--text" @click="loadItemOpenningBalanceTableData()">List</v-btn>
+            <v-btn class="blue darken-1 white--text" @click="saveNewItemOpenningBalanceRecord()">Add</v-btn>
           </v-toolbar>
           <v-container class="spaceFromTop" fluid grid-list-xl>
             <v-layout row justify-space-between>
@@ -289,7 +288,7 @@ export default {
   }),
 
   beforeMount: function () {
-    this.loadItemOpenningBalanceTableData();
+    this.addNewItemOpenningBalance();
   },
   computed: {
     computedDateFormatted() {
@@ -376,6 +375,7 @@ export default {
                 this.itemTableHeader.push({ text: element, align: "center", value: element })
               })
               this.itemTableData = openningBalanceData;
+              this.addItemOpenningBalanceModal = false;
             }
           }).catch((err) => {
             this.showSnackBar('error', err.response.data);

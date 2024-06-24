@@ -167,100 +167,105 @@
       <v-dialog v-model="addGeneralMasterModel" fullscreen hide-overlay transition="dialog-bottom-transition">
         <v-card>
           <v-toolbar fixed dark color="primary">
-            <v-btn icon dark @click="addGeneralMasterModel = false">
+            <v-btn icon dark @click="loadGeneralMaster()">
               <v-icon>close</v-icon>
             </v-btn>
             <v-toolbar-title>{{ $store.state.pageName }} - Add</v-toolbar-title>
             <v-spacer></v-spacer>
+            <v-btn class="blue darken-1 white--text" @click="loadGeneralMaster()">List</v-btn>
             <v-btn class="blue darken-1 white--text" @click="addItemRequest()">Add</v-btn>
           </v-toolbar>
           <v-container class="spaceFromTop" fluid grid-list-md>
             <v-layout row wrap>
               <v-flex xs12>
-                <v-expansion-panel popout>
-                  <v-expansion-panel-content>
-                    <div slot="header">Details</div>
-                    <v-card>
-                      <v-card-text>
-                        <v-container fluid grid-list-xl>
-                          <v-layout row>
-                            <v-flex xs12 sm6 md4>
-                              <label for="code">{{ `${preFix} Code: ` }}</label><span class="mandatoryStar">*</span>
-                              <b-form-input id="code" v-model="addItems[staticFields[0]]" type="text"
-                                v-bind:class="{ 'form-control': true, 'is-invalid': !validAddCode() && codeBlured }"
-                                v-on:blur="codeBlured = true" aria-describedby="codeLiveFeedback"
-                                :placeholder="`${preFix} Code`" />
-                              <b-form-invalid-feedback id="codeLiveFeedback">
-                                This field is required
-                              </b-form-invalid-feedback>
-                            </v-flex>
-                            <v-flex xs12 sm6 md4>
-                              <label for="code">{{ `${preFix} Name: ` }}</label><span class="mandatoryStar">*</span>
-                              <b-form-input id="code" v-model="addItems[staticFields[1]]" type="text"
-                                v-bind:class="{ 'form-control': true, 'is-invalid': !validAddName() && nameBlured }"
-                                v-on:blur="nameBlured = true" aria-describedby="nameLiveFeedback"
-                                :placeholder="`${preFix} Name`" />
-                              <b-form-invalid-feedback id="nameLiveFeedback">
-                                This field is required
-                              </b-form-invalid-feedback>
-                            </v-flex>
-                            <!-- <v-flex xs12 sm6 md4>
-                            <label for="code">{{`Added On: `}}</label>
-                            <b-form-input id="code" v-model="editItems[staticFields[3]]" type="text" :placeholder="`Added On`" readonly />
-                          </v-flex> -->
-                            <!-- <v-flex xs12 sm6 md4>
-                            <label for="code">{{`Added By: `}}</label>
-                            <b-form-input id="code" v-model="editItems[staticFields[4]]" type="text" :placeholder="`Added By`" readonly />
-                          </v-flex> -->
-                            <!-- <v-flex xs12 sm6 md4>
-                            <label for="code">{{`Changed On: `}}</label>
-                            <b-form-input id="code" v-model="editItems[staticFields[5]]" type="text" :placeholder="`Changed On`"  readonly />
-                          </v-flex> -->
-                            <!-- <v-flex xs12 sm6 md4>
-                            <label for="code">{{`Changed By: `}}</label>
-                            <b-form-input id="code" v-model="editItems[staticFields[6]]" type="text" :placeholder="`Changed By`" readonly />
-                          </v-flex> -->
-                            <!-- <v-flex xs12 sm6 md4>
-                            <b-form-checkbox
-                              id="checkbox1"
-                              v-model="editItems[staticFields[7]]"
-                            >
-                              in Active ?
-                            </b-form-checkbox>
-                          </v-flex> -->
-                            <!-- <v-flex xs12 sm6 md4>
-                            <b-form-checkbox
-                              id="checkbox1"
-                              v-model="editItems[staticFields[8]]"
-                            >
-                              is Authorised ?
-                            </b-form-checkbox>
-                          </v-flex> -->
-                          </v-layout>
-                        </v-container>
-                        <!-- END: UOM master detail -->
-                      </v-card-text>
-                    </v-card>
-                  </v-expansion-panel-content>
-                  <v-expansion-panel-content>
-                    <div slot="header">Other Information</div>
-                    <v-card>
-                      <v-card-text>
-                        <!-- START: Code for dynamic fields -->
-                        <v-container fluid grid-list-xl>
-                          <v-layout row justify-space-between>
-                            <v-flex xs12 sm4 md4>
-                              <vue-form-generator id="Form-generator-css" ref="vfg" :schema="addDynamicFieldSchema"
-                                :model="addDynamicFieldModel" :options="formOptions"
-                                @validated="onValidatedAdd"></vue-form-generator>
-                            </v-flex>
-                          </v-layout>
-                        </v-container>
-                        <!-- END: Code for dynamic fields -->
-                      </v-card-text>
-                    </v-card>
-                  </v-expansion-panel-content>
-                </v-expansion-panel>
+                <v-expansion-panels multiple v-model="expandedPanels">
+                  <v-expansion-panel popout value=0>
+                    <v-expansion-panel-content>
+                      <div slot="header">Details</div>
+                      <v-card>
+                        <v-card-text>
+                          <v-container fluid grid-list-xl>
+                            <v-layout row>
+                              <v-flex xs12 sm6 md4>
+                                <label for="code">{{ `${preFix} Code: ` }}</label><span class="mandatoryStar">*</span>
+                                <b-form-input id="code" v-model="addItems[staticFields[0]]" type="text"
+                                  v-bind:class="{ 'form-control': true, 'is-invalid': !validAddCode() && codeBlured }"
+                                  v-on:blur="codeBlured = true" aria-describedby="codeLiveFeedback"
+                                  :placeholder="`${preFix} Code`" />
+                                <b-form-invalid-feedback id="codeLiveFeedback">
+                                  This field is required
+                                </b-form-invalid-feedback>
+                              </v-flex>
+                              <v-flex xs12 sm6 md4>
+                                <label for="code">{{ `${preFix} Name: ` }}</label><span class="mandatoryStar">*</span>
+                                <b-form-input id="code" v-model="addItems[staticFields[1]]" type="text"
+                                  v-bind:class="{ 'form-control': true, 'is-invalid': !validAddName() && nameBlured }"
+                                  v-on:blur="nameBlured = true" aria-describedby="nameLiveFeedback"
+                                  :placeholder="`${preFix} Name`" />
+                                <b-form-invalid-feedback id="nameLiveFeedback">
+                                  This field is required
+                                </b-form-invalid-feedback>
+                              </v-flex>
+                              <!-- <v-flex xs12 sm6 md4>
+                              <label for="code">{{`Added On: `}}</label>
+                              <b-form-input id="code" v-model="editItems[staticFields[3]]" type="text" :placeholder="`Added On`" readonly />
+                            </v-flex> -->
+                              <!-- <v-flex xs12 sm6 md4>
+                              <label for="code">{{`Added By: `}}</label>
+                              <b-form-input id="code" v-model="editItems[staticFields[4]]" type="text" :placeholder="`Added By`" readonly />
+                            </v-flex> -->
+                              <!-- <v-flex xs12 sm6 md4>
+                              <label for="code">{{`Changed On: `}}</label>
+                              <b-form-input id="code" v-model="editItems[staticFields[5]]" type="text" :placeholder="`Changed On`"  readonly />
+                            </v-flex> -->
+                              <!-- <v-flex xs12 sm6 md4>
+                              <label for="code">{{`Changed By: `}}</label>
+                              <b-form-input id="code" v-model="editItems[staticFields[6]]" type="text" :placeholder="`Changed By`" readonly />
+                            </v-flex> -->
+                              <!-- <v-flex xs12 sm6 md4>
+                              <b-form-checkbox
+                                id="checkbox1"
+                                v-model="editItems[staticFields[7]]"
+                              >
+                                in Active ?
+                              </b-form-checkbox>
+                            </v-flex> -->
+                              <!-- <v-flex xs12 sm6 md4>
+                              <b-form-checkbox
+                                id="checkbox1"
+                                v-model="editItems[staticFields[8]]"
+                              >
+                                is Authorised ?
+                              </b-form-checkbox>
+                            </v-flex> -->
+                            </v-layout>
+                          </v-container>
+                          <!-- END: UOM master detail -->
+                        </v-card-text>
+                      </v-card>
+                    </v-expansion-panel-content>
+                  </v-expansion-panel>
+                  <v-expansion-panel popout value=1>
+                    <v-expansion-panel-content>
+                      <div slot="header">Other Information</div>
+                      <v-card>
+                        <v-card-text>
+                          <!-- START: Code for dynamic fields -->
+                          <v-container fluid grid-list-xl>
+                            <v-layout row justify-space-between>
+                              <v-flex xs12 sm4 md4>
+                                <vue-form-generator id="Form-generator-css" ref="vfg" :schema="addDynamicFieldSchema"
+                                  :model="addDynamicFieldModel" :options="formOptions"
+                                  @validated="onValidatedAdd"></vue-form-generator>
+                              </v-flex>
+                            </v-layout>
+                          </v-container>
+                          <!-- END: Code for dynamic fields -->
+                        </v-card-text>
+                      </v-card>
+                    </v-expansion-panel-content>
+                  </v-expansion-panel>
+                </v-expansion-panels>
               </v-flex>
             </v-layout>
           </v-container>
@@ -360,10 +365,11 @@ export default {
       pagination: {
         rowsPerPage: parseInt(localStorage.getItem('rowPerPageDataTable')) || 5
       },
+      expandedPanels: [0, 1]
     }
   },
   beforeMount: function () {
-    this.loadGeneralMaster();
+    this.addItemInPartyMaster();
   },
   watch: {
     dynamicFieldModel: {
@@ -408,11 +414,14 @@ export default {
            * Logic for putting data into data table::
            */
           this.preFix = generalMasterData.prefix;
-          this.generalMasterHeadersKey = Object.keys(generalMasterData.tableData[0]);
-          this.generalMasterHeadersKey.forEach(element => {
-            this.headers.push({ text: element, align: "center", value: element })
-          });
-          this.generalMasterTableData = generalMasterData.tableData;
+          if (generalMasterData.tableData.length) {
+            this.generalMasterHeadersKey = Object.keys(generalMasterData.tableData[0]);
+            this.generalMasterHeadersKey.forEach(element => {
+              this.headers.push({ text: element, align: "center", value: element })
+            });
+            this.generalMasterTableData = generalMasterData.tableData;
+          }
+          this.addGeneralMasterModel = false;
         }).catch((err) => {
           /**
            * When API call failed: check error in browser console::
