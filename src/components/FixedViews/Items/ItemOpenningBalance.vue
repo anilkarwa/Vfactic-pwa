@@ -6,34 +6,35 @@
       </div>
       Add New Record
       <!-- START: Code for Supplier Group Master Table data -->
-      <v-data-table :headers="itemTableHeader" :items="itemTableData" class="elevation-1">
+      <AgGridWrapper :columns="itemTableHeader" :rows="itemTableData" :editRowData="editItemOpenningBalance">
+      </AgGridWrapper>
+      <!-- <v-data-table :headers="itemTableHeader" :items="itemTableData" class="elevation-1">
         <template slot="items" slot-scope="props">
           <td class="justify-center layout px-0">
             <v-icon small class="mr-2" @click="editItemOpenningBalance(props.item)">edit</v-icon>
-            <!-- <v-icon small @click="deleteGeneralMasterRequest(props.item)">delete</v-icon> -->
+            <v-icon small @click="deleteGeneralMasterRequest(props.item)">delete</v-icon>
           </td>
           <td v-for="values in props.item" :key="values.id">
             {{ values }}
           </td>
         </template>
-        <template slot="no-data">
+<template slot="no-data">
           <v-btn color="primary">Reset</v-btn>
         </template>
-      </v-data-table>
+</v-data-table> -->
       <!-- END: Code for Supplier Group Master Table data -->
 
       <!-- Edit PartyDoc Transcation Dialog -->
       <v-dialog v-model="addItemOpenningBalanceModal" fullscreen hide-overlay transition="dialog-bottom-transition">
         <v-card>
           <v-toolbar fixed dark color="primary">
-            <v-btn icon dark @click="addItemOpenningBalanceModal = false">
+            <v-btn icon dark @click="loadItemOpenningBalanceTableData()">
               <v-icon>close</v-icon>
             </v-btn>
             <v-toolbar-title>Add Record</v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-toolbar-items>
-              <v-btn dark flat @click="saveNewItemOpenningBalanceRecord()">Save</v-btn>
-            </v-toolbar-items>
+            <v-btn class="blue darken-1 white--text" @click="loadItemOpenningBalanceTableData()">List</v-btn>
+            <v-btn class="blue darken-1 white--text" @click="saveNewItemOpenningBalanceRecord()">Add</v-btn>
           </v-toolbar>
           <v-container class="spaceFromTop" fluid grid-list-xl>
             <v-layout row justify-space-between>
@@ -240,9 +241,12 @@
 <script>
 
 import httpClient from "@/services/httpClient.js";
+import AgGridWrapper from "../../Shared/AgGridWrapper.vue";
 
 export default {
-
+  components: {
+    AgGridWrapper,
+  },
   data: vm => ({
     addFromValid: true,
     updateFromValid: true,
@@ -284,7 +288,7 @@ export default {
   }),
 
   beforeMount: function () {
-    this.loadItemOpenningBalanceTableData();
+    this.addNewItemOpenningBalance();
   },
   computed: {
     computedDateFormatted() {
@@ -371,6 +375,7 @@ export default {
                 this.itemTableHeader.push({ text: element, align: "center", value: element })
               })
               this.itemTableData = openningBalanceData;
+              this.addItemOpenningBalanceModal = false;
             }
           }).catch((err) => {
             this.showSnackBar('error', err.response.data);
